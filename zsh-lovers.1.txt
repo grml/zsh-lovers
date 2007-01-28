@@ -150,7 +150,8 @@ zstyle ':completion:*:approximate:*' max-errors 1 numeric
 And  if  you  want  the  number  of  errors  allowed by _approximate to
 increase with the length of what you have typed so far:
 ---------------------------------------------------------------------------------------------------
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+zstyle -e ':completion:*:approximate:*' \ 
+	max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 ---------------------------------------------------------------------------------------------------
 
 Ignore completion functions for commands you don't have:
@@ -355,9 +356,9 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ eval "m=($(cat -- $nameoffile)"            # or use
   $ m=("${(@Q)${(z)"$(cat -- $nameoffile)"}}") # to restore it
 
-# get a "ls -l" on all the files in the tree that are younger than a specified 
-# age (e.g "ls -l" all the files in the tree that where modified in the last 2 
-# days)
+# get a "ls -l" on all the files in the tree that are younger than a 
+# specified age (e.g "ls -l" all the files in the tree that where 
+# modified in the last 2 days)
   $ ls -tld **/*(m-2)
 # This will give you a listing 1 file perl line (not à la ls -R).
 # Think of an easy way to have a "ls -R" style output with
@@ -984,8 +985,8 @@ zsh/stat (require zmodload zsh/stat)
   $ file1=foo
   $ file2=bar
   $ touch bar & sleep 5 & touch foo
-  $ echo $file1 is \ 
-    $(($(stat +mtime $file2) - $(stat +mtime $file1))) seconds older than $file2.
+  $ echo $file1 is $(($(stat +mtime $file2) - \ 
+    $(stat +mtime $file1))) seconds older than $file2.
   bar is 5 seconds older than foo
 
 # list the files of a disk smaller than some other file
