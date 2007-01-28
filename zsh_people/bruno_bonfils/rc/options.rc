@@ -1,0 +1,18 @@
+# -*- shell-script -*-
+#
+# Zsh Options
+#
+
+export LISTPROMPT	# in order to scroll if completion list is too big
+
+setopt auto_cd		# a commande like % /usr/local is equivalent to cd /usr/local
+setopt nohup            # don't send HUP signal when closing term session
+setopt extended_glob	# in order to use #, ~ and ^ for filename generation
+setopt always_to_end	# move to cursor to the end after completion
+setopt notify		# report the status of backgrounds jobs immediately
+setopt correct		# try to correct the spelling if possible
+setopt rmstarwait	# wait 10 seconds before querying for a rm which contains a *
+setopt printexitvalue   # show the exit-value if > 0
+
+# Don't ecrase file with >, use >| (overwrite) or >> (append) instead 
+set -C

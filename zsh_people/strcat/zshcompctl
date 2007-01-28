@@ -1,0 +1,83 @@
+# Tab host completion for programs  
+compctl -k ping telnet ncftp host nslookup irssi rlogin ftp
+
+# Make completion (yeah im getting fucking lazy)
+compile=(install clean remove uninstall deinstall)
+compctl -k compile make
+
+# some (useful) completions
+ compctl -j -P '%' fg jobs disown
+ compctl -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' gunzip gzcat zcat
+ compctl -g '*.tar.Z *.tar.gz *.tgz *.zip *.ZIP *.tar.bz2 *.tar' + -g '*'  show-archive simple-extract
+ compctl -g '*.(mp3|MP3|ogg|OGG|temp|TEMP)' + -g '*(-/)'  mpg123 xmms
+ compctl -g "*.html *.htm" + -g "*(-/) .*(-/)" + -H 0 '' w3m lynx links wget opera
+ compctl -g '*.(pdf|PDF)' + -g '*(-/)'  xpdf
+ compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp cl tree 
+ compctl -g '*.(jpg|JPG|jpeg|JPEG|gif|GIF|png|PNG|bmp)' + -g '*(-/)' gimp xv pornview
+ compctl -g '*.(e|E|)(ps|PS)' + -g '*(-/)' gs ghostview nup psps pstops psmulti psnup psselect gv
+ compctl -g '*.tex*' + -g '*(-/)' {,la,gla,ams{la,},{g,}sli}tex texi2dvi
+ compctl -g '*.dvi' + -g '*(-/)' dvips
+ compctl -g '/var/db/pkg/*(/:t)' pkg_delete pkg_info
+ compctl -g '[^.]*(-/) *.(c|C|cc|c++|cxx|cpp)' + -f cc CC c++ gcc g++
+ compctl -g '[^.]*(-/) *(*)' + -f strip ldd gdb
+ compctl -s '$(<~/.vim/tags)' vimhelp
+ compctl -s '/var/log/packages/*(.:t:r)' slapt-get
+
+# 'compctl' with regex
+ # kill takes signal names as the first argument after -, but job names after %
+ compctl -j -P % -x 's[-] p[1]' -k signals -- kill
+ # gzip files, but gzip -d only gzipped or compressed files
+ compctl -x 'R[-*[dt],^*]' -g '*.(gz|z|Z|t[agp]z|tarZ|tz)(D)' + -g '*(-/D)' + -f -  's[]' -g '^*(.(tz|gz|t[agp]z|tarZ|zip|ZIP|jpg|JPG|gif|GIF|[zZ])|[~#])' + -f -- gzip
+ # read '/etc/shells' to complete 'chsh -s'
+ compctl -u -x 'c[-1,-s]' -s '$(</etc/shells)' -- chsh
+ # For rcs users, co and rlog from the RCS directory.  We don't want to see
+ # the RCS and ,v though.
+ compctl -g 'RCS/*(D:s@RCS/@@:s/,v//)' + -g '*(-/D)' co rlog rcs{,diff,merge} revdiff logs mymerge cil
+ #  Argument to finger and talk is username@hostname 
+ compctl -x 'N[-1,@]' -k hosts - 's[]' -u -S '' -- finger talk
+ # Fnord!  
+ compctl -f -x \
+            'p[1]' -k '(cvf czvf cjvf tvf tzvf tjvf xvf xzvf xjvf)' \
+          - 'p[2] W[1,*z*f*],p[2] W[1,*f*z*]' -g '[^.]*(-/) *.(tar.(gz|z|Z)|taz|tgz)' \
+          - 'p[2] W[1,*I*f*],p[2] W[1,*f*I*]' -g '[^.]*(-/) *.tar.bz2' \
+          - 'p[2] W[1,*f*]' -g '[^.]*(-/) *.tar' + -f -- tar 
+# security by.. by.. *aehm* .. me? *g*
+compctl -k '(asn1parse ca ciphers crl crl2pkcs7 dgst dh dhparam dsa dsaparam \
+           enc errstr gendh gendsa genrsa nseq passwd pkcs12 pkcs7 pkcs8 \
+           rand req rsa rsautl s_client s_server s_time sess_id smime speed \
+           spkac verify version x509)' openssl
+# Don't complete uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+        _fingerd _kadmin _rstatd _syslogd daemon nobody proxy sshd \
+        _identd _kdc _rusersd _x11 operator root uucp _isakmpd _portmap \
+        _spamd named popa3d smmsp
+
+# ... unless we really want to.
+zstyle '*' single-ignored show
+
+# fucking duplicate entries in my $HISTFILE *narf*
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
+
+# completion for "man" by Gossamer <gossamer@tertius.net.au> 980827
+# This is damn funky. I'm going to do something similar for pinfo,
+# hopefully.
+#-------------------------------------------------- 
+compctl -f -x 'S[1][2][3][4][5][6][7][8][9]' -k '(1 2 3 4 5 6 7 8 9)' \
+  - 'R[[1-9nlo]|[1-9](|[a-z]),^*]' -K 'match-man' \
+  - 's[-M],c[-1,-M]' -g '*(-/)' \
+  - 's[-P],c[-1,-P]' -c \
+  - 's[-S],s[-1,-S]' -k '( )' \
+  - 's[-]' -k '(a d f h k t M P)' \
+  - 'p[1,-1]' -c + -K 'match-man' \
+  -- vman pinfo
+#--------------------------------------------------
+# setopt SH_WORD_SPLIT function man_var () {
+#    man_pages=( $^manpath/man*/*(N:t:r:r) )
+#       compctl -k man_pages man
+#          reply=( $man_pages )
+#  }
+#  compctl -K man_var vman pinfo; man_pages=()
+#-------------------------------------------------- 

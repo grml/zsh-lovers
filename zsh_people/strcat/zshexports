@@ -1,0 +1,534 @@
+# (( ${+*} )) = if variable is set don't set it anymore
+#  Note: Do *not* use '$PORTSDIR'! This variable is defined in 
+#        '/path/to/ports/Makefile'.
+(( ${+IRCNAME} )) || export IRCNAME="Christian 'strcat' Schneider"      # **EDIT**
+(( ${+IRCNICK} )) || export IRCNICK="strcat"                            # **EDIT**
+(( ${+IRCSERVER} )) || export IRCSERVER="irc.euirc.net"                 # **EDIT**
+(( ${+VISUAL} )) || export VISUAL="vim"                                 # **EDIT**
+(( ${+BROWSER} )) || export BROWSER="w3m"                               # **EDIT**
+(( ${+OS} )) || export OS="${OSTYPE%%[0-9.]*}" 
+(( ${+OSVERSION} )) || export OSVERSION="${OSTYPE#$OS}"
+(( ${+OSMAJOR} )) || export OSMAJOR="${OSVERSION%%.*}"
+(( ${+ORGANIZATION} )) || export ORGANIZATION="Guerrilla UNIX Development (Venimus, Vidimus, Dolavimus)" # **EDIT**
+(( ${+SHITDIR} )) || export SHITDIR="/home/$LOGNAME/Trash"
+
+# some variables for specific systems
+case ${OS} in
+	openbsd)
+	(( ${+CVSROOT} )) || export CVSROOT="anoncvs@anoncvs.ca.OpenBSD.org:/cvs"
+	(( ${+PORTS_DIR} )) || export PORTS_DIR="/usr/ports"
+	(( ${+PKG_PATH} )) || export PKG_PATH="ftp://ftp.OpenBSD.org/pub/OpenBSD/$(uname -r)/packages/$(uname -m)"
+	;;
+	netbsd)
+	(( ${+CVSROOT} )) || export CVSROOT="anoncvs@anoncvs.se.NetBSD.org:/cvsroot"
+	(( ${+LD_LIBRARY_PATH} )) || export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/X11R6/lib:/usr/local/lib:/usr/pkg/lib"
+	(( ${+INCLUDEPATH} )) || export INCLUDEPATH="$INCLUDEPATH:/usr/local/lib"
+	(( ${+CFLAGS} )) || export CFLAGS='-I/usr/local/include -I/usr/pkg/include -I/usr/X11R6/include'
+	(( ${+CPPFLAGS} )) || export CPPFLAGS=$CFLAGS
+	;;
+esac
+
+# compiler opt. flags !!! use this with caution !!! or dont use et all
+case $CPUTYPE in
+	i686)
+	(( ${+CFLAGS} )) || export CFLAGS='-O3 -funroll-loops -ffast-math -malign-double -mcpu=pentiumpro -fomit-frame-pointer -fno-exceptions'
+	;;
+	i586)
+	(( ${+CFLAGS} )) || export CFLAGS='-O3 -mcpu=pentium -ffast-math -funroll-loops -fomit-frame-pointer -fforce-mem -fforce-addr -malign-double -fno-exceptions'
+	;;
+	i486)
+	(( ${+CFLAGS} )) || export CFLAGS='-O3 -funroll-all-loops -malign-double -mcpu=i486 -march=i486 -fomit-frame-pointer -fno-exceptions'
+	;;
+	*)
+	(( ${+CXXFLAGS} )) || export CXXFLAGS=$CFLAGS
+esac
+
+# Set the values for some environment variables:
+export HOSTNAME="`hostname`"
+export LESS="-sCieM -P?fFile %f:stdin. ?m(%i of %m) :.line %l ?Lof %L:.?p (%p\%):."
+export LESSBINFMT='*u[%X]'
+export PAGER=less
+export CVS_RSH=ssh
+export NNTPSERVER='news.individual.net'                 # **EDIT**
+export HELPDIR='~/.zsh/help'
+export VERSION=${VERSION:-"zsh $ZSH_VERSION"}
+export WWW_HOME="http://www.google.com"
+export HTTP_HOME="http://www.google.com"
+export NETHACKOPTIONS='gender:male,noautopickup,color,lit_corridor,showrace,showexp,showdmg,showweight,time,toptenwin,catname:Prowl,msg_window:f,!legacy'
+export INFOPATH="/usr/local/info/:/usr/share/info/:/usr/local/emul/redhat/:/usr/share/info/"
+export MANWIDTH=80
+
+if [ -x $(which lesspipe.sh) ]; then
+	export LESSOPEN="|lesspipe.sh %s"
+fi
+
+# i primarily use Vim (GNU Emacs and jed are only exception ;-))
+#  $ print ${${$(=vim --version)[5]}:gs/.//}
+# is equivalent to 
+#  $ /path/to/vim --version | head -n 1 | awk '{print $5}' | sed 's/\.//'
+if [ -x $(which vim) ]; then
+	export EDITOR=vim
+	export VISUAL="${EDITOR}"
+	export VIMRELEASE="`print ${${$(vim --version)[5]}:gs/.//}`"
+else
+	if [ -x $(which vi) ]; then
+		export EDITOR=vi
+	fi
+fi
+ 
+case ${OS} in
+	openbsd)
+	[ -d "/usr/local/share/vim/vim$VIMRELEASE" ] \
+		&& export VIMRUNTIME="/usr/local/share/vim/vim$VIMRELEASE"
+	;;
+	netbsd)
+	[ -d "/usr/pkg/share/vim/vim$VIMRELEASE" ] \
+		&& export VIMRUNTIME="/usr/pkg/share/vim/vim$VIMRELEASE"
+	;;
+	linux-gnu)
+	[ -d "/usr/share/vim/vim$VIMRELEASE" ] \
+		&& export VIMRUNTIME="/usr/share/vim/vim$VIMRELEASE"
+	;;
+esac
+
+# That's for my Linuxbox (Slackware); OpenBSD doesn't support
+# locale :/
+if [ "${OSTYPE}" = linux-gnu ] && [ -x $(which locale) ]; then
+	# All of the below
+        export LC_ALL="en_US.iso885915"
+	# language information
+        export LANG="en_US.iso885915"
+	# Character classification and case conversion.
+        export LC_CTYPE="en_US.iso885915"
+	# Non-monetary numeric formats.
+        export LC_NUMERIC="en_US.iso885915"
+	# Date and time formats.
+        export LC_TIME="en_US.iso885915"
+	# Collation order.
+        export LC_COLLATE="en_US.iso885915"
+	# Monetary formats.
+        export LC_MONETARY="en_US.iso885915"
+	# ormats of informative and diagnostic messages and interactive responses.
+        export LC_MESSAGES="en_US.iso885915"
+	# Paper size format.
+        export LC_PAPER="en_US.iso885915"
+	# Define format of names.
+        export LC_NAME="en_US.iso885915"
+	# Format of addresses.
+        export LC_ADDRESS="en_US.iso885915"
+	# Format of telephon numbers.
+        export LC_TELEPHONE="en_US.iso885915"
+	# Format of dimensions.
+        export LC_MEASUREMENT="en_US.iso885915"
+	# Identify locale informations.
+        export LC_IDENTIFICATION="en_US.iso885915"
+else
+        export LC_ALL=POSIX
+fi
+
+
+# $ cd /usr/ports/misc/fileutils
+# $ make install clean
+#  di = directory
+#  fi = file
+#  ln = symbolic link
+#  pi = fifo file
+#  so = socket file
+#  bd = block (buffered) special file (block device)
+#  cd = character (unbuffered) special file (character device)
+#  or = symbolic link pointing to a non-existent file (orphan)
+#  mi = non-existent file pointed to by a symbolic link (visible when you type ls -l)
+#  ex = file which is executable (ie. has 'x' set in permissions (executable)).
+#
+# 0   = default color                   1   = bold
+# 4   = underlined                      5   = flashing text
+# 7   = reverse field                   31  = red
+# 32  = green                           33  = orange
+# 34  = blue                            35  = purple
+# 36  = cyan                            37  = grey
+# 40  = black background                41  = red background
+# 42  = green background                43  = orange background
+# 44  = blue background                 45  = purple background
+# 46  = cyan background                 47  = grey background
+# 90  = dark grey                       91  = light red
+# 92  = light green                     93  = yellow
+# 94  = light blue                      95  = light purple
+# 96  = turquoise                       100 = dark grey background
+# 101 = light red background            102 = light green background
+# 103 = yellow background               104 = light blue background
+# 105 = light purple background         106 = turquoise background
+#
+# Attribute codes:
+#  00 none
+#  01 bold
+#  02 faint                  22 normal
+#  03 standout               23 no-standout
+#  04 underline              24 no-underline
+#  05 blink                  25 no-blink
+#  07 reverse                27 no-reverse
+#  08 conceal
+#  
+# export LS_COLORS="fi=36:di=32:ln=1;33:ec=\\e[0;37m:ex=1:mi=1;30:or=1;30:*.c=32:*.bz=32:*.txt=36;1:*.doc=37:*.zip=1;32:*.rar=1;32:*.lzh=1;32:*.lha=1;32:*.arj=1;32:*.tar=1;32:*.tgz=1;32:*.gz=1;32:*~=1;30:*.bak=1;30:*.jpg=1;35:*.gif=1;35:*.tif=1;35:*.tiff=1;35:*.mod=1;31:*.voc=1;31:*.smp=1;31:*.au=1;31:*.wav=1;31:*.s3m=1;31:*.xm=1;31:*.pl=1;33:*.c=1;33"
+LS_COLORS=''
+LS_COLORS=$LS_COLORS:'no=0'           # Normal text       = Default foreground  
+LS_COLORS=$LS_COLORS:'fi=0'           # Regular file      = Default foreground
+LS_COLORS=$LS_COLORS:'di=32'          # Directory         = Bold, Yellow
+LS_COLORS=$LS_COLORS:'ln=01;36'       # Symbolic link     = Bold, Cyan
+LS_COLORS=$LS_COLORS:'pi=33'          # Named pipe        = Yellow
+LS_COLORS=$LS_COLORS:'so=01;35'       # Socket            = Bold, Magenta
+LS_COLORS=$LS_COLORS:'do=01;35'       # DO                = Bold, Magenta
+LS_COLORS=$LS_COLORS:'bd=01;37'       # Block device      = Bold, Grey
+LS_COLORS=$LS_COLORS:'cd=01;37'       # Character device  = Bold, Grey
+LS_COLORS=$LS_COLORS:'ex=94'          # Executable file   = Light, Blue
+LS_COLORS=$LS_COLORS:'*FAQ=31;7'      # FAQs              = Foreground Red, Background Black
+LS_COLORS=$LS_COLORS:'*README=31;7'   # READMEs           = Foreground Red, Background Black
+LS_COLORS=$LS_COLORS:'*INSTALL=31;7'  # INSTALLs          = Foreground Red, Background Black
+LS_COLORS=$LS_COLORS:'*.sh=47;31'     # Shell-Scripts     = Foreground White, Background Red
+LS_COLORS=$LS_COLORS:'*.vim=35'       # Vim-"Scripts"     = Purple
+LS_COLORS=$LS_COLORS:'*.swp=00;44;37' # Swapfiles (Vim)   = Foreground Blue, Background White
+LS_COLORS=$LS_COLORS:'*.sl=30;33'     # Slang-Scripts     = Yellow
+LS_COLORS=$LS_COLORS:'*,v=5;34;93'    # Versioncontrols   = Bold, Yellow
+LS_COLORS=$LS_COLORS:'or=01;05;31'    # Orphaned link     = Bold, Red, Flashing
+LS_COLORS=$LS_COLORS:'*.c=1;32'       # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.C=1;33'       # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.h=1;33'       # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.cc=1;33'      # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.awk=1;33'     # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.pl=1;33'      # Sources           = Bold, Yellow
+LS_COLORS=$LS_COLORS:'*.jpg=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.jpeg=1;32'    # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.JPG=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.gif=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.png=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.jpeg=1;32'    # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.ppm=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.pgm=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.pbm=1;32'     # Images            = Bold, Green
+LS_COLORS=$LS_COLORS:'*.tar=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.tgz=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.gz=31'        # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.zip=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.sit=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.lha=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.lzh=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.arj=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.bz2=31'       # Archive           = Red
+LS_COLORS=$LS_COLORS:'*.html=36'      # HTML              = Cyan
+LS_COLORS=$LS_COLORS:'*.htm=1;34'     # HTML              = Bold, Blue
+LS_COLORS=$LS_COLORS:'*.doc=1;34'     # MS-Word *lol*     = Bold, Blue
+LS_COLORS=$LS_COLORS:'*.txt=1;34'     # Plain/Text        = Bold, Blue
+LS_COLORS=$LS_COLORS:'*.o=1;36'       # Object-Files      = Bold, Cyan
+LS_COLORS=$LS_COLORS:'*.a=1;36'       # Shared-libs       = Bold, Cyan
+export LS_COLORS
+
+
+# The format of login / logout reports if the watch parameter is set.
+# Default is `%n has %a %l from %m'.
+# Recognizes the following escape sequences:
+#   %n = name of the user that logged in/out.
+#   %a = observed action, i.e. "logged on" or "logged off".
+#   %l = line (tty) the user is logged in on.
+#   %M = full hostname of the remote host.
+#   %m = hostname up to the first `.'.
+#   %t or %@ = time, in 12-hour, am/pm format.
+#   %w = date in `day-dd' format.
+#   %W = date in `mm/dd/yy' format.
+#   %D = date in `yy-mm-dd' format.
+# WATCHFMT='%n %a %l from %m at %t.'
+# WATCHFMT='*knock* *knock* Follow the white rabbit => %n %a %l from %m at %t.'
+# WATCHFTM=print '\e[1;35m%B[%b\e[1;32m%B%n%b\e[1;35m%B]%b \e[1;34m%U%a%u \e[1;35mfrom terminal \e[1;31m%M \e[1;35mat \e[1;33m%U%T%u\e[0m''
+#WATCHFMT="[%B%t%b] %B%n%b has %a %B%l%b from %B%M%b"
+WATCHFMT="%B->%b %n has just %a %(l:tty%l:%U-Ghost-%u)%(m: from %m:)"
+
+# If this parameter is nonzero, the shell will receive an ALRM signal if a
+# command is not entered within the specified number of seconds after issuing a
+# prompt. If there is a trap on SIGALRM, it will be executed and a new alarm is
+# scheduled using the value of the TMOUT parameter after executing the trap. 
+#TMOUT=1800
+
+# format of process time reports with 'time'
+#  %%     A `%'.
+#  %U     CPU seconds spent in user mode.
+#  %S     CPU seconds spent in kernel mode.
+#  %E     Elapsed time in seconds.
+#  %P     The CPU percentage, computed as  (%U+%S)/%E.
+#  %J     The name of this job.
+# Default is: 
+#       %E real  %U user  %S system   %P  %J
+TIMEFMT="Real: %E User: %U System: %S Percent: %P Cmd: %J"
+
+# The maximum number of events stored in the internal history list. If you use
+# the HIST_EXPIRE_DUPS_FIRST option, setting this value larger than the
+# SAVEHIST size will give you the difference as a cushion for saving
+# duplicated history events.
+HISTSIZE=100000
+
+# Stop annoying MailChecks. I'm not using AOL
+unset MAILCHECK
+
+# The name of the file used to store command history. When assigned to, history
+# is loaded from the specified file. Also, several invocations of the shell
+# running on the same machine will share history if their HISTFILE parameters
+# all point to the same file.
+# i have finally discovered the difference between `SAVEHIST' and `HISTSIZE'
+# thanks to the FAQ. `HISTSIZE' is the number of lines of history that is
+# kept within any given, running zsh. `SAVEHIST' is the number of lines of
+# history that is written out to a file at the magic, mysterious moment 
+# when that event occurs. so cat-ing `HISTFILE' into wc -l should enumerate
+# the number of history events 
+HISTFILE=$HOME/.zsh_history
+SAVEHIST=65536
+DIRSTACKSIZE=50
+
+# If nonnegative, commands whose combined user and system execution
+# times (measured in seconds) are greater than this value have timing
+# statistics printed for them.
+REPORTTIME=60
+
+# Limit this fuckung "zsh: do you wish to see all NNN possibilities (NNN
+# lines)?" downward (default is 100). Only ask before displaying
+# completions if doing so would scroll.
+LISTMAX=0
+
+# Seconds for login / logout check
+LOGCHECK=20
+
+# Define some ftp-hosts ($ ftp <TAB>)
+hosts=( ftp.{free,open,net}bsd.org
+        ftp rtfm.mit.edu
+        ftp.leo.org
+        ftp.2600.com
+        ftp.ciac.llnl.gov
+        ftp.de.kernel.org
+        ftp.mitglied.lycos.de
+        ftp.strcat.neessen.net
+        ftp.revier.com
+        127.0.0.1
+        192.168.13.{1..9}
+      )
+zstyle ':completion:*:*:ftp:*' hosts $hosts
+
+# Set the default system $PATH:
+# PATH="/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/usr/games:/"
+#PATH="/sbin:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/usr/games:/home/dope/bin:/"
+#for foo in ~/bin ~/progs/bin; do
+#	if [[ -z ${path[(r)$dir]} ]]; then
+#		path=($dir $path)
+#	fi
+#done
+# /Default/-PATH
+  PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+# If ~/bin exist, add it to $PATH (~/bin contains some scripts, ..)
+  [ -d "${HOME}/bin" ] && PATH="${PATH}:${HOME}/bin"
+# Same here, but ~/dev-bin contains "unstable" software (WMI, Zsh, GCC,
+# ..)
+  [ -d "${HOME}/dev-bin" ] && PATH="${PATH}:${HOME}/dev-bin/bin"
+  [ -d "${HOME}/dev-bin" ] && PATH="${PATH}:${HOME}/dev-bin/sbin"
+  
+  # Check some directories and add existing to $PATH
+  for dir in \
+          /usr/local/bin \
+          /usr/local/sbin \
+          /usr/X11R6/bin \
+          /usr/share/texmf/bin \
+          /usr/X11R6/libexec/fvwm/2.4.16 \
+          /usr/lib/java/bin \
+          /var/qmail/bin \
+          /usr/pkg/bin \
+          /usr/pkg/sbin \
+          /usr/games
+  do
+          [ -d "${dir}" ] && PATH="${PATH}:${dir}"
+  done
+
+# For root users, ensure that /usr/local/sbin, /usr/sbin, and /sbin are in
+if (( EUID == 0 )); then
+        echo $PATH | grep /usr/local/sbin 1> /dev/null 2> /dev/null
+        if [ ! $? = 0 ]; then
+                PATH=/usr/local/sbin:/usr/sbin:/sbin:$PATH
+        fi
+fi
+
+
+# if your compdef Dir is ~/.zsh
+fpath=( $fpath /usr/local/share/zsh/$ZSH_VERSION/functions/ ~/.zsh/func/ )
+
+# See <http://sugi.nemui.org/doc/zsh/> for details.
+if autoload +X -U _accept_line_with_url > /dev/null 2>&1 ; then
+	zle -N accept-line-with-url _accept_line_with_url
+	bindkey '^M' accept-line-with-url
+	bindkey '^J' accept-line-with-url
+	export DOWNLOADER="wget -S"
+fi
+
+# Using Opera as browser when X11 is up
+if [ $DISPLAY ]; then
+	export WWW_BROWSER="~/.firefox/firefox %s"
+else
+	export WWW_BROWSER=${BROWSER:-lynx}
+fi
+
+# Clean the non-existing dirs from my $PATH before export $PATH
+#  ,----[ It's evil.. isn't it? ]
+#  | [dope@dreckskind:~]% PATH=/bin:/usr/games:/bin
+#  | [dope@dreckskind:~]% echo $PATH
+#  | /bin:/usr/games:/bin
+#  | [dope@dreckskind:~]% path=($^path(N))
+#  | [dope@dreckskind:~]% echo $PATH
+#  | /bin:/usr/games
+#  | [dope@dreckskind:~]%
+#  `----
+#path=($^path(N))
+#export PATH
+
+# automatically remove duplicates from these arrays
+typeset -gU path cdpath manpath fpath
+
+# RTFM!!!11!
+MANPATH="/usr/share/man:/usr/local/man"
+for mdir in \
+        /backups/Documentations/manpages.de \
+        /home/dope/dev-bin/man \
+        /var/qmail/man \
+        /usr/X11/man \
+        /usr/X11R6/man \
+        /usr/share/texmf/man \
+        /usr/contrib/man \
+        /usr/share/man/old
+do
+        [ -d "${mdir}" ] && MANPATH="${MANPATH}:${mdir}"
+done
+
+# notices on new mails
+#--------------------------------------------------
+# mailpref=/home/dope/MuttMail
+# mailpath=($mailpref/INBOX'?New Mail in your INBOX'
+# 	  $mailpref/Cron'?New Mail from Cron')
+#-------------------------------------------------- 
+#--------------------------------------------------
+# typeset -a mailpath
+# for i in ~/MuttMail/**/new; do
+# 	mailpath[$#mailpath+1]="${i}?You have new mail in ${i:h}."
+# done
+#-------------------------------------------------- 
+
+# PS{1,2,3}, RPOMPT, .. 
+# The "prompt" of the shell.
+#  See zshmisc(1) (/PROMPT EXPANSION) for details.
+# 
+# %n         $USERNAME.
+# @          literal '@'
+# %m         machine name.
+# %M         The full machine hostname.
+# %%         %
+# %/         Present working directory ($PWD) (i. e.: /home/$USERNAME)
+# %~         Present working directory ($PWD) (i. e.: ~)
+# %h         Current history event number.
+# %!         Current history event number.
+# %L         The current value of $SHLVL.
+# %S (%s)    Start (stop) standout mode.
+# %U (%u)    Start (stop) underline mode.
+# %B (%b)    Start (stop) boldface mode.
+# %t / %@    Current time of day, in 12-hour, am/pm format.
+# %T         Current time of day, in 24-hour format.
+# %*         Current time of day in 24-hour  format,  with  seconds
+# %N         The  name  of  the  script,  sourced file, or shell
+#            function that zsh is currently executing,
+# %i         The line number currently  being  executed  in  the script
+# %w         The date in day-dd format.
+# %W         The date in mm/dd/yy format.
+# %D         The date in yy-mm-dd format.
+# %D{string} string  is  formatted  using the strftime function (strftime(3))
+# %l         The line (tty) the user is logged in on
+# %?         The  return  code of the last command executed just before the prompt
+# %_         The status of the parser
+# %E         Clears to end of line
+# %#         A  `#'  if  the shell is running with privileges, a `%' if not
+# %v         The  value  of the first element of the psvar array parameter
+# %{...%}    Include a string as a literal escape sequence
+# :          literal ':'
+# %Nc        "relative path", ie last N components of $PWD.
+# >          literal '>'
+#
+# Some examples:
+#  PS1="PS1='%B%n%b@%m:%4c>'"
+#  PS1="%B(%b%n@%m%B)%b : %B(%b%3~%B)%b: "
+#  PS1=$'%{\e[1;31m%}[%n@%m:%~ ]%{\e[0m%} '
+#  PS1=$'%{\e[0;36m%}%n%{\e[0m%}:%{\e[0;31m%}%3~%{\e[0m%}%# ' ## user:~%
+#  PS1=$'%{\e[0;36m%}%n%{\e[0m%}:%{\e[0;31m%}%3~%{\e[0m%}%B>%b ' ## user:~>
+#  PS1='%n@%m:%4c%1v> ';RPS1=$'%{\e[0;36m%}%D{%A %T}%{\e[0m%}' ## user@host:~> ; Day time(hh:mm:ss)
+#  PS1='%B[%b%n%B:%b%~%B]%b$ ' ## [user:~]$
+#  PS1=$'%{\e[0;36m%}%n%{\e[0m%}:%20<..<%~%B>%b ' ## user:..c/vim-common-6.0>
+#  PS1=$'%{\e[0;36m%}%#%{\e[0m%} ';RPS1=$'%{\e[0;31m%}%~%{\e[0m%}' ## % ; ~
+#  PS1=$'%{\e[0;36m%}%n%{\e[0m%}%{\e[0;31m%}%#%{\e[0m%} ';RPS1=$'%{\e[0;31m%}%~%{\e[0m%}' ## user% ; ~
+#  PS1='%# ';RPS1='%B%~%b' ## % ; ~ : no colors
+#  PS1='%n@%m:%B%~%b> ' ## user@host:~> : no colors
+#  PS1=$'%{\e[1;31m%}%B(%b%{\e[0m%}%n@%m%{\e[1;31m%})%{\e[0m%} : %{\e[1;31m%}(%{\e[0m%}%~%{\e[1;31m%})%{\e[0m%}: '
+#  PS1=$'%{\e[0;33m%}[%{\e[0m%}%n%{\e[0;33m%}@%{\e[0m%}%m%{\e[0;33m%}:%{\e[0m%}%~%{\e[0;33m%}]%{\e[0m%}%# '
+#  PS1=$(echo '\033[1m\033[30m(%/)\033[0m\033[39m\n[%n@%m \033[0m\033[34m%~\033[0m\033[39m]%# ')
+#  PS1='%n@%U%m%u %B%30<..<%~%b %(!.#.>)' # user@host (underlined), pwd(bold; max 30 chars.) > or #
+#  PS1=$'%{\e[0;31m%}[%{\e[0;36m%}%n%{\e[0;32m%}@%{\e[0;35m%}%m%{\e[0;34m%}:%{\e[0;33m%}%.%{\e[0;31m%}]%{\e[0;0m%}%# '
+# random colors? sure. no problem ;)
+#  $ setopt prompt_subst ; PROMPT=$'[%{\e[$((color=$((30+$RANDOM % 8))))m%}%n@%m %c%{\e[00m%}]%% '
+#
+# You can use ``promptinit'' for the zsh prompt themes extension. See
+# ``less ${^fpath}/promptinit(N)'' for details. btw. http://aperiodic.net/phil/prompt/
+# is a good prompt introduction for the Z shell
+
+if [[ $SSH_CLIENT = *.* || $REMOTEHOST = *.* ]]; then
+    RPROMPT=$SSH_CLIENT
+fi
+if (( EUID == 0 )); then
+	PS1=$'%{\e[0;33m%}%B[%b%{\e[0m%}%n%{\e[0;33m%}%B@%b%{\e[0m%}%m%{\e[0;33m%}:%{\e[0m%}%~%{\e[0;33m%}%B]%b%{\e[0m%}%# '
+else
+	case $HOST in
+		dreckskind)
+		PROMPT=$'\n%{\e[31m%}[%{\e[3;41;1;30m%}%n%{\e[0;31m%}@%{\e[3;41;1;30m%}%m%{\e[0;31m%}:%{\e[3;41;1;30m%}%~%{\e[0;31m%}] #%{\e[0m%} '
+		;;
+		painless)
+		PROMPT=$'%{\e[0;31m%}%B[%b%{\e[0m%}%n%{\e[0;31m%}@%{\e[0m%}%m%{\e[0;31m%}%B:%b%{\e[0m%}%~%{\e[0;31m%}%B]%b%{\e[0m%}%# '
+		# On 'exit-Status != 0' display a ":(" on the right side.
+		RPROMPT="%(?..:()%"
+		;;
+		hellfire)
+		autoload promptinit; promptinit ; prompt elite2 red
+		#PROMPT=$'\n%{\e[31m%}[%{\e[3;41;1;30m%}%n%{\e[0;31m%}@%{\e[3;41;1;30m%}%m%{\e[0;31m%}:%{\e[3;41;1;30m%}%~%{\e[0;31m%}] #%{\e[0m%} '
+		;;
+		blitzkrieg)
+		PS1=$'%{\e[0;36m%}%n%{\e[0m%}%{\e[0;31m%}%#%{\e[0m%} '
+		RPS1=$'%{\e[0;31m%}%~%{\e[0m%}'
+		;;
+		diehard)
+		PS1=$'%{\e[0;36m%}%n%{\e[0m%}:%{\e[0;31m%}%3~%{\e[0m%}%# '
+		;;
+		*)
+		PROMPT="[%n@%m] "
+		RPROMPT="[%~]"
+	esac
+fi
+
+# Change the title in xterm
+if [[ $TERM = (xterm|rxvt) ]]; then
+	precmd () { print -Pn "\e]0;[ %n@%m: %~ ] \a" }
+fi
+
+
+# Executed whenever a command has a non-zero exit status:
+#--------------------------------------------------
+# TRAPZERR() { echo 'AAAAAAAARRRRGHHHHH!!'; }
+#-------------------------------------------------- 
+
+#--------------------------------------------------
+#red='%{\e[0;31m%}'
+#white_on_blue='%{\e[0;37;44m%}'
+#blue='%{\e[0;34m%}'
+#nocolor='%{\e[0m%}'
+# function precmd {
+# PROMPT="${white_on_blue}--INSERT--$nocolor [%~]
+# $red%B[%b$nocolor%n$red@$nocolor%m$red%B]%b$nocolor%% " }
+#-------------------------------------------------- 
+
+# The prompt used for spelling correction. The sequence `%R' expands to
+# the string which presumably needs spelling correction, and `%r' expands
+# to the proposed correction. All other prompt escapes are also allowed.
+SPROMPT=$'%BError!%b Correct %{\e[31m%}%R%{ \e[0m%}to%{ \e[36m%}%r%{ \e[0m%}? [No/Yes/Abort/Edit]: '

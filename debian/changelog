@@ -1,0 +1,71 @@
+zsh-lovers (0.5-2) unstable; urgency=low
+
+  * Fixed small typo (mp3 vs. pdf) (thanks Florian Hassler).
+
+ -- Michael Prokop <mika@grml.org>  Wed, 14 Dec 2005 22:44:45 +0100
+
+zsh-lovers (0.5-1) unstable; urgency=low
+
+  * Some small improvements in manpage 'zsh-lovers'.
+  * Updated README.
+  * Updated zsh_people/grml/.
+
+ -- Michael Prokop <mika@grml.org>  Sun, 19 Jun 2005 12:03:53 +0200
+
+zsh-lovers (0.5) unstable; urgency=low
+
+  * Reworked debian package with help of Reinhard Tartler
+    <siretart@tauware.de> [thanks!].
+  * Let's ship manpage in nroff-format without any modification (removed
+    'nroff -man zsh-lovers.nroff > zsh-lovers.1').
+
+ -- Michael Prokop <mika@grml.org>  Sat, 18 Jun 2005 15:42:39 +0200
+
+zsh-lovers (0.4) unstable; urgency=low
+
+  * Replaced $PAGER with $READNULLCMD [thanks, wuehlmaus!].
+  * Replaced http://w9y.de/ with http://w9y.de/zsh/zshrc
+    [thanks, wuehlmaus!].
+  * Added section "Variables can be modified by
+    modifiers, too." [thanks, wuehlmaus!].
+
+ -- Michael Prokop <mika@grml.org>  Mon,  9 May 2005 01:45:03 +0200
+
+zsh-lovers (0.3) unstable; urgency=low
+
+  * Updated zsh_people/stchaz/mouse.zsh (thanks Stephane Chazelas).
+  * Updated zsh_people/grml/zshrc and added zsh_people/grml/.zshrc.
+  * The "grml 0.3 hustenstopper"-release.
+
+ -- Michael Prokop <mika@grml.org>  Mon, 21 Feb 2005 09:19:12 +0100
+
+zsh-lovers (0.2-2) unstable; urgency=low
+
+  * Some small updates (fixed URL and date).
+
+ -- Michael Prokop <mika@grml.org>  Sat, 19 Feb 2005 16:28:30 +0100
+
+zsh-lovers (0.2-1) unstable; urgency=low
+
+  * Added zsh-lovers manpage in html format.
+
+ -- Michael Prokop <mika@grml.org>  Thu, 27 Jan 2005 23:53:45 +0100
+
+zsh-lovers (0.2) unstable; urgency=low
+
+  * Updated manpage zsh-lovers.
+  * Updated zsh.vim by Nikolai Weibull to version 2004-12-12.
+  * Added README.
+  * Added ZWS, stchaz/mouse.zsh, grml/zshrc.
+  * Added thomas_koehler -> klammer.zsh uhr.zsh
+  * Added configuration files of Christian 'strcat' Schneider.
+  * Added configuration files of Stephen 'caphuso' Rueger.
+
+ -- Michael Prokop <mika@grml.org>  Tue, 21 Dec 2004 21:08:51 +0100
+
+zsh-lovers (0.1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Michael Prokop <mika@grml.org>  Wed, 18 Aug 2004 12:19:12 +0200
+

@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+
+build: build-stamp
+
+build-stamp: 
+	dh_testdir
+
+	# save old files
+	mkdir $(CURDIR)/debian/saved
+	cp zsh-lovers.1 $(CURDIR)/debian/saved
+	cp *pdf $(CURDIR)/debian/saved
+	cp *ps $(CURDIR)/debian/saved
+	cp zsh-lovers.html $(CURDIR)/debian/saved
+
+	groff -Tps -mandoc zsh-lovers.1 > zsh-lovers.ps
+	ps2pdf zsh-lovers.ps
+	man -Thtml ./zsh-lovers.1 > zsh-lovers.html
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+
+	if [ -d $(CURDIR)/debian/saved ]; then \
+		mv $(CURDIR)/debian/saved/* $(CURDIR); \
+		rmdir $(CURDIR)/debian/saved ; \
+	fi
+	rm -f build-stamp
+	dh_clean 
+	rm -rf $(CURDIR)/debian/zsh-lovers/
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	install -m 644 $(CURDIR)/zsh.vim $(CURDIR)/debian/zsh-lovers/usr/share/vim/syntax/zsh.vim
+
+binary-indep: build install
+	# We have nothing to do
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installman zsh-lovers.1
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

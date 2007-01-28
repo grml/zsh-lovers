@@ -1,0 +1,124 @@
+# Posted by Thomas Köhler on the Zsh-Mailinglist (since ~1999)
+#
+# vi mode extensions
+redisplay() {
+   builtin zle .redisplay
+   ( true ; show_mode "INSERT") &!
+}
+redisplay2() {
+   builtin zle .redisplay
+   (true ; show_mode "COMMAND") &!
+}
+screenclear () {
+   echo -n "\033[2J\033[400H"
+   builtin zle .redisplay
+   (true ; show_mode "INSERT") &!
+}
+
+screenclearx () {
+   repeat 2 print 
+   local MYLINE="$LBUFFER$RBUFFER"
+   highlight $MYLINE
+   repeat 4 print 
+   builtin zle redisplay
+}
+show_mode() {
+   local COL
+   local x
+   COL=$[COLUMNS-3]
+   COL=$[COL-$#1]
+   x=$(echo $PREBUFFER | wc -l )
+#   x=$[x+1]
+   x=$[x+0]
+   echo -n "7[$x;A[0;G"
+   echo -n ""
+   echo -n "[0;37;44m--$1--[0m"
+   echo -n "8"
+}
+
+# vi-add-eol 
+#    Move  to the end of the line and enter insert mode.
+vi-add-eol() {
+   show_mode "INSERT"
+   builtin zle .vi-add-eol
+}
+
+# vi-add-next
+#    Enter insert mode after the  current  cursor  position, without changing lines.
+vi-add-next() {
+   show_mode "INSERT"
+   builtin zle .vi-add-next
+}
+
+# vi-change 
+#    Read a movement command from the keyboard, and kill from the
+#    cursor position to the endpoint of the movement. Then enter
+#    insert mode. If the command is vi-change.
+vi-change() {
+   show_mode "INSERT"
+   builtin zle .vi-change
+}
+
+# vi-change-eol 
+#    Kill  to the end of the line and enter insert mode.
+vi-change-eol() {
+   show_mode "INSERT"
+   builtin zle .vi-change-eol
+}
+
+# vi-change-whole-line 
+#    Kill the current line and enter insert mode.
+vi-change-whole-line() {
+   show_mode "INSERT"
+   builtin zle .vi-change-whole-line
+}
+
+# vi-insert
+#    Enter insert mode.
+vi-insert() {
+   show_mode "INSERT"
+   builtin zle .vi-insert
+}
+
+# vi-insert-bol 
+#    Move to the first non-blank character on the line and enter insert mode.
+vi-insert-bol() {
+   show_mode "INSERT"
+   builtin zle .vi-insert-bol
+}
+
+# vi-open-line-above 
+#    Open a line above the cursor and enter insert mode.
+vi-open-line-above() {
+   show_mode "INSERT"
+   builtin zle .vi-open-line-above
+}
+
+# vi-open-line-below
+#    Open a line below the cursor and enter insert mode.
+vi-open-line-below() {
+   show_mode "INSERT"
+   builtin zle .vi-open-line-below
+}
+
+# vi-substitute
+#    Substitute the next character(s).
+vi-substitute() {
+   show_mode "INSERT"
+   builtin zle .vi-substitute
+}
+
+#vi-replace
+#   Enter overwrite mode.
+vi-replace() {
+   show_mode "REPLACE"
+   builtin zle .vi-replace
+}
+
+# vi-cmd-mode
+#    Enter  command  mode;  that  is, select the `vicmd' keymap.  Yes,
+#    this is bound  by  default  in  emacs mode.
+vi-cmd-mode() {
+   show_mode "COMMAND"
+   builtin zle .vi-cmd-mode
+}

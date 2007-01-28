@@ -1,0 +1,61 @@
+# -*- shell-script -*-
+#
+# Trace libraries load by first argument (ELF only)
+# (note: exactly same result with ldd)
+tracelib () {
+	LD_TRACE_LOADED_OBJECTS=1 $1
+}
+
+# debian upgrade
+# if the first argument is void, proceed local upgrade
+# else, send command via ssh
+# assume user have sufficient permission for upgrade
+# without interaction
+#
+# Note:
+# i use sudo with the follow lines
+# 
+# Cmnd_Alias      DEBIAN  = /usr/bin/apt-get, /usr/bin/dpkg
+# asyd            ALL = PASSWD: ALL, NOPASSWD: DEBIAN
+upgrade () {
+    if [ -z $1 ] ; then
+        sudo apt-get update
+        sudo apt-get -u upgrade
+    else
+        ssh $1 sudo apt-get update
+        # ask before the upgrade
+        local dummy
+        ssh $1 sudo apt-get --no-act upgrade
+        echo -n "Process the upgrade ?"
+        read -q dummy
+        if [[ $dummy == "y" ]] ; then
+            ssh $1 sudo apt-get -u upgrade --yes
+        fi
+    fi
+}
+
+compdef _hosts upgrade
+
+lsperm () {
+	echo $1 | perl -e 'chomp($s=<>);$p=(stat($s))[2] & 07777;printf "$s -> %04o\n",$p'
+}
+
+findnosecure () {
+	find / -perm +4000 -print
+}
+
+function cd () {
+if [[ -z $2 ]]; then
+  if [[ -f $1 ]]; then
+    builtin cd $1:h
+  else
+    builtin cd $1
+  fi
+else
+  if [[ -z $3 ]]; then
+    builtin cd $1 $2
+  else
+    echo cd: too many arguments
+  fi
+fi
+}

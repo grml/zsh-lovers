@@ -1,0 +1,74 @@
+COLOR tty
+
+# Extra command line options for ls go here.
+# Basically these ones are:
+#  -F = show '/' for dirs, '*' for executables, etc.
+#  -T 0 = don't trust tab spacing when formatting ls output.
+OPTIONS -F -T 0
+
+# Below, there should be one TERM entry for each termtype that is colorizable
+TERM linux
+TERM screen
+TERM console
+TERM xterm
+TERM rxvt
+TERM vt100
+TERM Eterm
+
+# EIGHTBIT, followed by '1' for on, '0' for off. (8-bit output)
+EIGHTBIT 1
+
+# Below are the color init strings for the basic file types. A color init
+# string consists of one or more of the following numeric codes:
+# Attribute codes: 
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+NORMAL 00	# global default, although everything should be something.
+FILE 00 	# normal file
+DIR 00;34 	# directory
+LINK 00;35 	# symbolic link
+FIFO 40;33	# pipe
+SOCK 01;35	# socket
+BLK 40;33;01	# block device driver
+CHR 40;33;01 	# character device driver
+
+# This is for files with execute permission:
+EXEC 01;32 
+
+# List any file extensions like '.gz' or '.tar' that you would like ls
+# to colorize below. Put the extension, a space, and the color init string.
+# (and any comments you want to add after a '#')
+
+# Archives
+.btm 00;32
+.tar 00;31
+.tgz 00;31
+.arj 00;31
+.gz  00;31
+.bz2 00;31
+
+# Packages
+.deb 04;35
+.rpm 04;35
+
+# Images
+.jpg 00;35
+.gif 00;35       # GIF SUX !!!
+.bmp 00;35
+.xbm 00;35
+.xpm 00;35
+.tif 00;35
+.png 00;35
+
+# Sons
+.mp3 00;33
+.xm  00;33
+.ogg 00;33
+
+# Doc
+.pdf 00;36
+.PDF 00;36
+.ps  00;36

@@ -1,0 +1,496 @@
+# Frlename:      zshrc
+# Purpose:       config file for zsh (z shell)
+# Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
+# Bug-Reports:   see http://grml.org/bugs/
+# License:       This file is licensed under the GPL v2.
+# Latest change: Die Mai 31 15:28:47 CEST 2005 [mika]
+################################################################################
+# This file is sourced only for interactive shells. It
+# should contain commands to set up aliases, functions,
+# options, key bindings, etc.
+#
+# Global Order: zshenv, zprofile, zshrc, zlogin
+################################################################################
+
+# {{{ check for version/system
+# check for versions (compatibility reasons)
+  is4(){
+    if [[ $ZSH_VERSION == 4.* ]]; then
+        return 0
+    else
+        return 1
+    fi
+  }
+
+# current release
+  is42(){
+    if [[ $ZSH_VERSION == 4.<2->* ]]; then
+        return 0
+    else
+        return 1
+    fi
+  }
+
+# grml specific stuff
+  isgrml(){
+    if [ -f /etc/grml_version ] ; then
+        return 0
+    else
+        return 1
+    fi
+  }
+
+  isgrmlcd(){
+    if [ -f /etc/grml_cd ] ; then
+        return 0
+    else
+        return 1
+    fi
+  }
+
+# change directory to home on first invocation of zsh
+# important for rungetty -> autologin
+# Thanks go to Bart Schaefer!
+  isgrml && checkhome() {
+  if [[ -z "$ALREADY_DID_CD_HOME" ]]; then
+     export ALREADY_DID_CD_HOME=$HOME
+     cd
+  fi
+  }
+# }}}
+
+# {{{ set some variables
+  [[ -z "$EDITOR" ]] && EDITOR='vim'
+  [[ -z "$SHELL"  ]] && SHELL='/bin/zsh'
+  [[ -f ~/.terminfo/m/mostlike ]] && MYLESS='LESS=C TERMINFO=~/.terminfo TERM=mostlike less' || MYLESS='less'
+  eval `dircolors -b`
+
+# Search path for the cd comman
+#  cdpath=(.. ~)
+
+# automatically remove duplicates from these arrays
+  typeset -U path cdpath fpath manpath
+# }}}
+
+# {{{ keybindings
+if [[ "$TERM" != emacs ]]; then
+  [[ -z "$terminfo[kdch1]" ]] || bindkey -M emacs "$terminfo[kdch1]" delete-char
+  [[ -z "$terminfo[khome]" ]] || bindkey -M emacs "$terminfo[khome]" beginning-of-line
+  [[ -z "$terminfo[kend]" ]]  || bindkey -M emacs "$terminfo[kend]" end-of-line
+  [[ -z "$terminfo[kdch1]" ]] || bindkey -M vicmd "$terminfo[kdch1]" vi-delete-char
+  [[ -z "$terminfo[khome]" ]] || bindkey -M vicmd "$terminfo[khome]" vi-beginning-of-line
+  [[ -z "$terminfo[kend]" ]]  || bindkey -M vicmd "$terminfo[kend]" vi-end-of-line
+
+  [[ -z "$terminfo[cuu1]" ]]  || bindkey -M viins "$terminfo[cuu1]" vi-up-line-or-history
+  [[ -z "$terminfo[cuf1]" ]]  || bindkey -M viins "$terminfo[cuf1]" vi-forward-char
+  [[ -z "$terminfo[kcuu1]" ]] || bindkey -M viins "$terminfo[kcuu1]" vi-up-line-or-history
+  [[ -z "$terminfo[kcud1]" ]] || bindkey -M viins "$terminfo[kcud1]" vi-down-line-or-history
+  [[ -z "$terminfo[kcuf1]" ]] || bindkey -M viins "$terminfo[kcuf1]" vi-forward-char
+  [[ -z "$terminfo[kcub1]" ]] || bindkey -M viins "$terminfo[kcub1]" vi-backward-char
+
+# ncurses fogyatekos
+  [[ "$terminfo[kcuu1]" == "O"* ]] && bindkey -M viins "${terminfo[kcuu1]/O/[}" vi-up-line-or-history
+  [[ "$terminfo[kcud1]" == "O"* ]] && bindkey -M viins "${terminfo[kcud1]/O/[}" vi-down-line-or-history
+  [[ "$terminfo[kcuf1]" == "O"* ]] && bindkey -M viins "${terminfo[kcuf1]/O/[}" vi-forward-char
+  [[ "$terminfo[kcub1]" == "O"* ]] && bindkey -M viins "${terminfo[kcub1]/O/[}" vi-backward-char
+  [[ "$terminfo[khome]" == "O"* ]] && bindkey -M viins "${terminfo[khome]/O/[}" beginning-of-line
+  [[ "$terminfo[kend]" == "O"* ]]  && bindkey -M viins "${terminfo[kend]/O/[}" end-of-line
+  [[ "$terminfo[khome]" == "O"* ]] && bindkey -M emacs "${terminfo[khome]/O/[}" beginning-of-line
+  [[ "$terminfo[kend]" == "O"* ]]  && bindkey -M emacs "${terminfo[kend]/O/[}" end-of-line
+fi
+
+## keybindings (run 'bindkeys' for details, more details via man zshzle)
+# use emacs style per default
+  bindkey -e
+# use vi style:
+# bindkey -v
+
+#if [[ "$TERM" == screen ]]; then
+  bindkey '\e[1~' beginning-of-line       # home
+  bindkey '\e[4~' end-of-line             # end
+  bindkey "^[[A"  up-line-or-search       # cursor up
+  bindkey "^[[B"  down-line-or-search     # <ESC>-
+  bindkey '^x'    history-beginning-search-backward
+#fi
+#  bindkey '\eq' push-line-or-edit
+# }}}
+
+# {{{ autoloading
+  autoload -U zmv    # who needs mmv or rename?
+  autoload history-search-end
+
+  alias run-help >&/dev/null && unalias run-help
+  autoload run-help # use via 'esc-h'
+
+  is4 && autoload -U compinit && compinit # completition system
+  is4 && autoload -U zed                  # use ZLE editor to edit a file or function
+
+  is4 && zmodload -i zsh/complist
+  is4 && zmodload -i zsh/deltochar
+  is4 && zmodload -i zsh/mathfunc
+# Autoload zsh modules when they are referenced
+  is4 && zmodload -a zsh/stat stat
+  is4 && zmodload -a zsh/zpty zpty
+  is4 && zmodload -a zsh/zprof zprof
+  is4 && zmodload -ap zsh/mapfile mapfile
+
+  is4 && autoload -U insert-files && \
+  zle -N insert-files && \
+  bindkey "^Xf" insert-files # C-x-f
+
+  bindkey ' ' magic-space    # also do history expansion on space
+
+# press Esc-e for editing command line in $EDITOR or $VISUAL
+  is4 && autoload -U edit-command-line && \
+  zle -N edit-command-line && \
+  bindkey '\ee' edit-command-line
+
+# press Esc-m for inserting last typed word again (thanks to caphuso!)
+  insert-last-typed-word() { zle insert-last-word -- 0 -1 }; \
+  zle -N insert-last-typed-word; bindkey "\em" insert-last-typed-word
+
+# set command prediction from history, see 'man 1 zshcontrib'
+  is4 && autoload -U predict-on && \
+  zle -N predict-on         && \
+  zle -N predict-off        && \
+  bindkey "^X^Z" predict-on && \
+  bindkey "^Z" predict-off
+# }}}
+
+# {{{ set some important options
+  umask 022
+
+# history:
+  setopt append_history       # append history list to the history file (important for multiple parallel zsh sessions!)
+  is4 && setopt SHARE_HISTORY # import new commands from the history file also in other zsh-session
+  setopt extended_history     # save each command's beginning timestamp and the duration to the history file
+  is4 && setopt histignorealldups # If  a  new  command  line being added to the history
+                              # list duplicates an older one, the older command is removed from the list
+  setopt histignorespace      # remove command lines from the history list when
+                              # the first character on the line is a space
+  setopt histallowclobber     # add `|' to output redirections in the history
+
+  setopt auto_cd              # if a command is issued that can't be executed as a normal command,
+                              # and the command is the name of a directory, perform the cd command to that directory
+  setopt correct              # try to correct the spelling if possible
+  setopt extended_glob        # in order to use #, ~ and ^ for filename generation
+                              # grep word *~(*.gz|*.bz|*.bz2|*.zip|*.Z) ->
+                              # -> searches for word not in compressed files
+                              # don't forget to quote '^', '~' and '#'!
+  setopt NO_clobber           # warning if file exists ('cat /dev/null > ~/.zshrc')
+  setopt notify	              # report the status of backgrounds jobs immediately
+  setopt hash_list_all        # Whenever a command completion is attempted, make sure \
+                              # the entire command path is hashed first.
+  setopt completeinword       # not just at the end
+# setopt nocheckjobs          # don't warn me about bg processes when exiting
+  setopt nohup                # and don't kill them, either
+# setopt printexitvalue       # alert me if something failed
+# setopt dvorak               # with spelling correction, assume dvorak kb
+
+  MAILCHECK=30       # mailchecks
+  REPORTTIME=5       # report about cpu-/system-/user-time of command if running longer than 5 secondes
+  watch=(notme root) # watch for everyone but me and root
+# }}}
+
+# {{{ history
+  export ZSHDIR=$HOME/.zsh
+  HISTFILE="$HOME/.zsh_history"
+  HISTSIZE=500
+  SAVEHIST=1000 # useful for setopt append_history
+# }}}
+
+# {{{ set prompt
+  #precmd () { setopt promptsubst; [[ -o interactive ]] && jobs -l;
+  is4 && precmd () {
+      RPROMPT="%(?..:()% ${SCREENTITLE}"
+  }
+
+  is4 && preexec () {
+  # set screen window title if running in a screen
+  # get the name of the program currently running
+      if [[ "$TERM" == screen* ]]; then
+          local CMD=${1[(wr)^(*=*|sudo|ssh|-*)]}
+          echo -ne "\ek$CMD\e\\"
+      fi
+  # set the screen title to "zsh" when sitting at a command prompt:
+      if [[ "$TERM" == screen* ]]; then
+           SCREENTITLE=$'%{\ekzsh\e\\%}'
+      else
+           SCREENTITLE=''
+      fi
+  }
+
+  EXITCODE="%(?..%?%1v )"
+  local BLUE="%{[1;34m%}"
+  local RED="%{[1;31m%}"
+  local GREEN="%{[1;32m%}"
+  local CYAN="%{[1;36m%}"
+  local NO_COLOUR="%{[0m%}"
+  PS2='`%_> '       # secondary prompt, printed when the shell needs more information to complete a command.
+  PS3='?# '         # selection prompt used within a select loop.
+  PS4='+%N:%i:%_> ' # the execution trace prompt (setopt xtrace). default: '+%N:%i>'
+
+# only if $GRMLPROMPT is set (e.g. via GRMLPROMPT='1') use the extended prompt
+  if ! [[ -z "$GRMLPROMPT" ]]; then
+    PROMPT="${RED}${EXITCODE}${CYAN}[%j running job(s)] ${GREEN}{history#%!} ${RED}%(3L.+.) ${BLUE}%* %D
+${BLUE}%n${NO_COLOUR}@%m %40<...<%B%~%b%<< %# "
+  else
+    if (( EUID != 0 )); then
+      PROMPT="${RED}${EXITCODE}${BLUE}%n${NO_COLOUR}@%m %40<...<%B%~%b%<< %# " # primary prompt string
+    else
+      PROMPT="${BLUE}${EXITCODE}${RED}%n${NO_COLOUR}@%m %40<...<%B%~%b%<< %# " # primary prompt string
+    fi
+  fi
+# }}}
+
+# {{{ 'hash' some often used directories
+  hash -d deb=/var/cache/apt/archives
+  hash -d doc=/usr/share/doc
+  hash -d linux=/lib/modules/$(command uname -r)/build/
+  hash -d log=/var/log
+  hash -d slog=/var/log/syslog
+  hash -d src=/usr/src
+  hash -d templ=/usr/share/doc/grml-templates
+  hash -d tt=/usr/share/doc/texttools-doc
+  hash -d www=/var/www
+# }}}
+
+# {{{ some aliases
+  alias la="ls -la --color=auto"
+  alias ll="ls -l --color=auto"
+  alias l="ls -lF --color=auto"
+  alias ls="ls --color=auto"      # people are used to it, so...
+
+  alias cp='nocorrect cp'         # no spelling correction on cp
+  alias mkdir='nocorrect mkdir'   # no spelling correction on mkdir
+  alias mv='nocorrect mv'         # no spelling correction on mv
+
+# debian stuff
+  alias acs='apt-cache search'
+  alias agi='apt-get install'
+  alias acsh='apt-cache show'
+  alias au='apt-get update'
+  alias ag='apt-get upgrade'
+  alias adg='apt-get dist-upgrade'
+  alias ge='grep-excuses'
+  alias dbp='dpkg-buildpackage'
+
+  isgrmlcd && alias su='sudo su'          # change to user root
+  alias tlog='tail -f /var/log/syslog'    # take a look at the syslog
+  alias zshskel='source /etc/skel/.zshrc' # source skeleton zshrc
+# }}}
+
+# {{{ Use hard limits, except for a smaller stack and no core dumps
+  unlimit
+  limit stack 8192
+  limit core 0      # important for a live-cd-system
+  limit -s
+# }}}
+
+# {{{ completion stuff
+# called later (via is4 && grmlcomp)
+# use 'zstyle' for getting current settings
+# press ^Xh (control-x h) for getting tags in context
+grmlcomp() {
+  zstyle ':completion:*:processes' command 'ps -au$USER'     # on processes completion complete all user processes
+  zstyle ':completion:*:descriptions' format \
+         $'%{\e[0;31m%}completing %B%d%b%{\e[0m%}'           # format on completion
+  zstyle ':completion:*' verbose yes                         # provide verbose completion information
+  zstyle ':completion:*:messages' format '%d'
+  zstyle ':completion:*:warnings' format \
+         $'%{\e[0;31m%}No matches for:%{\e[0m%} %d'
+  zstyle ':completion:*:matches' group 'yes'                 # separate matches into groups
+  zstyle ':completion:*:options' description 'yes'           # describe options in full
+  zstyle ':completion:*:options' auto-description '%d'
+  zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
+
+# activate color-completion(!)
+  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+## correction
+
+# Ignore completion functions for commands you don't have:
+#  zstyle ':completion:*:functions' ignored-patterns '_*'
+  zstyle ':completion::(^approximate*):*:functions' ignored-patterns '_*'
+
+  zstyle ':completion:*'             completer _complete _correct _approximate
+  zstyle ':completion:*:correct:*'   insert-unambiguous true
+#  zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+#  zstyle ':completion:*:corrections' format $'%{\e[0;31m%}%d (errors: %e)%}'
+  zstyle ':completion:*:corrections' format $'%{\e[0;31m%}%d (errors: %e)%{\e[0m%}'
+  zstyle ':completion:*:correct:*'   original true
+  zstyle ':completion:correct:'      prompt 'correct to:'
+
+# allow one error for every three characters typed in approximate completer
+  zstyle -e ':completion:*:approximate:' max-errors 'reply=( $((($#PREFIX+$#SUFFIX)/3 )) numeric )'
+#  zstyle ':completion:*:correct:*'   max-errors 2 numeric
+
+# match uppercase from lowercase
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# command for process lists, the local web server details and host completion
+  hosts=(`hostname` grml.org)
+  zstyle '*' hosts $hosts
+  zstyle ':completion:*:urls' local 'www' '/var/www/' 'public_html'
+
+# offer indexes before parameters in subscripts
+  zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# insert all expansions for expand completer
+  zstyle ':completion:*:expand:*' tag-order all-expansions
+
+# ignore duplicate entries
+  zstyle ':completion:*:history-words' stop yes
+  zstyle ':completion:*:history-words' remove-all-dups yes
+  zstyle ':completion:*:history-words' list false
+  zstyle ':completion:*:history-words' menu yes
+
+# filename suffixes to ignore during completion (except after rm command)
+#  zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns  '*?.(o|c~|old|pro|zwc)' '*~'
+
+# Don't complete backup files as executables
+  zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
+
+# If there are more than 5 options, allow selecting from a menu with
+# arrows (case insensitive completion!).
+#  zstyle ':completion:*-case' menu select=5
+  zstyle ':completion:*' menu select=5
+
+# zstyle ':completion:*:*:kill:*' verbose no
+#  zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
+#                                /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+
+# caching
+  [ -d $ZSHDIR/cache ] && zstyle ':completion:*' use-cache yes && \
+                          zstyle ':completion::complete:*' cache-path $ZSHDIR/cache/
+
+# use ~/.ssh/known_hosts for completion
+#  local _myhosts
+#  _myhosts=( ${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*} )
+#  zstyle ':completion:*' hosts $_myhosts
+  [ -f "$HOME/.ssh/known_hosts" ] && \
+  hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}) && \
+  zstyle ':completion:*:hosts' hosts $hosts
+
+# simple completion for fbset (switch resolution on console)
+  _fbmodes() { compadd 640x480-60 640x480-72 640x480-75 640x480-90 640x480-100 768x576-75 800x600-48-lace 800x600-56 800x600-60 800x600-70 800x600-72 800x600-75 800x600-90 800x600-100 1024x768-43-lace 1024x768-60 1024x768-70 1024x768-72 1024x768-75 1024x768-90 1024x768-100 1152x864-43-lace 1152x864-47-lace 1152x864-60 1152x864-70 1152x864-75 1152x864-80 1280x960-75-8 1280x960-75 1280x960-75-32 1280x1024-43-lace 1280x1024-47-lace 1280x1024-60 1280x1024-70 1280x1024-74 1280x1024-75 1600x1200-60 1600x1200-66 1600x1200-76 }
+  compdef _fbmodes fbset
+
+# use generic completion system for programs not yet defined:
+  compdef _gnu_generic tail head feh cp mv gpg df stow uname ipacsum fetchipac
+
+# Debian specific stuff
+# zstyle ':completion:*:*:lintian:*' file-patterns '*.deb'
+  zstyle ':completion:*:*:linda:*'   file-patterns '*.deb'
+
+  _debian_rules() { words=(make -f debian/rules) _make }
+  compdef _debian_rules debian/rules # type debian/rules <TAB> inside a source package
+
+# see upgrade function in this file
+  compdef _hosts upgrade
+}
+# }}}
+
+# {{{ grmlstuff
+grmlstuff() {
+# people should use 'grml-x'!
+  if ! [ -r /etc/X11/xorg.conf ] ; then
+  isgrmlcd  && alias startx='echo -e "Please use the script \"grml-x\" for starting the X Window System.\n If you want to use startx anyway please call \"/usr/X11R6/bin/startx\"."; return -1'
+  fi
+
+# load language settings - wrapper around the main script
+  grml-lang(){
+    grml-setlang $* && zsh
+  }
+
+  _grml-lang() { compadd at de en ; }
+  compdef _grml-lang grml-lang
+
+#  _grml-x() { compadd fluxbox ion2 ion3 pekwm ratpoison twm wmi wmii ; }
+#  compdef _grml-x grml-x
+  _grml-x() {                                                                                                       local arguments wm
+   wm=(fluxbox ion2 ion3 pekwm pwm2 pwm3 ratpoison twm wmi wmii)
+   arguments=(
+   '-display:display for xserver:(7 8)'
+   '-force[force creation of xconfig file]'                                                                         '-help:display help'
+   '-hsync:horizontal sync frequencies (<number>):(28 `seq 30 5 95` 96)'
+   '-mode:resolution-mode for xserver (<width>x<height> - e.g. 1024x768)]:(1920x1440 1600x1200 1400x1050 1280x102
+4 1280x960 1024x768 800x600 640x480)'
+   '-module:module for xserver :(`cd /usr/X11R6/lib/modules/drivers && ls *.o | sed 's/_drv.o//'`)'
+   '-nostart:do not start X server'
+   '-vsync:vertical sync frequencies (<number>):(43 `seq 45 5 70` 72)'
+   '-xserver:xserver used for creation of xconfig file:(XFree86 X.org)'
+   ':window manager:($wm)'
+   )
+   #'-vsync:use specified vsync (xx.0 - xx.0):(`seq -f '%g.0' 50 5 70`)'
+   #'-hsync:use specified hsync (xx.0 - xx.0):(28.0 `seq -f '%g.0' 30 5 95` 96.0)'
+    _arguments -s $arguments
+  }
+  compdef _grml-x grml-x
+
+  grml-wallpaper() { Esetroot -scale /usr/share/grml/$* }
+  _grml-wallpaper() {
+    dirs=(. /usr/share/grml/)
+    _description files expl 'set desktop wallpaper on grml system'
+    _files "$expl[@]" -W dirs -g '*.{jpg,png}(-.)'
+  }
+  compdef _grml-wallpaper grml-wallpaper
+
+  alias grml-version='cat /etc/grml_version'
+}
+# }}}
+
+# {{{ now run the functions
+  isgrml && checkhome
+  is4    && isgrml    && grmlstuff
+  is4    && grmlcomp
+# }}}
+
+# {{{ keephack
+  [ -r /etc/zsh/keephack ] && is4 && source /etc/zsh/keephack
+# }}}
+
+# {{{ wonderful idea of using "e" glob qualifier by Peter Stephenson
+# You use it as follows:
+# $ NTREF=/reference/file
+# $ ls -l *(e:nt:)
+# This lists all the files in the current directory newer than the reference file.
+# You can also specify the reference file inline; note quotes:
+# $ ls -l *(e:'nt ~/.zshenv':)
+  is4 && nt() {
+    if [[ -n $1 ]]; then
+      local NTREF=${~1}
+    fi
+    [[ $REPLY -nt $NTREF ]]
+  }
+# }}}
+
+# shell functions {{{
+  setenv()  { typeset -x "${1}${1:+=}${(@)argv[2,$#]}" }  # csh compatibility
+  freload() { while (( $# )); do; unfunction $1; autoload -U $1; shift; done }
+  manzsh()  { man zshall | $MYLESS -p $1 ; }
+
+# use it e.g. via 'restart apache2'
+#  for i in start restart stop reload ;
+#    do
+#    eval "$i() { /etc/init.d/\$1 $i ; }"
+#  done
+  for i in Start Restart Stop Reload ; do
+    if [ UID != 0 ] ; then
+      RUNASROOT=sudo
+    fi
+    eval "$i() { $RUNASROOT /etc/init.d/\$1 ${i:l} ; }"
+  done
+# now the completion for this:
+#  compdef "_files -W /etc/init.d/" Stop Start Reload Restart
+  compctl -g "$(echo /etc/init.d/*(:t))" Start Restart Stop Reload
+# }}}
+
+# source another config file if present {{{
+  if [ -r /etc/zsh/zshrc.local ]; then
+   source /etc/zsh/zshrc.local
+  fi
+# }}}
+
+## END OF FILE #################################################################
+# vim:foldmethod=marker

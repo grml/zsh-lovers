@@ -1,0 +1,299 @@
+# this is not useable as a life ~/.zshrc, but you might get one or two ideas
+# from it. So don't blame anyone but yourself if something gets messed up.
+
+autoload -U checkmail # needed for my prompt
+autoload -U colors && colors # make ${f,b}g{,_{,no_}bold} availabl
+autoload -U compinit && compinit # load new completion system
+autoload -U edit-command-line # later bound to C-z e
+autoload -U zed # what, your shell can't edit files?
+autoload -U zmv # who needs mmv or rename?
+bindkey -e # force emacs keybindings no matter what $VISUAL and $EDITOR say
+zmodload zsh/complist
+zmodload zsh/deltochar
+zmodload zsh/mathfunc
+
+# autoload my personal functions
+autoload ${fpath[1]}/*(:t)
+
+# some terminal specific magic
+# look for the zkbd stuff in 'man zshcontrib'
+# note: i renamed and moved the resulting files
+case $TERM in
+    linux)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+    screen)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+    gnome*)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+    vt420*)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+    rxvt)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+    xterm*)
+        . ~/.zsh/zkbd/$TERM
+        ;;
+esac
+
+[[ -z $DISPLAY ]] && setterm -bfreq 100 -blength 50 || resize > /dev/null 2>&1
+
+# some external files
+source ~/.zsh/zsh_alias
+source ~/.zsh/zsh_foo
+source ~/.zsh/zsh_prompt || PROMPT='%n@%m %40<...<%B%~%b%<< $ '
+
+# some options to set
+setopt NO_rm_star_wait
+setopt NO_auto_cd
+setopt correct
+setopt NO_auto_menu
+setopt NO_menucomplete
+setopt autolist
+setopt NO_complete_in_word
+setopt complete_aliases
+setopt NO_mark_dirs
+setopt NO_multios
+setopt notify
+setopt path_dirs
+setopt NO_singlelinezle
+setopt NO_hup
+setopt NO_beep
+setopt NO_nullglob
+setopt extended_glob
+setopt numeric_glob_sort
+setopt NO_check_jobs
+setopt list_packed
+setopt NO_list_rows_first
+setopt bare_glob_qual
+setopt NO_clobber
+setopt histallowclobber
+setopt append_history
+setopt histignorealldups
+setopt histignorespace
+setopt extended_history
+setopt histreduceblanks
+setopt hist_no_store
+setopt NO_hist_verify
+setopt NO_auto_name_dirs
+setopt hash_cmds
+setopt hash_dirs
+setopt pushd_ignore_dups
+setopt NO_pushd_minus
+setopt auto_pushd
+setopt pushd_silent
+setopt pushd_to_home
+[[ $VERSION == 4.1* ]] && setopt auto_continue
+setopt magic_equal_subst
+setopt NO_print_exit_value     # don't print exit value if non-zero
+setopt glob_complete   # echo *<TAB> -> menu completion
+setopt rc_quotes       # print '''' -> '
+setopt ksh_option_print
+setopt rc_expand_param  # foo=(1 2);a${foo}b -> 'a1b a2b', not 'a1 b2'
+setopt no_flow_control
+setopt brace_ccl       # {a-c} -> 'a b c'
+setopt bsd_echo
+setopt always_last_prompt # necessary for menu selection
+
+# some zle stuff
+autoload _history_complete_word
+autoload history-search-end
+zle -N edit-command-line
+zle -N local-run-help
+zle -N run-as-root
+zle -N run-with-noglob
+zle -N run-as-command
+zle -N run-as-builtin
+zle -N run-without-completion
+zle -N show-history
+zle -N show-dirstack
+zle -N silly-calc
+zle -N zsh-query-replace
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+zle -C lamatch complete-word _generic
+zle -C lappr complete-word _generic
+zle -C lhist complete-word _generic
+zle -C most-recent-file menu-complete _generic
+autoload url-quote-magic
+zle -N self-insert url-quote-magic
+
+# default keymap
+# bindkey -m
+bindkey '^Ze' edit-command-line
+bindkey '^Zg' run-with-noglob
+bindkey '^Zc' run-as-command
+bindkey '^Zb' run-as-builtin
+bindkey '^Zn' run-without-completion
+bindkey '^Zh' show-history
+bindkey '^Zd' show-dirstack
+bindkey '^Xd' delete-to-char
+bindkey '^Xz' zap-to-char
+bindkey '^Xi' lamatch
+bindkey '^Xl' lappr
+bindkey '^Xc' _correct_filename
+bindkey '^Xh' _complete_help
+bindkey '^X?' _complete_debug
+bindkey '^Xr' most-recent-file
+bindkey '^Q' push-line-or-edit
+bindkey '^I' complete-word
+if (( $+key )); then
+    bindkey -r ${key[Up]}
+    bindkey -r ${key[Down]}
+    bindkey -r ${key[Left]}
+    bindkey -r ${key[Right]}
+fi
+
+# emacs keymap
+bindkey -M emacs '^W' kill-region
+bindkey -M emacs '^[%' zsh-query-replace
+bindkey -M emacs '^[S' run-as-root
+bindkey -M emacs '^[H' local-run-help
+bindkey -M emacs '^[^M' silly-calc
+bindkey -M emacs '^[n' history-beginning-search-forward-end
+bindkey -M emacs '^[p' history-beginning-search-backward-end
+bindkey -M emacs '^[/' lhist
+bindkey -M emacs '^[Q' delete-to-char
+bindkey -M emacs '^[Z' zap-to-char
+
+autoload -U select-word-style
+select-word-style n
+
+zle -N shell-forward-word forward-word-match
+bindkey -M emacs '\eF' shell-forward-word
+zstyle ':zle:shell-forward-word' word-style shell
+
+zle -N shell-backward-word backward-word-match
+bindkey -M emacs '\eB' shell-backward-word
+zstyle ':zle:shell-backward-word' word-style shell
+
+zle -N shell-kill-word kill-word-match
+bindkey -M emacs '\eD' shell-kill-word
+zstyle ':zle:shell-kill-word' word-style shell
+
+zle -N shell-backward-kill-word backward-kill-word-match
+bindkey -M emacs '\ek' shell-backward-kill-word
+zstyle ':zle:shell-backward-kill-word' word-style shell
+
+# vicmd keymap
+bindkey -M vicmd 'u' undo
+bindkey -M vicmd 'q' delete-to-char
+bindkey -M vicmd '^Q' zap-to-char
+bindkey -M vicmd '^[x' execute-named-cmd
+bindkey -M vicmd '^R' redo
+bindkey -M vicmd '^[a' accept-and-hold
+bindkey -M vicmd 'Q' zsh-query-replace
+
+# viins keymap
+bindkey -M viins '^[x' execute-named-cmd
+bindkey -M viins '^[.' insert-last-word
+bindkey -M viins '^[a' accept-and-hold
+bindkey -M viins '^P' up-line-or-history
+bindkey -M viins '^N' down-line-or-history
+bindkey -M viins '^I' complete-word
+bindkey -r '^Z'
+bindkey -r '^X'
+
+# menu selection
+bindkey '^Zm' menu-select
+bindkey -M menuselect '^P'  up-line-or-history
+bindkey -M menuselect '^N'  down-line-or-history
+bindkey -M menuselect '^B' backward-char
+bindkey -M menuselect '^F' forward-char
+bindkey -M menuselect '^O' accept-and-infer-next-history
+bindkey -M menuselect '^_' undo
+bindkey -M menuselect '^A' accept-and-menu-complete
+
+# some external commands
+[[ -x =lesspipe ]] && eval $(lesspipe) # set $LESS{OPEN,CLOSE}
+[[ -x =dircolors ]] && eval $(dircolors ~/.dircolors) # set $LS_COLORS
+
+# forgot why i set this :-(
+maildirectory=~/mail
+
+# completion system configuration
+zstyle ':completion:*' completer \
+    _complete _match _correct _complete:-extended _prefix \
+    _complete:-substring
+zstyle ':completion:*:correct:*' max-errors 0 numeric
+zstyle ':completion:*:correct:*' insert-unambiguous true
+zstyle ':completion:*:correct:*' original false
+zstyle ':completion:*:expand:*' group-order all-expansions expansions
+zstyle ':completion:lappr:*' completer _approximate
+zstyle ':completion:lappr:*:approximate:*' max-errors 3 numeric
+zstyle ':completion:lamatch:*' completer _all_matches
+zstyle ':completion:lamatch:*' old-matches only
+zstyle ':completion:lhist:*' completer _history
+zstyle ':completion:lhist:*' range 1000:10
+zstyle ':completion:*:match:*' match-original non-empty-value
+zstyle ':completion:*' ambiguous true
+zstyle ':completion:*' glob true
+zstyle ':completion:*' word true
+zstyle ':completion:*:-tilde-:*' group-order \
+    'named-directories' 'path-directories' 'users' 'expand'
+zstyle ':completion:*:ssh:*' group-order 'users' 'hosts'
+zstyle ':completion:all-matches:*' old-matches only
+zstyle ':completion:all-matches:*' completer _all_matches
+zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*~' '\#*\#' '*.zwc'
+zstyle ':completion:*:(all-|)files' ignored-patterns '(|*/)CVS'
+zstyle ':completion:*:cd:*' ignored-patterns '(*/)#CVS'
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+zstyle ':completion:*:-subscript-:*' tag-order indexes parameters
+zstyle ':completion:*:cd:*' tag-order \
+    local-directories directory-stack named-directories path-directories
+zstyle ':completion:*:complete-extended:*' matcher-list \
+    'm:{a-z}={A-Z}' 'r:|[+._-]=*'
+zstyle ':completion:*:complete-substring:*' matcher-list \
+    'l:|=**'
+zstyle ':completion:*:mutt:*' users \
+    ${${${(f)"$(<~/.mutt_mail_aliases)"}#alias[[:space:]]}%%[[:space:]]*}
+zstyle ':completion:*:urls' urls ~/.zsh/urls
+zstyle ':completion:*:ping:*' hosts host.foo.invalid 
+    host{{1..5},}.at.some.net.invalid
+zstyle ':completion::*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' users-hosts username@localhost \
+    user1@host.invalid \
+    user2@otherhost.invalid
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' ignore-parents pwd parent ..
+zstyle ':completion:*' remove-all-dups true
+zstyle ':completion:*' select-scroll -1
+zstyle ':completion:*' special-dirs '..'
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' menu select
+zstyle ':completion:*:descriptions' format \
+    $'%{\e[0;31m%}completing %d%{\e[0m%}'
+zstyle ':completion:*:corrections' format $'%{\e[0;31m%}%d (errors: %e)%}'
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' range 200:20
+zstyle ':completion:*' select-prompt '%SSelect:  lines: %L  matches: %M  [%p]'
+zstyle ':completion:*' sort true
+
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+zstyle ':completion:*:*:rm:*' file-patterns '(*~|\\#*\\#):backup-files' \
+    '*.zwc:zsh\ bytecompiled\ files' '(|[a-z]#-[0-9]#-[0-9]#-[0-9]#.)core(|.*):core\ files' '*:all-files'
+zstyle ':completion:*:rm:*' ignore-line true
+zstyle ':completion:*:kill:*' insert-ids single
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*' keep-prefix changed
+zstyle ':completion:*:man:*' separate-sections true
+zstyle ':completion:*:mplayer:*:bookmark' mplayer-bookmark ~/.zsh/mplayer-bookmark
+zstyle ':completion:most-recent-file:*' match-original both
+zstyle ':completion:most-recent-file:*' completer _menu _files _match
+zstyle ':completion:most-recent-file:*' file-sort modification
+zstyle ':completion:most-recent-file:*' file-patterns '*(.):normal\ files'
+zstyle ':completion:most-recent-file:*' hidden all
+
+zstyle ':completion:*:xpdf:*' menu true
+zstyle ':completion:*:xpdf:*' file-patterns '*.pdf(.-)' '*(/-)'
+zstyle ':completion:*:xpdf:*' file-sort time
+zstyle ':completion:*:xdvi:*' menu true
+zstyle ':completion:*:xdvi:*' file-patterns '*.dvi(|.gz|.Z)(.-)' '*(/-)'
+zstyle ':completion:*:xdvi:*' file-sort time
+
+compdef _gnu_generic cp mv gpg df stow uname ipacsum fetchipac
+compdef _man pman

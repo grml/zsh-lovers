@@ -1,0 +1,27 @@
+.TH ZSHIST 1
+.SH ZSHIST
+zshist \- read .zsh_history file
+.SH SYNOPSIS
+.B zshist
+.I [filename]
+.SH DESCRIPTION
+.BR zshist
+will parse 
+.I filename
+(expecting it to be .zsh_history file with EXTENDED_HISTORY 
+option set on)
+and convert timestamps to
+readable format. As a bonus, it will colourise the output.
+
+If 
+.I filename
+is a directory,
+.BR zshist
+will append .zsh_history to it and try to parse that file.
+
+If no filename is given, it will read ~/.zsh_history
+
+.SH SEE ALSO
+.BR zsh "(1)
+.SH AUTHOR
+Written by Radovan Garabik <garabik@melkor.dnp.fmph.uniba.sk>

@@ -1,0 +1,350 @@
+# *I* *HATE* *OpenGL*!!!11!
+   alias gl="gcc  -L/usr/X11R6/lib -L/usr/X11/lib -lglut  -lGL -lGLU -lXi -lXmu -lXt -lXext -lSM -lm -lX11"
+   alias ogl="g++  -L/usr/X11R6/lib -lglut -lGLU -lGL  -lXi -lXmu"
+# needed for some sources from CVS
+   alias autofuck='aclocal && autoheader && libtoolize --copy --automake && automake --copy --add-missing && autoconf'
+# See <http://strcat.neessen.net/hacks/rand-useragent.pl> ;-)
+   if [ -x ~/bin/rand-useragent.pl ] && [ -x $(which w3m) ]; then
+           alias w3m='w3m -o user_agent="`rand-useragent.pl`" $1'
+   fi
+# Edit my sigquotes ;-)
+   alias esig="$EDITOR ~/.sigs/own-stuff"
+# I like this player ;-)
+  if [ -x $(which mp3blaster) ]; then
+     alias mp3blaster="mp3blaster -a .xmms/xmms.m3u -f .now_playing"
+  fi
+# Quick edit often used setup file
+   alias z='$EDITOR ~/.zshrc'
+   alias s='$EDITOR ~/.slrnrc'
+   alias v='$EDITOR ~/.vimrc'
+# history mechanism
+   alias h='history'
+#  VIM related aliases ;o) btw. ``$SHELL:t'' is a modifiers from the Z
+#  Shell. In other shells you can use ``${SHELL##*/}'' instead. Valid
+#  Modifiers can be found in ``info -f zsh -n Modifiers''.
+   alias :w='echo "Dude.. thats $SHELL:t and *not* VI(M)!"'
+   alias :q='echo "Dude.. thats $SHELL:t and *not* VI(M)!"'
+   alias :wq='echo "Dude.. thats $SHELL:t and *not* VI(M)!"'
+   alias vi="${EDITOR}"
+   alias view="${EDITOR} -R"
+   alias ex="${EDITOR} -e"
+   alias pltags="${VIMRUNTIME}/tools/pltags.pl"
+
+# highlight the current day in ``cal''
+   alias _cal='var=$(cal); echo "${var/$(date +%-d)/$(echo -e "\033[1;31m$(date +%-d)\033[0m")}"'
+
+# quick&dirty mirror
+  alias mirror="noglob wget --mirror --no-parent --convert-links --recursive --timestamping --continue$1"
+
+# access the database of ${HOME} (Note: This is for *OpenBSD*! Not for
+# Linux!
+  if [ "${OS}" = openbsd ]; then
+     alias hupdatedb="updatedb --searchpaths="$HOME" --prunepaths="/" --fcodes=$HOME/.locatedb"
+     alias hlocate="locate -d ${HOME}/.locatedb"
+  else
+     # That's for Linux (strictly speaking slocate under Slackware).
+     # See <http://www.geekreview.org/slocate/> for details.
+     if [ "${OS}" = linux-gnu ] && [ -x $(which slocate) ]; then
+	alias hupdatedb="updatedb -U ${HOME} --output=${HOME}/.locatedb -e /home/dope/tmp,/home/dope/MuttMail,/home/dope/.cpan"
+	alias hlocate="slocate --database=${HOME}/.locatedb $1"
+  else
+     # That's for GNU updatedb
+     alias hupdatedb="updatedb --localpaths="$HOME" --output=$HOME/.locatedb --prunefs="/""
+     alias hlocate="locate -d ${HOME}/.locatedb"
+     fi
+  fi
+
+# some stuff for gentoo (i compelled to use it sometimes *narf*)
+  if [ -e "/etc/gentoo-release" ]; then
+     alias emerge="sudo emerge"
+     alias eupdatedb="sudo eupdatedb"
+     alias etc-update="sudo /usr/sbin/etc-update"
+     alias env-update="sudo /usr/sbin/env-update"
+  fi
+# See <http://www.swaret.org/> and <http://software.jaos.org> for details
+  if [ -e "/etc/slackware-version" ]; then
+     alias slapt-get="sudo slapt-get"  
+     alias swaret="sudo swaret"
+     alias installpkg="sudo /sbin/installpkg"
+     alias upgradepkg="sudo /sbin/upgradepkg"
+     alias removepkg="sudo /sbin/removepkg"
+     alias pkgtool="sudo /sbin/pkgtool"
+     alias makepkg="sudo /sbin/makepkg"
+  fi
+
+# settings for NetBSD
+  if [[ "${OSTYPE}" == netbsd* ]]; then
+     export CVSROOT=":pserver:anoncvs@anoncvs.NetBSD.org:/cvsroot"
+     alias upsrc="cvs -d $CVSROOT update -PAd src"
+     alias uppkgsrc="cvs -d $CVSROOT update -PAd pkgsrc"
+  fi
+# setting for OpenBSD
+  if [[ "{$OSTYPE}" == openbsd* ]]; then
+     export CVSROOT='anoncvs@anoncvs1.usa.openbsd.org:/cvs'
+     alias pkg_add='sudo pkg_add'
+     alias pkg_delete='sudo pkg_delete'
+     alias upsrc="cd /usr/src && cvs -q up -Pd"
+     alias upports="cd /usr && cvs -q get -P ports"
+  fi
+# takes snapshot from /dev/ttyN
+  alias snapscreenshot="sudo snapscreenshot"
+  alias mkscreeny="cd ~/shots/ ; sleep 5; snapscreenshot -c1 -x1 > snap.tga ; convert snap.tga snap.png"
+
+# grep wrapper with search highlighting (<http://www.acme.com/software/hgrep/>)
+# Only for non-linux systems needed (see below)
+  if [ ! "${OSTYPE}" = linux-gnu ] && [ -x  $(which hgrep) ]; then
+     alias grep='hgrep'
+  else
+      #  fi
+      # FIXME: ``${(MS)$(grep --version 2>/dev/null)#GNU}'' shows me ``GNU''
+      #        and export the variables correctly. But why (BY ZEUS FAT ASS)
+      #        become ``GREP_{COLOR,OPTIONS}'' exported if the string ``GNU''
+      #        unavailable?
+      # Note: ``--color'' is a feature from GNU grep >=2.5 and i do *not*
+      #       check for the available version, but only for ``GNU''!
+      if [ ${OS} = "linux-gnu" -n ${(MS)$(grep --version 2>/dev/null)#GNU} ]; then
+	 export GREP_COLOR='0;31'
+  	 export GREP_OPTIONS='--color=auto'
+  	 alias hgrep='grep $GREP_OPTIONS $*'
+      fi
+  fi
+
+# ``choad'' is a small perlscript to ripp audio-cds
+  if [ -x $(which choad) ]; then
+     alias choad="sudo choad"
+  fi
+# VimTip 121: Using vim as a syntax-highlighting pager
+# <http://vim.sourceforge.net/tip_view.php?tip_id=>
+  if [ -e ~/.vimrc.more ] && [ -x $(which vim) ]; then
+     alias vmore='vim -u ~/.vimrc.more'
+  fi
+# I use ``gls'' instead of ls because the standard 'ls' from OpenBSD
+# doesn't not support colors :/ GNU ls is part of fileutils-4.1 and
+# component of the portcollection ($PORTSDIR/misc/fileutils)
+# [[ ${OS} = "linux" && -n ${(MS)$(ls --version 2>/dev/null)#GNU} ]] && ls_flags="--color"
+# (ls --help 2>/dev/null |grep -- --color=) >/dev/null && alias ls='ls -b -CF --color=auto'
+   if [ -x $(which gls) ]; then
+           alias ls='gls --color=always'
+   elif
+           [ ${OS} = "linux-gnu" -n ${(MS)$(ls --version 2>/dev/null)#GNU} ]; 
+   then
+           export TIMESTYLE=$'--time-style="+\e[1;37m[\e[1;35m%D %H:%M\e[1;37m]\e[0m"'
+           alias ls="ls -b -CF --color=always ${TIMESTYLE}"
+   else
+           alias ls='ls -F'
+   fi
+# call mailfilter and start getmail after a positive return value
+# <http://mailfilter.sourceforge.net/> && <http://www.qcc.ca/~charlesc/software/getmail-3.0/>
+   alias gmail='mailfilter -r || getmail -v --rcfile  ~/.getmail/getmailrc --rcfile ~/.getmail/getmail-hardening'
+# X11? Yes! A open port? Nope! 
+#   alias sx='startx -- -nolisten tcp 2>&1 ~/.startx-errors'
+#   alias sx='startx -- -nolisten tcp >& $HOME/.startx-errors'
+   alias sx='startx --  -deferglyphs 16 -dpi 100 -nolisten tcp >& $HOME/.startx-errors'
+# SSH to some hosts :>
+   alias router="ssh dope@192.168.13.2"
+   alias hellfire="ssh dope@192.168.13.3"
+   alias dreckskind="ssh dope@192.168.13.4"
+   alias firewall="ssh bofh@192.168.13.5"
+   alias blitzkrieg="ssh dope@192.168.13.6"
+   alias diehard="ssh lart@192.168.13.7"
+# "-" is the same as the -l option (deprecated).
+   alias su="su -"
+# format a floppy (OpenBSD)
+   alias format="fdformat /dev/rfc0a"
+# Quick chmod ;-)
+   alias rw-='chmod 600'
+   alias rwx='chmod 700'
+   alias r--='chmod 644'
+   alias r-x='chmod 755'
+# stolen from a ~/.bashrc (IIRC RedHat(?))
+   alias ..='cd ..'
+   alias ...='cd ../..'
+   alias ....="cd ../../.."
+# Make/Create/Convert Pics/Thumbnails
+   alias _GIF='convert -verbose -interlace LINE' 
+   alias _thumb='convert -geometry 100x100 -interlace LINE -verbose' 
+   alias _thumb150='convert -geometry 150x150 -interlace LINE -verbose' 
+   alias _thumb200='convert -geometry 200x200 -interlace LINE -verbose' 
+# Use colors, do not check for new groups, specific my killfile an use
+# spool (needed for slrnpull)
+   alias news='slrn -C -n --kill-log /home/dope/.slang/KILL --spool'
+   alias gnews='slrnpull -d /home/dope/nslrn/slrnpull -h news.individual.net'
+# start mutt/vim/zsh/jed without any setup
+   alias null-mutt='mutt -n -f /dev/null -F /dev/null'
+   alias null-zsh='zsh -f'
+   alias null-vim='vim -u NONE'
+   alias null-jed='jed -n'
+# *Very* often used!
+   alias lsd='ls -ld *(/)'                 # only show directories
+   alias lad='ls -ld .*(/)'                # only show dot-directories
+   alias lsa='ls -a .*(.)'                 # only show dot-files
+   alias lsbig='ls -lSh *(.) | head'       # display the biggest files
+   alias lssmall='ls -Sl *(.) | tail'      # display the smallest files
+   alias lsnew='ls -rtl *(.) | tail'       # display the newest files
+   alias lsold='ls -rtl *(.) | head'       # display the oldest files
+# check out/in RCS revisions
+   alias lci='ci -l'
+   alias lco='co -zLT'
+# convert from UPPER to lower (or back)
+   alias UP2low='for i in *(.); mv $i ${i:l}'
+   alias low2UP='for i in *(.); mv $i ${i:u}'
+# ctags are *very* useful!
+   alias mktags='for i in **/*(/); do (cd $i; eval '\''ctags-exuberant *'\''); done; ctags-exuberant --file-scope=no -R'
+# Make the source to be with you!!!11!
+   alias C='./configure'
+   alias CH='./configure --help | $PAGER'
+# zmv -- see ``less ${^fpath}/zmv(N)'' for more details.
+   alias zcp='zmv -C'
+   alias zln='zmv -L'
+# r00t commands
+   if [ -x =sudo ]; then
+      alias ifconfig="sudo ifconfig"
+      alias shutdown="sudo shutdown"
+      alias tcpdump="sudo tcpdump"
+      alias nmap="sudo nmap"
+    fi
+# simple replacement for nmap (anywise .. :>)
+   alias pscan="nc -vz $1 1-1024"
+# Yup. I mount my CDROM manually!
+   if [ "${OS}" = openbsd ]; then
+           alias _mcd='sudo mount /dev/cd0a /mnt && cd /mnt && ls'
+           alias _ucd='cd ~ && sudo umount /mnt'
+   else
+           alias _mcd='sudo mount /mnt/cdrom && cd /mnt/cdrom && ls'
+           alias _ucd='cd ~ && sudo umount /mnt/cdrom'
+   fi
+# Yup. i use Gnus.. sometimes..
+if [ -x /usr/bin/emacs-21.3-with-x11 ]; then
+	alias emacs='emacs -nw -f server-start'
+	alias gnus='emacs -f gnus'
+	alias emacsnox='/usr/bin/emacs -nw'
+fi
+
+# GPG *sigh*
+   alias get.pgpkey='gpg --keyserver pgp.mit.edu --recv-key 0x"$@"'
+   alias mail.gpgkey='mail -s "GET keyid $@" pgp-public-keys@keys.pgp.net'
+   alias encrypt.gpg='echo "WARNING: plaintext is not deleted!"; gpg --quiet -ear 0x47E322CE'
+   alias sign.gpg='gpg --sign $*'
+# internet radio
+   alias p5='http://64.236.34.97:5190/stream/1006'
+   alias p4='mpg123 http://linux10.cs.uaf.edu:8000/kuac24mono'
+   alias p3='mpg123 -b 1024 http://radio.hiof.no:8000/nrk-petre-128'
+   alias p2='mpg123 -b 1024 http://radio.hiof.no:8000/nrk-p2-128'   
+   alias p1='mpg123 -b 1024 http://radio.hiof.no:8000/nrk-p1-128'   
+   alias relax='mpg123 -b 1024 http://radio.hiof.no:8000/nrk-alltid-klassisk-128'   
+   alias mpetre='mpg123 -b 1024 http://radio.hiof.no:8000/nrk-mpetre-128'
+   alias c64='xmms http://radio.c64.org:8000/ &'
+   alias classical='xmms http://64.236.34.97:5190/stream/1006 &'
+# Some aliases for the OpenBSD - Portcollection
+   if [ "${OS}" = openbsd ]; then
+           alias Svar='make show=FLAVORS'
+           alias Spversion='make show=VERSION'
+           alias Scomm='make show=COMMENT'
+           alias Swth='make show=DESCRIPTION'
+   fi
+# Ask stupid questions? In Boards/NGs? Yeah .. sure "Killing time.. the
+# end of .." --Metallica :>
+# I read this fuckings manuals *very* often *narf*
+   alias H-Slrn='less /backups/Documentations/Manuals/slrn-manual.txt'
+   alias H-Mutt='less /backups/Documentations/Manuals/mutt-manual.txt'
+   alias H-Irssi='less /backups/Documentations/Manuals/irssi-manual.txt'
+   alias H-Getmail='less /backups/Documentations/Manuals/getmail-manual.txt'
+# The Open Group Base Specifications Issue 6 (IEEE Std 1003.1, 2003
+# Edition)
+   alias H-Susv3='${BROWSER:-lynx} /backups/Documentations/susv3/index.html'
+# YES! Zsh _is_ evil :>
+   alias H-Zsh='${BROWSER:-lynx} /backups/Documentations/Zsh/Doc/zsh_toc.html'
+   alias H-ZshGuide='${BROWSER:-lynx} /backups/Documentations/Zsh/guide/zshguide.html'
+   alias H-ZshFAQ='${BROWSER:-lynx} /backups/Documentations/Zsh/guide/faqs.orgfaqsunix-faqshellzsh.html'
+# The Linuxfibel (German). See <http://www.fibel.org/> for details.
+   alias H-Linux='${BROWSER:-lynx} /backups/Documentations/Linux/linux/index.html'
+# Yup. I'm fucking lazy :>
+   alias H-OpenBSD='${BROWSER:-lynx} /backups/Documentations/OpenBSD/index.html'
+   alias H-FreeBSD='${BROWSER:-lynx} /backups/Documentations/FreeBSD/index.html'
+   alias H-NetBSD='${BROWSER:-lynx} /backups/Documentations/NetBSD/index.html'
+# de.comp.os.unix.linux - FAQ
+   alias H-Dcoul='${BROWSER:-lynx} /backups/Documentations/dcoul/html/index.html'
+# The editor of my choice! The one and only! J-E-H-O-V-A!!!11! 
+   alias H-Vim='${BROWSER:-lynx} /backups/Documentations/Vim/usr_toc.html'
+# THE SED FAQ (<http://sed.sourceforge.net/sedfaq.html>)
+   alias H-Sed="${BROWSER:-lynx} /backups/Documentations/Sed/sedfaq.html"
+# HTML .. *sigh* 
+   alias H-HTML='${BROWSER:-lynx} /backups/Documentations/Self-HTML/index.htm'
+# The Jargon File (version 4.4.7)
+   alias H-Jargon='${BROWSER:-lynx} /backups/Documentations/Jargon/html/index.html'
+# CSS .. Fuck me gently with a chainsaw
+   alias H-CSS='${BROWSER:-lynx} /backups/Documentations/CSS/index.html'
+# Fucking FHS *gnarf*
+   alias H-FHS='${BROWSER:-lynx} /backups/Documentations/Linux/fhs-2.3.html'
+# Extensible Markup Language
+   alias H-XML='${BROWSER:-lynx} /backups/Documentations/XML/index.html'
+# German Manpages. 
+# -<http://www.ibiblio.org/pub/Linux/docs/LDP/man-pages/manpages-de-0.4.tar.gz>
+   alias de-man="man -M /backups/Documentations/manpages.de '$1'"
+# fucking devices *narf*
+   if [ "${OS}" = linux-gnu ]; then
+      alias H-Devices='${PAGER:-less} /usr/src/linux/Documentation/devices.txt'
+   fi
+# See http://svnbook.red-bean.com/
+   alias H-Svn="{BROWSER:-lynx} /backups/Documentations/svnbook-1.1/index.html"
+# RFC-Index. Not really needed. See <http://strcat.neessen.net/hacks/rfc.zsh> 
+# for details.
+ #  alias H-RFC='${BROWSER:-lynx} /backups/Documentations/RFCs/rfc-index.txt.gz'
+# Xterm specific stuff
+   alias mxterm-default='echo -e "\033]50;fixed\007"'
+   alias mxterm-normal=default
+   alias mxterm-hide='echo -en "\033]50;nil2\007"'
+   alias mxterm-tiny='echo -en "\033]50;5x7\007"'
+   alias mxterm-small='echo -en "\033]50;6x10\007"'
+   alias mxterm-medium='echo -en "\033]50;7x13\007"'
+   alias mxterm-large='echo -en "\033]50;9x15\007"'
+   alias mxterm-huge='echo -en "\033]50;10x20\007"'
+   if [ "$TERM" = "xterm" ] && [ "$LINES" -ge 50 ] && [ "$COLUMNS" -ge 100 ]; then
+           mxterm-large
+   fi
+# Postscript, LaTeX and printing
+   alias pnm2ps='pnmtops -width 8.26 -height 11.69'
+   alias gif2ps='(giftopnm | pnm2ps)'
+   alias jpeg2ps='(djpeg    | pnm2ps)'
+   alias png2ps='(pngtopnm | pnm2ps)'
+   alias ps2psbook="(psbook | psnup -2 | tumble)"
+   alias ps2A5-haefte="(psbook -s8 | psnup -4 )"
+   alias sho='xdvi -s 2 -expert -geometry 1010x900+30+1030'
+   alias _dvishow='xdvi -s 3 -expert -geometry 990x990'
+# Change keyboard mapping on the fly (nice for programming)
+   if [ -x $(which xmodmap) ]; then
+      alias US-e="xmodmap ~/.keys-emacs-us; xmodmap -e 'keysym Alt_L = Meta_L Alt_L'"
+      alias US-v="xmodmap ~/.keys-vi-us; xmodmap -e 'keysym Alt_L = Meta_L Alt_L'"
+      alias US="xmodmap ~/.keys-vi-us; xmodmap -e 'keysym Alt_L = Meta_L Alt_L'"
+   fi
+# some global aliases for redirection
+   alias -g N="&>/dev/null"
+   alias -g 1N="1>/dev/null"
+   alias -g 2N="2>/dev/null"
+   alias -g DN="/dev/null"
+   alias -g PI="|"
+# suffix aliases (needs Zsh >= 4.2.0).  Suffix aliases allow the shell
+# to run a command on a file by suffix, e.g 'alias -s ps=gv' makes
+# 'foo.ps' execute 'gv foo.ps'.
+if [[ $ZSH_VERSION == 4.2.<0->* ]]; then
+	alias -s dvi=xdvi
+	alias -s pdf=xpdf
+	alias -s ps=gv
+	alias -s ogg=ogg123
+	alias -s wmv=mplayer
+	alias -s mp3=mplayer
+	alias -s html=${BROWSER:-lynx}
+	alias -s htm=${BROWSER:-lynx}
+	alias -s tex=${EDITOR:-vi}
+	alias -s txt=${PAGER:-less}
+	alias -s jpg=display
+	alias -s jpeg=display
+	alias -s xpm=display
+	alias -s xbm=display
+	alias -s png=display
+	alias -s gif=display
+	alias -s gz=show-archive
+	alias -s tar=show-archive
+	alias -s bz2=show-archive
+	alias -s zip=show-archive
+fi

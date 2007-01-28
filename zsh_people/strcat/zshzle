@@ -1,0 +1,22 @@
+# Edit the command line using your usual editor.
+  zle -N edit-command-line
+# Setting abbreviation like 'iab' with Vim
+  zle -N my-expand-abbrev
+# Needed for my "Vim-like statusline". See ~/.zsh/zshstatusbar for
+# details.
+#  zle -N redisplay
+#  zle -N redisplay2
+#  zle -N screenclear
+#  zle -N screenclearx
+#  zle -N vi-add-eol
+#  zle -N vi-add-next
+#  zle -N vi-change
+#  zle -N vi-change-eol
+#  zle -N vi-change-whole-line
+#  zle -N vi-insert
+#  zle -N vi-insert-bol
+#  zle -N vi-open-line-above
+#  zle -N vi-open-line-below
+#  zle -N vi-substitute
+#  zle -N vi-replace
+#  zle -N vi-cmd-mode

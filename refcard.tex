@@ -1,0 +1,951 @@
+\documentclass{article}
+% Needed for multiple column output:
+\usepackage{multicol}
+% Used to get a reasonable A4 size:
+%\usepackage{a4wide}
+\oddsidemargin 0.05 in
+\evensidemargin 0.05 in
+\marginparwidth 0.75 in
+\voffset -0.6in
+\hoffset -0.7in
+\textheight 170 mm
+\textwidth 280 mm
+
+% Used for easy swapping to landscape:
+%\usepackage{portland}
+% Needed for easy redefinition of running headings/page style:
+\usepackage{fancyheadings}
+% Needed for boldsymbol (distinguishes sorts of square brackets):
+\usepackage{amsmath}
+%% % Needed for complex if-then-else structures as used in Lentry
+%% \usepackage{ifthen}
+%% \usepackage{calc}
+
+\lhead{Page \rm\thepage}
+\chead{Zsh Reference Card}
+\rhead{zsh 3.0}
+\cfoot{}
+
+% Make the section command a little more manageable.
+% This makes it look more like a normal subsection.
+\makeatletter
+\renewcommand{\section}{\@startsection
+  {section}%                          % name
+  {1}%                                % level
+  {0mm}%                              % indent
+  {-\baselineskip}%                   % beforeskip
+  {0.1pt}%                 % afterskip
+  {\normalfont\normalsize\scshape}} % style
+\makeatother
+
+
+% Command for environment that contains a piece of code.
+\newcommand{\codelabel}[1]{\mbox{\textsl{#1}}\hfil}
+\newenvironment{code}%
+{\begin{list}{}{\renewcommand{\makelabel}{\codelabel}%
+    \setlength{\rightmargin}{0pt}%
+    \setlength{\leftmargin}{1em}}}%
+{\end{list}}
+
+
+\newcommand\B[1]{\textbf{#1}}
+\newcommand\I[1]{\textsl{#1}}
+\newcommand\T[1]{\texttt{#1}}
+
+% Left/right square brackets in bold (actual text for syntax
+% table, optional arguments in commands etc.)
+\newcommand\Lsq{\ensuremath{\boldsymbol{[}}}
+\newcommand\Rsq{\ensuremath{\boldsymbol{]}}}
+% Left/right square brackets (indicates optional in syntax entries)
+\newcommand\Lop{\ensuremath{[}}
+\newcommand\Rop{\ensuremath{]}}
+% Left/right curly brackets
+\newcommand\Lcu{\ensuremath{\mathbf{\{}}}
+\newcommand\Rcu{\ensuremath{\mathbf{\}}}}
+% Left/right parentheses
+\newcommand\Lpa{\textbf{(}}
+\newcommand\Rpa{\textbf{)}}
+
+% Dagger for marking things
+\newcommand\D{$^\dag$}
+
+\newlength{\codesep}
+\setlength{\codesep}{1.5mm}
+
+\parindent = 0pt
+\raggedright
+
+\begin{document}
+
+% This is a bit simpler than using the portland package,
+% and works with dvips.
+\special{landscape}
+%\landscape
+
+\pagestyle{fancy}
+
+\raggedcolumns
+\setlength{\premulticols}{100pt}
+%\setlength{\multicolsep}{20pt plus 6pt minus 4pt}
+\begin{multicols}{3}[\section{Constructs}]
+
+\I{List} is any sequence of commands separated by \B{;} or
+\B{newline}, which are always interchangeable.
+\medskip
+
+\begin{code}
+\item \B{if} \I{list}; \B{then} \I{list} \\
+\Lop\ \B{elif} \I{list}; \B{then} \I{list} \Rop\ \dots \\
+\Lop\ \B{else} \I{list} \Rop \\
+\B{fi}
+
+\item \B{for} \I{name} \Lop\ \B{in} \I{word \dots} \Rop \\
+\B{do} \I{list} \\
+\B{done}
+
+\B{for} \I{name} \B{in} \I{word \dots}; \Lcu\ list \Rcu
+
+\B{foreach} \I{name} \Lpa \I{word \dots}\Rpa \\
+\I{list} \\
+\B{end} \\
+
+\item \B{while} \I{list}; \B{do} \I{list}; \B{done}
+
+\B{until} \I{list}; \B{do} \I{list}; \B{done}
+
+\item \B{repeat} \I{word}; \B{do} \I{list}; \B{done}
+
+\B{repeat} \I{word} \I{sublist}
+
+\item \B{case} \I{word} \B{in} \\
+\Lop\ \I{pattern} \Rpa\ \I{list} ;; \Rop\ \dots \\
+\B{esac}
+
+\B{case} \I{word} \Lcu\ \Lop\ \I{pattern} \Rpa\ \I{list} ;; \Rop\ \dots \Rcu
+
+\item \B{select} \I{name}
+  \Lop\ \B{in} \I{word} \dots \Rop; \B{do} \I{list};
+  done
+
+\item[Subshell:] \Lpa\ \I{list} \Rpa
+
+\item[Current shell:] \Lcu\ \I{list} \Rcu
+
+\item \B{function} \I{word} \Lop\ \Lpa\Rpa\ \Rop\ \dots \Lcu\ \I{list}
+  \Rcu
+
+\I{word} \dots \Lpa\Rpa\ \Lcu\ list \Rcu
+
+\I{word} \dots \Lpa\Rpa\ \I{sublist}
+
+\item \B{time} \Lop\ \I{pipeline} \Rop
+
+\item[Condition:] \Lsq\Lsq\ \I{exp} \Rsq\Rsq
+\end{code}
+
+Other constructs depend on the options \B{NO\_\-SHORT\_\-LOOPS} and
+\B{CSH\_\-JUNKIE\_\-LOOPS} and should be avoided in scripts.
+
+\end{multicols}
+
+%\begin{multicols}{3}[\section{Globbing}]
+\section{Globbing}
+
+See also options \B{GLOB}, \B{EXTENDED\_\-GLOB}, \B{KSH\_\-GLOB},
+\B{NULL\_\-GLOB}, \B{NOMATCH}, \B{SH\_\-GLOB} \B{GLOB\_\-DOTS}. \texttt{X},
+\texttt{Y}, \dots\ are any pattern. \verb!#! and \verb!##! require grouping
+of previous characters; those and \verb!~!, \verb!^! require
+\B{EXTENDED\_\-GLOB}.
+
+% Due to setting verbatim text, use basic tabbing environment for following.
+\begin{multicols}{3}
+\begin{tabbing}
+\hskip 40pt \= \kill
+\verb!*!       \>  Any string \\
+\verb!?!       \>  Any character \\
+\verb![...]!   \>  Any of the enclosed characters \\
+\verb![[:X:]]! \>  Character classes where X may be: \\
+\verb! alnum!  \>  Alphanumeric, \\
+\verb! alpha!  \>  Alphabetic, \\
+\verb! blank!  \>  Space or tab, \\
+\verb! cntrl!  \>  Control character, \\
+\verb! digit!  \>  Decimal digit, \\
+\verb! graph!  \>  Printable non-whitespace character, \\
+\verb! lower!  \>  Lowercase character, \\
+\verb! print!  \>  Printable character, \\
+\verb! punct!  \>  Printable, not alnum or space, \\
+\verb! space!  \>  Whitespace character, \\
+\verb! upper!  \>  Uppercase character, \\
+\verb! xdigit! \>  Hexadecimal digit. \\
+               \>  Above use locales, may be combined with \\
+	       \>  other characters e.g. \verb![-+[:xdigit:]]! \\
+\verb![^...]!  \>  Any character except those enclosed \\
+\verb!<x-y>!   \>  Any number between $x$ and $y$ inclusive: \\
+               \>  both optional, defaults $0$, $\infty$ \\
+\verb!^X!      \>  Anything not matching \texttt{X} \\
+\verb!(X|Y)!   \>  Either \texttt{X} or \texttt{Y} \\
+\verb!X~Y!     \>  Pattern \texttt{X}, but not \texttt{Y} \\
+\verb!(X|Y~Z)! \>  Either \texttt{X} or (\texttt{Y} but not \texttt{Z}) \\
+\verb!X#!      \>  Zero or more occurences of \texttt{X} \\
+\verb!X##!     \>  One or more occurences of \texttt{X} \\
+\verb!(X)!     \>  Grouping of (part of) pattern. \\
+\verb!**/!     \>  (As path segment) short for \verb!(*/)!: \\
+               \> match all subdirectories \\
+\verb!***/!    \>  The same, following symbolic links \\
+\end{tabbing}
+
+Globbing flags appear in the form \verb!(#X)! and require the
+\T{EXTENDED\_GLOB} option.  They may appear in groups.  \verb!X! may be:
+\begin{tabbing}
+\hskip 40pt \= \kill
+\verb!i!       \> Match case insensitively \\
+\verb!l!       \> Lower case matches upper case \\
+\verb!I!       \> Case sensitive: cancel \verb!i! and \verb!I! \\
+\verb!b!       \> Activate backreferences for parentheses. \\
+               \> \verb!$match!, \verb!$mbegin!, \verb!$mend! arrays \\
+	       \> give matched string, beginning/end indices \\
+\verb!B!       \> Deactivate backreferences, negating \verb!b! \\
+\verb!m!       \> Set \verb!$MATCH!, \verb!$MBEGIN!, \verb!$MEND! for
+                  string \\
+\verb!M!       \> Deactivate \verb!m!. \\
+\T{a}\I{num}   \> Allow \I{num} errors in matches (0 to turn off) \\
+\verb!s!       \> Match only at start of string (use in param expn) \\
+\verb!e!       \> Match only at end of string \\
+\end{tabbing}
+
+Globbing modifiers appear in parentheses after a pattern (usually
+\I{and}'ed):
+\begin{tabbing}
+\hskip 40pt \= \kill
+\verb!/!       \> directory \\
+\verb!.!       \> plain file \\
+\verb!@!       \> symbolic link \\
+\verb!=!       \> socket \\
+\verb!p!       \> named pipe (FIFO) \\
+\verb!*!       \> executable plain file (0100) \\
+\verb!%!       \> device file (character or block) \\
+\verb!%b!      \> block special \\
+\verb!%c!      \> character special \\
+\verb!r!       \> readable (0400) \\
+\verb!w!       \> writable (0200) \\
+\verb!x!       \> executable (0200) \\
+\verb!A!       \> group-readable (0040) \\
+\verb!I!       \> group-writable (0020) \\
+\verb!E!       \> group-executable (0010) \\
+\verb!R!       \> world-readable (0200) \\
+\verb!W!       \> world-writable (0200) \\
+\verb!X!       \> world-executable (0200) \\
+\verb!s!       \> setuid (04000) \\
+\verb!S!       \> setgid (02000) \\
+\verb!t!       \> files with the sticky bit (01000) \\
+\T{f}\I{spec}  \> chmod-like access permissions \\
+               \> e.g. \verb!f70?! or \verb!f:u+w,go-w:! \\
+\T{e}\I{str}   \> eval \I{str}, use file (\verb!$REPLY!) if status 0 \\
+               \> or set \verb!$reply! to file array \\
+\T{d}\I{dev} \> on device number \I{dev} \\
+\T{l}\Lsq\T{-}$\mid$\T{+}\Rsq\I{ct}
+           \> link count \I{ct} or less (\T{+}) or more (\T{-}) than \I{ct} \\
+\T{U}          \> owned by current effective uid \\
+\T{G}          \> owned by current effective gid \\
+\T{u}\I{uid}   \> owned by uid \I{uid}; may also take forms \\
+               \> \T{.}\I{name}\T{.}, \T{!}\I{name}\T{!}, \dots\ or \\
+               \> \T{(}\I{name}\T{)}, \verb!{!\I{name}\verb!}!, \dots \\
+\T{g}\I{gid}   \> owned by \I{gid}, as for \T{u}\I{uid}. \\
+\T{a}\Lsq\T{Mwhm}\Rsq\Lsq\T{-}$\mid$\T{+}\Rsq\I{n} \\
+               \> accessed  (less than, more than) \I{n} days \\
+               \> (months, weeks, hours, minutes) ago \\
+\T{m}\Lsq\T{Mwhm}\Rsq\Lsq\T{-}$\mid$\T{+}\Rsq\I{n} \\
+               \> modified ditto \\
+\T{c}\Lsq\T{Mwhm}\Rsq\Lsq\T{-}$\mid$\T{+}\Rsq\I{n} \\
+               \> inode changed ditto \\
+\T{L}\Lsq\T{kKmMpP}\Rsq\Lsq\T{-}$\mid$\T{+}\Rsq\I{n} \\
+               \> size in bytes (or kb, mb, blocks) $=$ (or $<$, $>$) \I{n} \\
+\verb!^!       \> negate following qualifiers \\
+\verb!,!       \> `\I{or}' lists of qualifers together \\
+\verb!-!       \> toggle following links (off by default) \\
+\T{M}          \> set \B{MARK\_DIRS}, this pattern only \\
+\T{T}          \> set \B{LIST\_TYPES}, this pattern only \\
+\T{N}          \> set \B{NULL\_GLOB}, this pattern only \\
+\T{D}          \> set \B{GLOB\_DOTS}, this pattern only \\
+\T{n}          \> set \B{NUMERIC\_GLOB\_SORT}, this pattern only \\
+\T{o}\Lsq\T{nLlamcd}\Rsq \\
+               \> sort order of resulting files: by name, size, \\
+               \> no. of links, access/modification/inode time, \\
+               \> depth-first order \\
+\T{o}\Lsq\T{nLlamcd}\Rsq \\
+               \> same but reversed order; \verb!Od! depth-last \\
+\verb![!\I{beg}\Lsq\verb!,!\I{end}\Rsq\verb!]! \\
+               \> Index of matched file(s) to select \\
+\verb!:!\dots  \> remainder treated as history \\
+               \> modifiers (each with own \verb!:!)\\
+\end{tabbing}
+\end{multicols}
+
+\section{Options}
+\D means set by default: these options appear with \T{no} in front in option
+listings; \verb!+!\I{o} turns single-letter option off (shown in parentheses)
+
+\begin{multicols}{3}
+\begin{tabbing}
+\hskip 1em \= \T{AUTO\_REMOVE\_SLASH} \= \kill
+\T{ALL\_EXPORT}          \>\> Export all new shell params (-a) \\
+\T{ALWAYS\_LAST\_PROMPT} \>\> Back to prompt after list \\
+\T{ALWAYS\_TO\_END}      \>\> End of word after completion \\
+\T{APPEND\_HISTORY}      \>\> Append history to file \\
+\T{AUTO\_CD}             \>\> Directory as command does \T{cd} (-J) \\
+\T{AUTO\_LIST}           \>\> List on ambiguous completion (-9) \\
+\T{AUTO\_MENU}           \>\> Menu after second \T{TAB} \\
+\T{AUTO\_NAME\_DIRS}     \>\> Params with paths become names \\
+\T{AUTO\_PARAM\_KEYS}    \>\> Clever del after param completion \\
+\T{AUTO\_PARAM\_SLASH}   \>\> \verb!$path<TAB>! $\to$ \verb!$path/! \\
+\T{AUTO\_PUSHD}          \>\> Make \T{cd} act like \T{pushd} (-N) \\
+\T{AUTO\_REMOVE\_SLASH}  \>\> Strip slash after completion \\
+\T{AUTO\_RESUME}         \>\> \T{cmd} can behave like \verb!%cmd! (-W) \\
+\T{BAD\_PATTERN}\D       \>\> Error on bad glob pattern (+2) \\
+\T{BANG\_HIST}\D         \>\> Use \verb.!hist. on cmd line (+K) \\
+\T{BARE\_GLOB\_QUAL}\D   \>\> Use glob quals with just parens \\
+\T{BASH\_AUTO\_LIST}\D   \>\> List only on second tab \\
+\T{BEEP}\D               \>\> Beep on errors etc. (+B) \\
+\T{BG\_NICE}\D           \>\> Lower priority of bg jobs (-6) \\
+\T{BRACE\_CCL}           \>\> \verb!foo{ab}! $\to$ \verb!fooa foob! \\
+\T{BSD\_ECHO}            \>\> Builtin \T{echo} works like in BSD \\
+\T{CDABLE\_VARS}         \>\> \T{cd foo} like \verb!cd ~foo! (-T) \\
+\T{CHASE\_DOTS}          \>\> Resolve links when \verb!..! in dir \\
+\T{CHASE\_LINKS}         \>\> Resolve symlinks in directories (-w) \\
+\T{CHECK\_JOBS}\D        \>\> Report job status at \T{exit} \\
+\T{CLOBBER}\D            \>\> \verb!>! to existing file needs \verb!>|! (+C) \\
+\T{COMPLETE\_ALIASES}    \>\> Completion uses unexpanded aliases \\
+\T{COMPLETE\_IN\_WORD}   \>\> Complete at cursor point in word \\
+\T{CORRECT}              \>\> Correct command spelling (-0) \\
+\T{CORRECT\_ALL}         \>\> Correct spelling of all args (-O) \\
+\T{CSH\_JUNKIE\_HISTORY} \>\> Single \verb.!. is last command \\
+\T{CSH\_JUNKIE\_LOOPS}   \>\> Lists can be \verb!list; end! \\
+\T{CSH\_JUNKIE\_QUOTES}  \>\> No unescaped newlines in quotes \\
+\T{CSH\_NULLCMD}         \>\> Don't use \verb!$NULLCMD!, \verb!$READNULLCMD! \\
+\T{CSH\_NULL\_GLOB}      \>\> Only one glob must match \\
+\T{DVORAK}               \>\> Use Dvorak keyboard for spelling \\
+\T{EQUALS}\D             \>\> Perform \verb!=cmd! expansion \\
+\T{ERR\_EXIT}            \>\> Exit shell on error (-e) \\
+\T{EXEC}\D               \>\> Execute commands (+n) \\
+\T{EXTENDED\_GLOB}       \>\> Use \verb!#!, \verb!~! and \verb!^! in
+   patterns \\
+\T{EXTENDED\_HISTORY}    \>\> Save timestamp to history file \\
+\T{FLOW\_CONTROL}\D      \>\> \verb!^S!, \verb!^Q! do flow control \\
+\T{FUNCTION\_ARGZERO}\D  \>\> Set \verb!$0! on function or source \\
+\T{GLOB}\D               \>\> Perform globbing (+F) \\
+\T{GLOBAL\_EXPORT}\D      \>\> \verb!typeset -x! applies globally \\
+\T{GLOBAL\_RCS}\D         \>\> Use \verb!/etc! startup files \\
+\T{GLOB\_ASSIGN}         \>\> \verb!scalar=*! globs on right \\
+\T{GLOB\_COMPLETE}       \>\> Complete globbing with menu \\
+\T{GLOB\_DOTS}           \>\> Leading dots match wildcards (-4) \\
+\T{GLOB\_SUBST}          \>\> Text from params can glob \\
+\T{HASH\_CMDS}\D         \>\> Hash commands when run \\
+\T{HASH\_DIRS}\D         \>\> Hash directory when cmd runs \\
+\T{HASH\_LIST\_ALL}\D    \>\> Hash all cmds on completion \\
+\T{HIST\_ALLOW\_CLOBBER} \>\> Allow clobbering redirects in hist \\
+\T{HIST\_BEEP}\D         \>\> Beep on bad \verb.!.-history \\
+\T{HIST\_EXPIRE\_DUPS\_FIRST} \\
+                         \>   Trim duplicate lines to squeeze history \\
+\T{HIST\_FIND\_NO\_DUPS} \>\> Never show duplicates in history \\
+\T{HIST\_IGNORE\_ALL\_DUPS} \\
+                         \>   Never save duplicate of existing hist entry \\
+\T{HIST\_IGNORE\_DUPS}   \>\> No adjacent duplicates in history (-h) \\
+\T{HIST\_IGNORE\_SPACE}  \>\> `\verb! cmd!' lines not saved (-g) \\
+\T{HIST\_NO\_FUNCTIONS}  \>\> Don't store function definitions \\
+\T{HIST\_NO\_STORE}      \>\> No history commands in history \\
+\T{HIST\_REDUCE\_BLANKS} \>\> Trim excess whitespace in history \\
+\T{HIST\_SAVE\_NO\_DUPS} \>\> Trim duplicates if saving history \\
+\T{HIST\_VERIFY}         \>\> Edit after \verb.!. expansion \\
+\T{HUP}\D                \>\> Send SIGHUP to jobs on exit \\
+\T{IGNORE\_BRACES}       \>\> No \verb!{!\dots\verb!,!\dots\verb!}!
+   expansion (-I) \\
+\T{IGNORE\_EOF}          \>\> No exit on first ten eof's (-7) \\
+\T{INC\_APPEND\_HISTORY} \>\> Save history as it happens \\
+\T{INTERACTIVE}          \>\> Shell is interactive (not settable) (-i) \\
+\T{INTERACTIVE\_COMMENTS} \\
+                         \>\> Use comments interactively (-k) \\
+\T{KSH\_ARRAYS}          \>\> Array syntax more like ksh \\
+\T{KSH\_AUTOLOAD}        \>\> Emulate ksh function loading \\
+\T{KSH\_GLOB}            \>\> Emulate ksh patterns, \verb!*(...)! etc. \\
+\T{KSH\_OPTION\_PRINT}   \>\> Print options like ksh does \\
+\T{LIST\_AMBIGUOUS}      \>\> Only list ambiguous completions \\
+\T{LIST\_BEEP}           \>\> Beep on ambiguous completion \\
+\T{LIST\_PACKED}         \>\> Squeeze completion listings \\
+\T{LIST\_ROWS\_FIRST}    \>\> List rows first in completion \\
+\T{LIST\_TYPES}          \>\> File types in completion list (-X) \\
+\T{LOCAL\_OPTIONS}       \>\> Options set in functions are local \\
+\T{LOCAL\_TRAPS}         \>\> Reset traps on leaving func \\
+\T{LOGIN}                \>\> Shell is login (not settable) (-l) \\
+\T{LONG\_LIST\_JOBS}     \>\> Always use \verb!jobs -l! (-R) \\
+\T{MAGIC\_EQUAL\_SUBST}  \>\> Any \verb!var=expr! file-expands \T{expr} \\
+\T{MAIL\_WARNING}        \>\> Warn if mail file accessed (-U) \\
+\T{MARK\_DIRS}           \>\> Append \verb!/! to globbed directories (-8) \\
+\T{MENU\_COMPLETE}       \>\> Cycle completions on \T{TAB} (-Y) \\
+\T{MONITOR}              \>\> Allow job control (-m) \\
+\T{MULTIOS}\D            \>\> Implicitly tee/cat multiple \verb!<!,
+   \verb!>! \\
+\T{NOMATCH}\D            \>\> Error on unmatched globs (+3) \\
+\T{NOTIFY}\D             \>\> Report bg jobs on change (-5) \\
+\T{NULL\_GLOB}           \>\> Remove unmatched globs (-G) \\
+\T{NUMERIC\_GLOB\_SORT}  \>\> Numbers sorted in glob \\
+\T{OCTAL\_ZEROES}        \>\> 0 introduces octal in math expn \\
+\T{OVER\_STRIKE}         \>\> Editor starts in overstrike mode \\
+\T{PATH\_DIRS}           \>\> Search path for \verb!dir/cmd! (-Q) \\
+\T{POSIX\_BUILTINS}      \>\> \T{builtin} command is specialer \\
+\T{PRINT\_EIGHT\_BIT}    \>\> Show chars with high bit in listings \\
+\T{PRINT\_EXIT\_VALUE}   \>\> Show non-zero exit status (-1) \\
+\T{PRIVILEGED}           \>\> Privileged mode: safety first (-p) \\
+\T{PROMPTT\_BANG}        \>\> \verb.!. is special in prompts \\
+\T{PROMPT\_CR}\D         \>\> Print CR just before prompt (+V) \\
+\T{PROMPT\_PERCENT}\D    \>\> Do \verb!%! expansions in prompt \\
+\T{PROMPT\_SUBST}        \>\> Expand substitutions in prompts \\
+\T{PUSHD\_IGNORE\_DUPS}  \>\> Only one instance of dir on stack \\
+\T{PUSHD\_MINUS}         \>\> Swap plus and minus in pushd \\
+\T{PUSHD\_SILENT}        \>\> Don't print directory stack (-E) \\
+\T{PUSHD\_TO\_HOME}      \>\> With no args, \T{pushd} goes home (-D) \\
+\T{RC\_EXPAND\_PARAM}    \>\> \verb!A${array}Z!  $\to$ \verb!Aa1Z Aa2Z!
+   \dots (-P) \\
+\T{RC\_QUOTES}           \>\> \verb!echo ''''! $\to$ \verb!'! \\
+\T{RCS}\D                \>\> \verb!.!-files, else just
+   \verb!/etc/zshenv! (+f) \\
+\T{REC\_EXACT}           \>\> Prefer exact match in completion (-S) \\
+\T{RESTRICTED}           \>\> Can't cause as much damage \\
+\T{RM\_STAR\_SILENT}     \>\> No query on \verb!rm *! (-H) \\
+\T{RM\_STAR\_WAIT}       \>\> Don't believe first RMSTAR reply \\
+\T{SHARE\_HISTORY}       \>\> Read/write history as it happens \\
+\T{SH\_FILE\_EXPANSION}  \>\> Perform \verb!~file!, \verb!=cmd! first \\
+\T{SH\_GLOB}             \>\> Disable \verb!(!, \verb!|!, \verb!)!,
+   \verb!<! in patterns \\
+\T{SHIN\_STDIN}          \>\> Read commands from stdin (-s) \\
+\T{SH\_NULLCMD}          \>\> Null commands assume \verb!:! behaviour \\
+\T{SH\_OPTION\_LETTERS}  \>\> Letter options work like in ksh \\
+\T{SHORT\_LOOPS}\D       \>\> Short \!verb!for!, \verb!select!, \verb!if!,
+     \verb!function! \\
+\T{SH\_WORD\_SPLIT}      \>\> Split words like lesser shells do (-y) \\
+\T{SINGLE\_COMMAND}      \>\> Read a command and exit (-t) \\
+\T{SINGLE\_LINE\_ZLE}    \>\> Editor only uses one line (-M) \\
+\T{SUN\_KEYBOARD\_HACK}  \>\> Ignore unmatched trailing \verb!`! (-L) \\
+\T{UNSET}\D              \>\> Unset parameters cause error (+u) \\
+\T{VERBOSE}              \>\> Print input lines as read (-v) \\
+\T{XTRACE}               \>\> Print cmds and args when run (-x) \\
+\T{ZLE}                  \>\> Use the shell's line editor (-Z) \\
+\end{tabbing}
+\end{multicols}
+
+\begin{multicols}{3}[\section{Parameter expansion}]
+
+\begin{tabbing}
+\hskip 20pt \= \kill
+\verb!$!\I{name} \\
+\verb!${!\I{name}\verb!}! \\
+                \> Basic parameter substitution \\
+\verb!${+!\I{name}\verb!}! \\
+                \> 1 if \I{name} set, 0 otherwise \\
+\verb!${!\I{name}\verb!:-!\I{word}\verb!}! \\
+                \> \verb!$!\I{name} if non-null, else \I{word} \\
+\verb!${!\I{name}\verb!-!\I{word}\verb!}! \\
+                \> \verb!$!\I{name} if set, else \I{word} \\
+                \> (Similar for others with/without colon.) \\
+\verb!${!\I{name}\verb!:=!\I{word}\verb!}! \\
+                \> \verb!$!\I{name} if non-null, else use \I{word} \\
+                \> and set \I{name} to that \\
+\verb!${!\I{name}\verb!:==!\I{word}\verb!}! \\
+                \> Unconditional assignment
+\verb!${!\I{name}\verb!:?!\I{word}\verb!}! \\
+                \> \verb!$!\I{name} if non-null, else print \I{word}
+                and exit \\
+\verb!${!\I{name}\verb!:+!\I{word}\verb!}! \\
+                \> \I{word} if \verb!$!\I{name} non-null, else nothing \\
+\verb!${!\I{name}\verb!#!\I{pattern}\verb!}! \\
+\verb!${!\I{name}\verb!##!\I{pattern}\verb!}! \\
+                \> \verb!$!\I{name} with shortest (longest)
+                match of \\
+                \> \I{pattern} removed from head. Patterns as \\
+                \> globbing; original parameter unchanged \\
+\verb!${!\I{name}\verb!%!\I{pattern}\verb!}! \\
+\verb!${!\I{name}\verb!%%!\I{pattern}\verb!}! \\
+                \> As for \verb!#!, but remove from tail of match \\
+\verb!${!\I{name}\verb!/!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Substitute longest match of \I{pattern} by \I{repl} \\
+\verb!${(S)!\I{name}\verb!/!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Substitute shortest match \\
+\verb!${!\I{name}\verb!//!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Substitute all non-overlapping longest matches \\
+\verb!${!\I{name}\verb!/#!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Subst if \I{pattern} at start of string \\
+\verb!${!\I{name}\verb!/%!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Subst if \I{pattern} at end of string \\
+\verb!${!\I{name}\verb!:/!\I{pattern}\verb!/!\I{repl}\verb!}! \\
+                \> Subst if \I{pattern} matches entire string \\
+\verb!${#!\I{spec}\verb!}! \\
+                \> Count length of scalar or words of array \\
+\verb!${^!\I{spec}\verb!}! \\
+\verb!${^^!\I{spec}\verb!}! \\
+                \> Turn on (off) \B{RC\_EXPAND\_PARAM} \\
+\verb!${=!\I{spec}\verb!}! \\
+\verb!${==!\I{spec}\verb!}! \\
+                \> Turn on (off) \B{SH\_WORD\_SPLIT} \\
+\verb!${~!\I{spec}\verb!}! \\
+\verb!${~~!\I{spec}\verb!}! \\
+                \> Turn on (off) \B{GLOB\_SUBST} \\
+\verb!${!\I{spec}\verb!:!\I{mod}\verb!}! \\
+                \> Apply history modifier \I{mod} \\
+\verb!${${name\dots}!\dots\verb!}! \\
+                \> Perform both sets of modifications on value \\
+		\> N.B. does not do extra lookup, see \verb!(P)! \\
+\end{tabbing}
+
+Flags:  usage \verb!${(o)!\I{name}\verb!}! etc.
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{A}           \> \verb!${...:=...}! creates array \\
+\T{AA}          \> \dots creates associative array \\
+\verb!@!        \> Split into words in double quotes \\
+\T{e}           \> Use shell expansion on result \\
+\T{P}           \> Force \verb!$!\I{name} to be re-used as name \\
+\T{o}           \> sort words in ascending order \\
+\T{O}           \> sort words in descending order \\
+\T{i}           \> case-independent with \T{o} or \T{O} \\
+\T{L}           \> all letters lower case \\
+\T{U}           \> all letters upper case \\
+\T{C}           \> capitalise words \\
+\T{V}           \> make special characters visible \\
+\T{q}           \> quote result with \verb!\! \\
+\T{qq}          \> quote result with \verb!'! \\
+\T{qqq}         \> quote result with \verb!"! \\
+\T{qqqq}        \\
+                \> quote result with \verb!$'!\dots\verb!'! \\
+\T{Q}           \> remove one level of shell quoting \\
+\verb!%!        \> Expand prompt escapes \\
+\verb!%%!       \> Expand as prompt with current settings \\
+\T{X}           \> Report parse errors with quotes, patterns \\
+\T{c}           \> \verb!${#!\I{name}\verb!}! counts characters \\
+\T{w}           \> \verb!${#!\I{name}\verb!}! counts words \\
+\T{W}           \> As \T{w}, but count empty words \\
+\T{k}           \> With assoc include keys \\
+\T{v}           \> With assoc include values \\
+\T{p}           \> Use print escapes in args below \\
+\T{F}           \> Join words with newlines \\
+\T{f}           \> Split on newlines \\
+\T{z}           \> Split using ordinary parsing \\
+\T{t}           \> Subsituted description, not value \\
+\end{tabbing}
+
+Flags with delimiters; use any pair of chars in place of colon, also
+matched \verb!<>!, \verb!()!, \verb!{}!, \verb![]!
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{l:}\I{expr}\T{::}\I{string1}\T{::}\I{string2}\T{:} \\
+                \> Pad words on left to \I{expr} chars using \\
+                \> \I{string1} repeated (default space), \\
+                \> \I{string2} appears just once \\
+\T{r:}\I{expr}\T{::}\I{string1}\T{::}\I{string2}\T{:} \\
+                \> Ditto padded on right \\
+\T{j:}\I{string}\T{:} \\
+                \> Join words using \I{string} \\
+                \> (occurs before splitting) \\
+\T{s:}\I{string}\T{:} \\
+                \> Split words at \I{string}
+\end{tabbing}
+
+Flags applying with \verb!${...#...}! or \verb!${...%...}!
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{S}           \> search substrings too \\
+\T{I:}\I{expr}\T{:} \\
+                \> Search/substitute \I{expr\/}th match \\
+\T{M}           \> Include matched portion \\
+\T{R}           \> Include unmatched portion (Rest) \\
+\T{B}           \> Include index of beginning \\
+\T{E}           \> Include index of end \\
+\T{N}           \> Include length of match \\
+\end{tabbing}
+
+Summary of rules for substitution
+\begin{tabbing}
+\hskip 20pt \= \kill
+1              \> Nested substitution, \verb!${${!\dots\verb!}}! \\
+2              \> Subscript of parameter by name,
+\verb!${!\I{name}\verb![!\I{i}\verb!]}! \\
+3              \> \verb!(P)! flag \\
+4              \> \verb!"${!\dots\verb!}"! joining \\
+5              \> Nested subscript, \verb!${${!\dots\verb!}[!\I{i}\verb!]}! \\
+6              \> \verb!#!, \verb!%!, \verb!/!. \verb!:! modifications \\
+7              \> \verb!(j)! flag or space joining \\
+8              \> \verb!(s)!, \verb!(f)!, \verb!(z)! or \verb!=! splitting \\
+9              \> Shell word splitting (no flags) \\
+10             \> \verb!(e)! flag \\
+11             \> \verb!(l)! or \verb!(r)! padding \\
+\end{tabbing}
+
+Flags in indexing: usage \verb!$!\I{name}\verb![(i)!\I{index}\verb!]! etc.
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{e}           \> Backward compatability only \\
+\T{w}           \> Index by words of scalar \\
+\T{s:string:} \\
+                \> Separate words with \T{string} \\
+\T{p}           \> Use print escapes in following \T{s} \\
+\T{f}           \> Index by lines: same as \verb!pws:\n:! \\
+\T{r}           \> Reverse index array/substring/word \\
+                \> For assocs, match against values \\
+\T{R}           \> As \T{r}, but last match (all for assocs) \\
+\T{k}           \> In assoc, keys are patterns; get first \\
+\T{K}           \> In assoc, keys are patterns; get all \\
+\T{i}           \> As \T{r}, but return index \\
+                \> For assocs match against keys \\
+\T{I}           \> As \T{I}, but last match (all for assocs) \\
+\verb!n:!\I{expr}\verb!:! \\
+                \> Use \T{expr}'th first/last match
+\verb!b:!\I{expr}\verb!:! \\
+                \> \T{r}, \T{R}, \T{i}, \T{I} start search at \I{expr}th elt.
+\end{tabbing}
+\end{multicols}
+
+\goodbreak
+\section{History}
+See also parameters \B{histchars}, \B{HISTFILE}, \B{HISTSIZE},
+\B{SAVEHIST} and options \B{APPEND\_\-HISTORY},
+\B{CSH\_\-JUNKIE\_\-HISTORY}, \B{EXTENDED\_\-HISTORY},
+\B{HIST\_\-ALLOW\_\-CLOBBER}, \B{HIST\_\-IGNORE\_\-DUPS},
+\B{HIST\_\-IGNORE\_\-SPACE}, \B{HIST\_\-NO\_\-STORE},
+\B{HIST\_\-VERIFY}, \B{BANG\_\-HIST}, \B{HIST\_\-BEEP},
+\B{HIST\_\-EXPIRE\_\-DUPS\_\-FIRST}, \B{HIST\_\-FIND\_\_NO\_\-DUPS},
+\B{HIST\_\-IGNORE\_\-ALL\_\-DUPS}, \B{HIST\_\-NO\_\-FUNCTIONS},
+\B{HIST\_\-REDUCE\_\-BLANKS}, \B{HIST\_\-SAVE\_\-NO\_\-DUPS},
+\B{INC\_\-APPEND\_\-HISTORY}, \B{SHARE\_\-HISTORY}.
+
+\begin{multicols}{3}[\mbox{Events:}]
+\begin{tabbing}
+\hskip 60pt \= \kill
+\verb.!.        \> start history substitution unless after \\
+                \> space, newline, \verb!=!, \verb!(! \\
+\verb.!!.       \> immediately previous command \\
+\verb.!.\I{n}   \> command line \I{n} \\
+\verb.!-.\I{n}  \> line \I{n} before current \\
+\verb.!.\I{str} \> last line beginning with \I{str} \\
+\verb.!.\I{?str}\Lsq\verb.?.\Rsq
+                \> last line containing \I{str} \\
+\verb.!#.       \> current command so far \\
+\verb?!{...}?   \> insulate history reference \\
+\verb.!".       \> no more expansion this line \\
+\end{tabbing}
+\end{multicols}
+
+\begin{multicols}{3}[\mbox{Words: separated from event by `:'}]
+\begin{tabbing}
+\hskip 60pt \= \kill
+\T{0}           \> first word on line (command) \\
+\I{n}           \> \I{n\/}th argument of command \\
+\verb!^!        \> first argument of command \\
+\verb!$!        \> last argument of command \\
+\verb!%!        \> word matched by \verb!?s! \\
+\I{x}\verb!-!\I{y} \> range of words \\
+\verb!-!\I{y}   \> same as \verb!0-!\I{y} \\
+\verb!*!        \> all arguments \\
+\I{x}\verb!*!   \> same as \I{x}\verb!-$! \\
+\I{x}\verb!-!   \> same but omit word \verb!$! \\
+\end{tabbing}
+\end{multicols}
+
+\begin{multicols}{3}[\mbox{Modifiers: also with globbing and parameters}]
+\begin{tabbing}
+\hskip 60pt \= \kill
+\T{h}           \> (head) strip last path cpt \\
+\T{r}           \> remove suffix \verb!.!\I{suf} \\
+\T{e}           \> leave only suffix \I{suf} \\
+\T{t}           \> (tail) leave only last path cpt \\
+\verb!&!        \> repeat last substitution \\
+\T{p}           \> don't execute new command \\
+\T{q}           \> quote words from further subst \\
+\T{Q}		\> remove one level of quotes \\
+\T{x}           \> same but split words at space \\
+\T{l}           \> all letters lower case \\
+\T{u}           \> all letters upper case \\
+\verb!s/!\I{old}\verb!/!\I{new}\Lsq\verb!/!\Rsq \\
+                \> replace \I{old} by \I{new} (string) \\
+\T{g}           \> (before s) change every occurrence \\
+\T{f}           \> repeat till no further change \\
+\verb!F:!\I{expr}\verb!:! \> same but max \I{expr} changes \\
+\T{w}           \> (as prefix) apply to each word \\
+\verb!W:!\I{sep}\verb!:! \> same but separate words on \I{sep} \\
+\end{tabbing}
+\end{multicols}
+
+\begin{multicols}{3}[\section{Parameters}]
+
+Special parameters: arrays are lower case except \T{status}; those
+marked\D\ are assignable:
+\begin{tabbing}
+\hskip 1em \= USERNAME \= \kill
+\T{!}             \>\> Last bg PID \\
+\T{ARGC} \\
+\verb!#!          \>\> Pos.\ param count \\
+\verb!$!          \>\> Current PID \\
+\T{-}             \>\> Shell flags set \\
+\T{argv}\D \\
+\verb!*!\D        \>\> Pos.\ params as array \\
+\verb!@!          \>\> Same as \verb!argv[@]! \\
+\T{status} \\
+\T{?}             \>\> Last prog status \\
+\T{pipestatus}    \>\> Array of statuses for pipeline \\
+\verb!_!          \>\> Last arg of prev cmd \\
+\T{CPUTYPE}       \>\> CPU determined at run time \\
+\T{EGID}\D        \>\> Effective GID \\
+\T{EUID}\D        \>\> Effective UID \\
+\T{ERRNO}         \>\> System error no. \\
+\T{GID}\D         \>\> Current GID \\
+\T{HOST}          \>\> Current host name \\
+\T{LINENO}        \>\> Input line no. \\
+\T{LOGNAME}       \>\> User name \\
+\T{MACHTYPE}      \>\> Machine type \\
+\T{OLDPWD}        \>\> Previous working dir. \\
+\T{OPTARG} \\
+\T{OPTIND}        \>\> Value, index of last \B{getopts} option \\
+\T{OSTYPE}        \>\> OS type \\
+\T{PPID}          \>\> PID of parent proc. \\
+\T{PWD}           \>\> Current working dir. \\
+\T{RANDOM}\D      \>\> Random integer: assign to seed. \\
+\T{SECONDS}\D     \>\> Seconds since start of shell \\
+\T{SHLVL}         \>\> Incremented for each zsh \\
+\T{signals}       \>\> Names of signals \\
+\T{TTY}           \>\> Name of shell terminal \\
+\T{TTYIDLE}       \>\> Idle time of tty (secs.) or -1 \\
+\T{UID}\D         \>\> UID \\
+\T{USERNAME}\D    \>\> username \\
+\T{VENDOR}        \>\> Machine manufacturer \\
+\verb!ZSH_NAME!   \>\> Shell invocation name \\
+\verb!ZSH_VERSION! \>\> ID of zsh version \\
+\end{tabbing}
+
+Other parameters used by shell (\D colon-separated path)
+\begin{tabbing}
+\hskip 2em \= USERNAME \= \kill
+\T{ARGV0}         \>\> Export to change \verb!argv[0]! \\
+\T{BAUD}          \>\> Line speed (zero to ignore) \\
+\T{cdpath}, \T{CDPATH}\D \>\> Directories search for \B{cd} command \\
+\T{COUMNS}        \>\> No.\ of columns on terminal \\
+\T{DIRSTACKSIZE}  \>\> Max size of dir.\ stack \\
+\T{FCEDIT}        \>\> Default editor for \B{fc} cmd. \\
+\T{fignore}, \T{FIGNORE}\D \>\>\quad Suffixes ignored for completion \\
+\T{fpath}, \T{FPATH}\D \>\> Path to search for autoload fns. \\
+\T{histchars} \>\> three chars: 1) start of history (\verb.!.), \\
+   \>  2) quick history sub (\verb!^!), 3) comment (\verb!#!) \\
+\T{HISTCHARS}     \>\> same as \T{histchars} \\
+\T{HISTFILE}      \>\> Where to save shell history \\
+\T{HISTSIZE}      \>\> Max history lines internally \\
+\T{HOME}          \>\> Default target for \B{cd} cmd. \\
+\T{IFS}           \>\> Word seperators for input \\
+\T{KEYTIMEOUT}    \>\> Time to waits for key in sequence \\
+\T{LANG}          \>\> General locale setting \\
+\verb!LC_ALL!     \>\> Overrides \T{LANG} and other \verb!LC_*! \\
+\verb!LC_COLLATE! \>\> Determines character ordering \\
+\verb!LC_CTYPE!   \>\> Determines types of characters \\
+\verb!LC_MESSAGES!\>\> For messages: not used by zsh \\
+\verb!LC_NUMERIC! \>\> For decimal point, number separator \\
+\verb!LC_TIME!    \>\> Date and time format \\
+\T{LINES}         \>\> No.\ of lines on terminal \\
+\T{LISTMAX}       \>\> No.\ of files to list without asking \\
+\T{LOGCHECK}      \>\> How often to check \T{watch} (secs.) \\
+\T{MAIL}          \>\> File to check for mail \\
+\T{MAILCHECK}     \>\> How often to check \T{MAIL} (secs.) \\
+\T{mailpath}, \T{MAILPATH}\D \\
+   \> List of files to check for new mail.  Can follow \\
+   \> each with \verb!?'message to print'! \\
+\T{manpath}, \T{MANPATH}\D \\
+   \> Not used by shell, probably used by \B{man} cmd. \\
+\T{module\_path}, \T{MODULE\_PATH}\D \\
+   \> Path for dynamic modules; not imported \\
+\T{NULLCMD}       \>\> Used for redirs.\ with no cmd. \\
+\T{path}, \T{PATH}\D \>\> Where to search for commands \\
+\T{POSTEDIT}      \>\> Output when line editor exits \\
+\T{PROMPT}, \T{prompt} \\
+\T{PS1}           \>\> Prompt used by editor \\
+\T{PROMPT2}, \T{PS2} \>\> Continuation prompt \\
+\T{PROMPT3}, \T{PS3} \>\> Prompt used by \B{select} cmd. \\
+\T{PROMPT4}  \T{PS4} \>\> Execution trace prompt \\
+\T{psvar}, \T{PSVAR}\D \>\> Replace \verb!%v! in prompts \\
+\T{READNULLCMD} \>\> Command used with only input readir. \\
+\T{REPORTTIME} \>\> Longer commands print usage (secs.) \\
+\T{RPROMPT} \\
+\T{RPS1}           \>\> Prompt displayed at right of line \\
+\T{SAVEHIST}       \>\> Max no.\ of lines in history file \\
+\T{SPROMPT}        \>\> Prompt used for spelling correction \\
+\T{STTY}           \>\> Args. to follow \B{stty}, \\
+  \>\> export to run before external cmd.\ \\
+\T{TERM}           \>\> Type of terminal for editing \\
+\T{TIMEFMT}        \>\> Format of process time reports \\
+\T{TMOUT}          \>\> SIGALRM if idle this long (secs.) \\
+\T{TMPPREFIX}      \>\> Path to temp files (\B{/tmp/zsh}) \\
+\T{watch}, \T{WATCH}\D \>\> List of users to watch log in/out \\
+              \>\> (also \B{all}, \B{notme}, \verb!%! tty, \verb!@! host) \\
+\T{WATCHFMT}       \>\> Format of \T{watch} reports \\
+\T{WORDCHARS}      \>\> Non-alphanumeric characters used \\
+                   \>\> as part of a word by editor \\
+\T{ZBEEP}          \>\> Sequence to output instead of beeping \\
+\T{ZDOTDIR}        \>\> Where to find \verb!.zshrc! etc.\ \\
+\end{tabbing}
+\end{multicols}
+
+Prompt escape sequences: those with \D can use integer count \I{n},
+which must immediately follow \verb!%!.  Default is 1 except for \verb!%_!.
+\begin{multicols}{3}
+\begin{tabbing}
+\hskip 50pt \= \kill
+\verb!%%!          \> A `\%' \\
+\verb!%)!          \> A `)' \\
+\verb!%d! \verb!%/!\D
+                   \> \verb!$PWD! \\
+\verb!%~!\D        \> \verb!$PWD!, but use \verb!~!-abbrevs \\
+\verb!%h! \verb.%!.
+                   \> Current history event no. \\
+\verb!%L!          \> The current value of \verb!$SHLVL! \\
+\verb!%M!          \> Full hostname \\
+\verb!%m!\D        \> Host up to \I{n}'th dot \\
+\verb!%S! \verb!%B! \verb!%U!
+                   \> Start standout, bold, underline \\
+\verb!%s! \verb!%b! \verb!%u!
+                   \> Stop corresponding mode \\
+\verb!%t! \verb!%@!
+                   \> Time in 12 hour format \\
+\verb!%T!          \> Time in 24 hour format  \\
+\verb!%*!          \> Same with seconds \\
+\verb!%n!          \> \verb!$USERNAME! \\
+\verb!%N!          \> Name of script, sourced file, function \\
+\verb!%i!          \> Line number inside \verb!%N! \\
+\verb!%w!          \> Date as \verb!day-dd! \\
+\verb!%W!          \> Date as \verb!mm/dd/yy! \\
+\verb!%D!          \> Date as \verb!yy-mm-dd! \\
+\verb!%D{!\I{string}\verb!}! \\
+                   \> Use \T{strftime} to format \I{string} \\
+\verb!%l!          \> Current tty \\
+\verb!%?!          \> Return status of last command \\
+\verb!%_!\D        \> Parser status, \I{n} for max level\\
+\verb!%E!          \> Clear to end of line \\
+\verb!%#!          \> \verb!#! if root, else \verb!%! \\
+\verb!%v!\D        \> \I{n}'th elementt of \verb!$psvar! \\
+\verb!%{...%}!     \> String which does not move cursor \\
+\verb!%<string<! \verb!%>string>! \verb!%[<string]! \verb!%[>string]! \\
+                   \> Truncate \T{string} on L or R, \\
+                   \> \I{n} gives max length. \\
+\verb!%c!\D\ \verb!%.!\D 
+                   \> Component of \verb!$PWD! (deprecated) \\
+\verb!%C!          \> Same but don't expand \verb!~!'s \\
+\end{tabbing}
+
+Codes for ternary expressions in prompts, format
+\verb!%(!\I{char}\verb!.!\I{true-text}\verb!.!\I{false-text}\verb!)!,
+integer count \I{n} may proceded or follow `\verb!(!'. Test is true if:
+\begin{tabbing}
+\hskip 40pt \= \kill
+\T{c} \verb!.! \verb!~! \> Tilde'd path has $>=n$ elts \\
+\verb!/! \T{C}     \> Ditto for absolute path \\
+\T{t}              \> Current minute is \I{n} \\
+\T{T}              \> Current hour is \I{n} \\
+\T{d}              \> Current day of month is \I{n} \\
+\T{D}              \> Month is \I{n} (Jan${}=0$) \\
+\T{w}              \> Weekday is \I{n} (Sun${}=0$) \\
+\verb!?!           \> Last exit status was \I{n} \\
+\verb!#!           \> Running as uid \I{n} \\
+\T{g}              \> Running as gid \I{n} \\
+\T{L}              \> \verb!$SHLVL!${}>=n$ \\
+\T{S}              \> \verb!$SECONDS!${}>=n$ \\
+\T{v}              \> \verb!${#psvar}!${}>=n$ \\
+\verb!_!           \> At least \I{n} shell constructs \\
+\verb.!.           \> True if shell is priveleged \\
+\end{tabbing}
+
+Escape sequences in \verb!$WATCHFMT!:
+\begin{tabbing}
+\hskip 50pt \= \kill
+\verb!%n!          \> Name of user \\
+\verb!%a!          \> `logged on' or `logged off' \\
+\verb!%l!          \> User's tty \\
+\verb!%M!          \> Full remote host name \\
+\verb!%m!          \> Host to first `.' \\
+\verb!%S! \verb!%U! \verb!%B!
+                   \> Start standout, underline, boldface \\
+\verb!%s! \verb!%u! \verb!%b!
+                   \> Stop corresponding mode \\
+\verb!%t! \verb!%@!
+                   \> Time in 12-hour format \\
+\verb!%T!          \> Time in 24-hour format \\
+\verb!%w!          \> Date as \verb!day-dd! \\
+\verb!%W!          \> Date as \verb!mm/dd/yy! \\
+\verb!%D!          \> Date as \verb!yy-mm-dd! \\
+\end{tabbing}
+
+% end multicols here because at presnt the next bit goes over the page
+% and looks odd
+\end{multicols}
+
+Ternary expressions in \verb!$WATCHFMT!, format
+\verb!%(!\I{char}\verb!.!\I{true-text}\verb!.!\I{false-text}\verb!)!,
+can be used with \T{l}, \T{n}, \T{m} or \T{M} (true if non-empty value
+for corresponding \verb!%!), or \T{a} (true for login, false for
+logout).
+
+\begin{multicols}{3}[\section{Conditions}][10cm]
+
+File tests: followed by a file name
+\begin{tabbing}
+\hskip 20pt \= \kill
+\B{Cond} \\
+                \> \B{true if file} \\
+\T{-a}          \> exists \\
+\T{-b}          \> block special \\
+\T{-c}          \> character special \\
+\T{-d}          \> directory \\
+\T{-e}          \> exists \\
+\T{-f}          \> plain file \\
+\T{-g}          \> has setgid bit set \\
+\T{-h}          \> symbolic link \\
+\T{-k}          \> has sticky bit set \\
+\T{-p}          \> FIFO/pipe \\
+\T{-r}          \> readable \\
+\T{-s}          \> has size $>0$ \\
+\T{-u}          \> has setuid bit set \\
+\T{-w}          \> writeable \\
+\T{-x}          \> executable/dir.\ readable: \\
+\T{-L}          \> symbolic link \\
+\T{-O}          \> owned by UID \\
+\T{-G}          \> owned by GID \\
+\T{-S}          \> socket \\
+\T{-N}          \> access time not newer than mod time \\
+\end{tabbing}
+
+Other tests with single argument:
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{-n}          \> string, length $>0$ \\
+\T{-o}          \> option, is set \\
+\T{-t}          \> fd, open to tty \\
+\T{-z}          \> string, length zero \\
+\end{tabbing}
+
+Two argument tests (\Lsq\Lsq \I{a} \T{test} \I{b} \Rsq\Rsq):
+\begin{tabbing}
+\hskip 20pt \= \kill
+\T{-nt}         \> file \I{a} newer than \I{b} \\
+\T{-ot}         \> file \I{a} older than \I{b} \\
+\T{-ef}         \> names refer to same file \\
+\T{=} \\
+\T{==}          \> \I{string} matches \I{pattern} \\
+\T{!=}          \> \dots does not match \\
+\T{<}           \> ASCII before \\
+\T{>}           \> ASCII after \\
+\T{-eq}         \> Numbers equal \\
+\T{-ne}         \> Numbers unequal \\
+\T{-lt}         \> Numeric $a<b$ \\
+\T{-gt}         \> Numeric $a>b$ \\
+\T{-le}         \> Numeric $a\leq b$ \\
+\T{-ge}         \> Numeric $a\geq b$ \\
+\end{tabbing}
+
+Also grouping \Lpa\dots\Rpa, negation \T{!}, and \verb!&&!, or
+\verb!||!; special handling of \B{/dev/fd}.
+
+\vfill
+\end{multicols}
+
+\end{document}

@@ -1,0 +1,14 @@
+# -*- shell-script -*-
+#
+# load emacs bindkeys
+
+bindkey -e
+
+##
+# bash kill word
+autoload -U bash-backward-kill-word
+zle -N bash-backward-kill-word
+bindkey "^F" bash-backward-kill-word
+# example :
+# cd /usr/share/doc'^F' kill the word doc
+##

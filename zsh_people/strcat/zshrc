@@ -1,0 +1,148 @@
+# $Id: .zshrc,v 1.17 2003/07/03 18:51:22 dope Exp dope $
+# 
+# README!
+# 
+# Filename       : ~/.zshrc
+# Purpose        : setup file for the shell 'zsh'
+# Author         : Christian Schneider <strcat@gmx.net>
+# Homepage       : http://www.strcat.de/zsh/
+# Latest release : <http://strcat.neessen.net/dotfiles/#zsh>
+# Needed files   : <http://strcat.neessen.net/dotfiles/zsh/dot-zsh.tar.gz>>
+#
+# Structure of this file:
+#  Lines starting with '#' are comments.
+#
+# Take a quick (haha) look on zshbuiltins(1), zshcompwid(1),
+# zshcompsys(1), zshcompctl(1), zshexpn(1), zshmisc(1), zshmodules(1),
+# zshoptions(1), zshparam(1), zshzle(1) or - for hardliner -
+# zshall(1).
+#  ,----[ Overview (Zsh 4.2.1) ]
+#  | [dope@dreckskind:~]% man -k zsh
+#  | zsh (1)              - the Z shell (330 lines)
+#  | zshall (1)           - the Z shell meta-man page (18348 lines)
+#  | zshcompwid (1)       - zsh completion widgets (1320 lines)
+#  | zshcompsys (1)       - zsh completion system (3432 lines)
+#  | zshzftpsys (1)       - zftp function front-end (858 lines)
+#  | zshbuiltins (1)      - zsh built-in commands (1716 lines)
+#  | zshoptions (1)       - zsh options (1254 lines)
+#  | zshzle (1)           - zsh command line editor (1320 lines)
+#  | zshparam (1)         - zsh parameters (1056 lines)
+#  | zshmodules (1)       - zsh loadable modules (2442 lines)
+#  | zshmisc (1)          - everything and then some (1782 lines)
+#  | zshcompctl (1)       - zsh programmable completion (858 lines)
+#  | zshexpn (1)          - zsh expansion and substitution (1914 lines)
+#  `----
+#  
+# Zsh start up sequence:
+#  1) /etc/zshenv   -> Always run for every zsh.   (login + interactive + other)
+#  2)   ~/.zshenv   -> Usually run for every zsh.  (login + interactive + other)
+#  3) /etc/zprofile -> Run for login shells.       (login)
+#  4)   ~/.zprofile -> Run for login shells.       (login)
+#  5) /etc/zshrc    -> Run for interactive shells. (login + interactive)
+#  6)   ~/.zshrc    -> Run for interactive shells. (login + interactive)
+#  7) /etc/zlogin   -> Run for login shells.       (login)
+#  8)   ~/.zlogin   -> Run for login shells.       (login)
+#
+# Last modified: [ 2004-09-15 02:43:09 ]
+#
+#
+# THIS FILE IS NOT INTENDED TO BE USED AS /etc/zshrc, NOR WITHOUT
+# EDITING!
+#
+# This file is based on ideas of:
+#  Sven Guckes...: <http://www.guckes.net/setup/zshrc>
+#  Michael Prokop: <http://www.michael-prokop.at/computer/config/.zshrc>
+#  Marijan Peh...: <http://free-po.hinet.hr/MarijanPeh/files/zshrc>
+#  Adam Spiers...: <http://adamspiers.org/computing/shells/>
+#
+# Tested and used unter {Net,Open}BSD, Slackware, Gentoo and LFS
+# with Zsh 4.0.7, 4.0.9, 4.1.1, 4.2.0 and 4.2.1
+
+# Login shell? If you want to know, you can type the following which will
+# do nothing it's a login shell or warn you if not.
+#--------------------------------------------------
+# if [[ ! -o login ]]; then
+#         print "Warning: It is *not* a login-Shell\!"
+# fi
+#-------------------------------------------------- 
+
+# -f true if file exists and is a regular file. See
+#  | man zshmisc | less -p "^CONDITIONAL EXPRESSIONS"
+# for details.
+#
+# Test and then source exported variables.
+if [ -f ~/.zsh/zshexports ]; then
+        source ~/.zsh/zshexports
+else
+        print "Note: ~/.zsh/zshexports is unavailable."
+fi
+
+# painless is my "what-happend-when" - box (for debugging and so on)
+if [ ${HOSTNAME} = painless ] && [ -e ~/.zsh/zshdevel ]; then
+	source ~/.zsh/zshdevel
+fi
+
+# Test and then source some options
+if [ -f ~/.zsh/zshoptions ]; then
+        source ~/.zsh/zshoptions
+else
+        print "Note: ~/.zsh/zshoptions is unavailable."
+fi
+
+# Test and then source alias definitions.
+if [ -f ~/.zsh/zshaliases ]; then
+        source ~/.zsh/zshaliases
+else
+        print "Note: ~/.zsh/zshaliases is unavailable."
+fi
+
+# Test and then source the functions.
+if [ -f ~/.zsh/zshfunctions ]; then
+        source ~/.zsh/zshfunctions
+else
+        print "Note: ~/.zsh/zshfunctions is unavailable."
+fi
+
+# Test and then source the lineeditor
+if [ -f ~/.zsh/zshzle ]; then
+        source ~/.zsh/zshzle
+else
+        print "Note: ~/.zsh/zshzle is unavailable."
+fi
+
+# Test and then source the "Statusbar-Functions"
+#--------------------------------------------------
+# if [ -f ~/.zsh/zshstatusbar ];then
+#         source ~/.zsh/zshstatusbar
+# else
+#         print "Note: ~/.zsh/zshstatusbar is unavailable."
+# fi
+#-------------------------------------------------- 
+
+# Test and then source the keybindings
+if [ -f ~/.zsh/zshbindings ]; then
+        source ~/.zsh/zshbindings
+else
+        print "Note: ~/.zsh/zshbindings is not available."
+fi
+
+# Test and then source the completionsystem
+if [ -f ~/.zsh/zshcompctl ]; then
+        source ~/.zsh/zshcompctl
+else
+        print "Note: ~/.zsh/zshcompctl is unavailable."
+fi
+
+# Test and then source the zstyles
+if [ -f ~/.zsh/zshstyle ]; then
+        source ~/.zsh/zshstyle
+else
+        print "Note: ~/.zsh/zshstyle is unavailable."
+fi
+
+# Test and then source the wretched rest 
+if [ -f ~/.zsh/zshmisc ]; then
+        source ~/.zsh/zshmisc
+else
+        print "Note: ~/.zsh/zshmisc is unavailable."
+fi

@@ -1,0 +1,3070 @@
+<!-- Creator     : groff version 1.18.1 -->
+<!-- CreationDate: Sun Jun 19 12:12:12 2005 -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>zsh&minus;lovers</title>
+</head>
+<body>
+
+<h1 align=center>zsh&minus;lovers</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#OVERVIEW">OVERVIEW</a><br>
+<a href="#EXAMPLES">EXAMPLES</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#LINKS">LINKS</a><br>
+<a href="#AUTHORS">AUTHORS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>zsh&minus;lovers &minus; tips, tricks and examples for
+the Z shell</p>
+</td>
+</table>
+<a name="OVERVIEW"></a>
+<h2>OVERVIEW</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Whenever we look at the zsh manual we wonder why there
+are no examples for those simply things in (shell) life. The
+zsh contains many features, but there was no manpage with
+some examples (like procmailex(5)). That&rsquo;s why we
+wrote this manpage.</p>
+<!-- INDENTATION -->
+<p>Most of the tricks and oneliner come from the
+mailinglists zsh&minus;users, zsh&minus;workers, google,
+newsgroups and from ourself. See section <b>LINKS</b> for
+details.</p>
+<!-- INDENTATION -->
+<p><b>Note:</b> This manpage (zsh-lovers(1)) is <b>not</b>
+an offical part of the Z shell! It&rsquo;s just a just for
+fun &minus; manpage ;) For comments, bugreports and feedback
+take a quick look at the section <b>BUGS.</b></p>
+</td>
+</table>
+<a name="EXAMPLES"></a>
+<h2>EXAMPLES</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>REDIRECTION</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>See also <i>man 1 zshmisc</i>.</p>
+<!-- INDENTATION -->
+<p>null command shorthands:</p>
+<!-- INDENTATION -->
+<pre> &quot;&lt; file&quot; is like &quot;$READNULLCMD &lt;file&quot;
+ &quot;&gt; file&quot; is like &quot;cat &gt;file&quot;
+ &quot;&gt;&gt; file&quot; is like &quot;cat &gt;&gt;file&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Append &lsquo;exit 1&rsquo; at the end of all *.sh
+&minus; files:</p>
+<!-- INDENTATION -->
+<pre> $ echo &quot;exit 1&quot; &gt;&gt; *.sh
+</pre>
+<!-- INDENTATION -->
+<p>Append /etc/services at the end of file &lsquo;foo&rsquo;
+and &lsquo;bar&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ cat /etc/services &gt;&gt; foo &gt;&gt; bar
+</pre>
+<!-- INDENTATION -->
+<p>Pipe STDERR:</p>
+<!-- INDENTATION -->
+<pre> $ echo An error &gt;&amp;2 2&gt;&amp;1 | sed -e &rsquo;s/A/I/&rsquo;
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>MULTIPLE I/O REDIRECTION</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Requires <i>setopt multios</i>! Some examples:</p>
+<!-- INDENTATION -->
+<p>Print output of &rsquo;ls&rsquo; into files
+&rsquo;foo&rsquo; and &rsquo;bar&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ ls &gt;foo &gt;bar
+</pre>
+<!-- INDENTATION -->
+<p>Send standard output of one process to standard input of
+several processes in the pipeline:</p>
+<!-- INDENTATION -->
+<pre> $ process1 &gt; &gt;(process1) &gt; &gt;(process2)
+</pre>
+<!-- INDENTATION -->
+<p>Redirection to file as well as send on to pipe:</p>
+<!-- INDENTATION -->
+<pre> $ make install &gt; /tmp/logfile | grep -i error
+</pre>
+<!-- INDENTATION -->
+<p>Redirect stderr to a command like xless without
+redirecting stdout as well:</p>
+<!-- INDENTATION -->
+<pre> $ foo 2&gt;&gt;(xless)
+... but this executes the command asynchronously. To do it synchronously:
+ $ { { foo 1&gt;&amp;3 } 2&gt;&amp;1 | xless } 3&gt;&amp;1
+</pre>
+<!-- INDENTATION -->
+<p>Redirect stderr two times:</p>
+<!-- INDENTATION -->
+<pre> $ setopt multios ; program 2&gt; file2 &gt; file1 2&gt;&amp;1
+</pre>
+<!-- INDENTATION -->
+<p>More fun with stderr:</p>
+<!-- INDENTATION -->
+<pre> $ ./my-script.sh 2&gt; &gt;(grep -v geek &gt;error.log) | process-output &gt; output.log
+   echo &quot;Thats STDOUT&quot; &gt;&gt;(sed &rsquo;s/stdout/another example/&rsquo; &gt; foobar)
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>MODIFIERS USAGE</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Modifiers are a powerful mechanism that lets you modify
+the results returned by parameter, filename and history
+expansion. See zshexpn(1) for details.</p>
+<!-- INDENTATION -->
+<p>Remove a trailing pathname component, leaving the head.
+This works like &lsquo;dirname&rsquo;:</p>
+<!-- INDENTATION -->
+<pre>  $ echo =ls(:h)
+  /bin
+</pre>
+<!-- INDENTATION -->
+<p>Remove all leading pathname components, leaving the tail.
+This works like &lsquo;basename&rsquo;.</p>
+<!-- INDENTATION -->
+<pre>  $ echo =ls(:t)
+  ls
+</pre>
+<!-- INDENTATION -->
+<p>Remove a filename extension of the form
+&lsquo;.xxx&rsquo;, leaving the root name.</p>
+<!-- INDENTATION -->
+<pre>  $ echo $PWD
+  /usr/src/linux
+  $ echo $PWD:t
+  linux
+</pre>
+<!-- INDENTATION -->
+<p>Remove all but the extension.</p>
+<!-- INDENTATION -->
+<pre>  $ foo=23.42
+  $ echo $foo
+  23.42
+  $ echo $foo:e
+  42
+</pre>
+<!-- INDENTATION -->
+<p>Print the new command but do not execute it. Only works
+with history expansion.</p>
+<!-- INDENTATION -->
+<pre>  $ echo =ls(:h)
+  /bin
+  $ !echo:p
+  $ echo =ls(:h)
+</pre>
+<!-- INDENTATION -->
+<p>Quote the substituted words, escaping further
+substitutions.</p>
+<!-- INDENTATION -->
+<pre>  $ bar=&quot;23&rsquo;42&quot;
+  $ echo $bar
+  23&rsquo;42
+  $ echo $bar:q
+  23&acute;42
+</pre>
+<!-- INDENTATION -->
+<p>Convert the words to all lowercase.</p>
+<!-- INDENTATION -->
+<pre>  $ bar=FOOBAR
+  $ echo $bar
+  FOOBAR
+  $ echo $bar:l
+  foobar
+</pre>
+<!-- INDENTATION -->
+<p>Convert the words to all uppercase.</p>
+<!-- INDENTATION -->
+<pre>  $ bar=foobar
+  $ echo $bar
+  foobar
+  $ echo $bar:u
+  FOOBAR
+</pre>
+<!-- INDENTATION -->
+<p>Variables can be modified by modifiers, too. That makes
+modification of variables possible without using any
+external program.</p>
+<!-- INDENTATION -->
+<pre>  sentence=&quot;beginning and some words of a sentence with end.&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Now lets split this sentence-var by using the (s| |)
+modifier which modifies words by splitting at &quot;
+&quot;:</p>
+<!-- INDENTATION -->
+<pre>  words=${(s| |)sentence}
+  print $words[1] -&gt; &quot;beginning&quot;
+  print $words[-1] -&gt;&quot;end.&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Now if one wants to have the beginning of a sentence with
+a Capital, it&rsquo;s as easy as doing:</p>
+<!-- INDENTATION -->
+<pre>  print &quot;${(C)words[1]} $words[2,-1]&quot;
+</pre>
+<!-- INDENTATION -->
+<p>which capitalizes the first word of the list words and
+then adds with &quot; &quot; second to last word of words.
+It&rsquo;s possible to join these words as a colon separated
+scalar.</p>
+<!-- INDENTATION -->
+<pre>  colonlist=${(j|,|)words} # (j|,|) joins with &quot;,&quot;.
+</pre>
+<!-- INDENTATION -->
+<p>You can see that it&rsquo;s a scalar by testing with
+(t):</p>
+<!-- INDENTATION -->
+<pre>  print ${(t)colonlist} prints &quot;scalar&quot;.
+  print ${(t)words} prints &quot;array&quot;.
+</pre>
+<!-- INDENTATION -->
+<p>It&rsquo;s possible to sort arrays with o and O:</p>
+<!-- INDENTATION -->
+<pre>  print ${(o)words} # lists the words-array sorted (forwards)
+  print ${(O)words} # lists the words-array sorted (backwards)
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>COMPLETITION</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>See also <i>man 1 zshcompctl zshcompsys zshcompwid</i>.
+zshcompctl is the old style of zsh programmable completion,
+zshcompsys is the new completion system, zshcompwid are the
+zsh completion widgets.</p>
+<!-- INDENTATION -->
+<p>Some functions, like _apt and _dpkg, are very slow. You
+can use a cache in order to proxy the list of results (like
+the list of available debian packages) Use a cache:</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*&rsquo; use-cache on
+ zstyle &rsquo;:completion:*&rsquo; cache-path ~/.zsh/cache
+</pre>
+<!-- INDENTATION -->
+<p>Prevent CVS files/directories from being completed :</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*:(all-|)files&rsquo; ignored-patterns &rsquo;(|*/)CVS&rsquo;
+ zstyle &rsquo;:completion:*:cd:*&rsquo; ignored-patterns &rsquo;(*/)#CVS&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Fuzzy matching of completions for when you mistype
+them:</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*&rsquo; completer _complete _match _approximate
+ zstyle &rsquo;:completion:*:match:*&rsquo; original only
+ zstyle &rsquo;:completion:*:approximate:*&rsquo; max-errors 1 numeric
+</pre>
+<!-- INDENTATION -->
+<p>And if you want the number of errors allowed by
+_approximate to increase with the length of what you have
+typed so far:</p>
+<!-- INDENTATION -->
+<pre> zstyle -e &rsquo;:completion:*:approximate:*&rsquo; max-errors &rsquo;reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Ignore completion functions for commands you don&rsquo;t
+have:</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*:functions&rsquo; ignored-patterns &rsquo;_*&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>With helper functions like:</p>
+<!-- INDENTATION -->
+<pre> xdvi() { command xdvi ${*:-*.dvi(om[1])} }
+</pre>
+<!-- INDENTATION -->
+<p>you can avoid having to complete at all in many cases,
+but if you do, you might want to fall into menu selection
+immediately and to have the words sorted by time:</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*:*:xdvi:*&rsquo; menu yes select
+ zstyle &rsquo;:completion:*:*:xdvi:*&rsquo; file-sort time
+</pre>
+<!-- INDENTATION -->
+<p>Completing process IDs with menu selection:</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*:*:kill:*&rsquo; menu yes select
+ zstyle &rsquo;:completion:*:kill:*&rsquo;   force-list always
+</pre>
+<!-- INDENTATION -->
+<p>If you end up using a directory as argument, this will
+remove the trailing slash (usefull in ln)</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*&rsquo; squeeze-slashes true
+</pre>
+<!-- INDENTATION -->
+<p>cd will never select the parent directory (e.g.: cd
+../&lt;TAB&gt;):</p>
+<!-- INDENTATION -->
+<pre> zstyle &rsquo;:completion:*:cd:*&rsquo; ignore-parents parent pwd
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>ADVANCED GLOBBING</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>See <i>man zshexpn | less -p &rsquo;Glob
+Qualifiers&rsquo;</i></p>
+<!-- INDENTATION -->
+<p>List file &rsquo;foobar&rsquo; via recursiv search in
+directories:</p>
+<!-- INDENTATION -->
+<pre> $ ls **/foobar
+</pre>
+<!-- INDENTATION -->
+<p>List files file20, file30, file100, etc:</p>
+<!-- INDENTATION -->
+<pre> $ ls file&lt;20-&gt;
+</pre>
+<!-- INDENTATION -->
+<p>List files with suffix c and pro (e.g. foo.c,
+bar.pro):</p>
+<!-- INDENTATION -->
+<pre> $ ls *.(c|pro)
+</pre>
+<!-- INDENTATION -->
+<p>List files which are word-readable:</p>
+<!-- INDENTATION -->
+<pre> $ ls *(R)
+</pre>
+<!-- INDENTATION -->
+<p>List all .c-files except &rsquo;lex.c&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ ls *.c~lex.c
+</pre>
+<!-- INDENTATION -->
+<p>List all &lsquo;README&rsquo; - files case-insensitive
+with max. one typo (e.g. RADME, REEME, RAEDME):</p>
+<!-- INDENTATION -->
+<pre> $ ls (#a1)README
+</pre>
+<!-- INDENTATION -->
+<p>List files named README but accept one spelling error
+including case-insensitive (e.g. RADME, REEME, RAEDME):</p>
+<!-- INDENTATION -->
+<pre> $ ls (#ia1)README
+</pre>
+<!-- INDENTATION -->
+<p>List executable files, directories and symlinks:</p>
+<!-- INDENTATION -->
+<pre> $ ls *(*@)
+</pre>
+<!-- INDENTATION -->
+<p>List dangling symlinks:</p>
+<!-- INDENTATION -->
+<pre> $ ls **/*(-@)
+</pre>
+<!-- INDENTATION -->
+<p>List all zero-length-files which are not group- or
+world-writable:</p>
+<!-- INDENTATION -->
+<pre> $ ls *(L0f.go-w.)
+</pre>
+<!-- INDENTATION -->
+<p>List all .c-files for which there doesn&rsquo;t exist a
+.o file:</p>
+<!-- INDENTATION -->
+<pre> $ c=(*.c) o=(*.o(N)) eval &rsquo;ls ${${c:#(${~${(j:|:)${o:r}}}).c}:?done}&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Find (and print) all symbolic links without a target
+within the current dirtree:</p>
+<!-- INDENTATION -->
+<pre> $ file **/*(D@) | fgrep broken
+ $ for i in **/*(D@); [[ -f $i || -d $i ]] || echo $i
+ $ echo **/*(@-^./=%p)
+ $ print -l **/*(-@)
+</pre>
+<!-- INDENTATION -->
+<p>Rename all MP3-files from name with spaces.mp3 to Name
+With Spaces.mp3:</p>
+<!-- INDENTATION -->
+<pre> $ for i in *.mp3; do
+          mv $i ${${(C)i}:s/Mp3/mp3/}
+   done
+</pre>
+<!-- INDENTATION -->
+<p>Rename all PDF-files from name.mp3 to Name.mp3 (lowercase
+to uppercase of first letter) without touching the rest of
+the filename:</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;([a-z])(*).pdf&rsquo; &rsquo;${(C)1}$2.pdf&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Substitutions in strings can be done by
+string-indexes:</p>
+<!-- INDENTATION -->
+<pre> $ a=&quot;doh.&quot;;a[1]=&rsquo;d&rsquo;;a[-1]=&rsquo;. (Bart Simpson)&rsquo;
+ $ echo $a
+ doh. (Bart Simpson)
+</pre>
+<!-- INDENTATION -->
+<p>Associative arrays:</p>
+<!-- INDENTATION -->
+<pre> $ typeset -A ass_array; ass_array=(one 1 two 2 three 3 four 4)
+ $ print ${(k)ass_array} # prints keys
+ one four two three
+ $ print ${(v)ass_array} # prints values
+ 1 4 2 3
+ $ print $ass_array[one]
+ 1
+</pre>
+<!-- INDENTATION -->
+<p>Extract parts of a string. Print first word of output of
+&rsquo;date&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ print ${$( date )[1]}
+</pre>
+<!-- INDENTATION -->
+<p>Extract parts of a string. Print ip-address of loopback
+device:</p>
+<!-- INDENTATION -->
+<pre> $ print ${${$( LC_ALL=C /sbin/ifconfig lo )[6]}#addr:}
+</pre>
+<!-- INDENTATION -->
+<p>Print specific line of a file. E.g. print line 5 of
+file:</p>
+<!-- INDENTATION -->
+<pre> $ print -l ${&quot;$( &lt; file )&quot;[(f)5]}
+</pre>
+<!-- INDENTATION -->
+<p>Print line containing string &rsquo;root&rsquo; of file
+/etc/passwd:</p>
+<!-- INDENTATION -->
+<pre> $ print ${&quot;$( &lt; /etc/passwd )&quot;[(fr)*root*]}
+</pre>
+<!-- INDENTATION -->
+<p>Print words two to four of output of
+&rsquo;date&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ print ${$( date )[2,4]}
+</pre>
+<!-- INDENTATION -->
+<p>Use of two-dimensional indizes. Print time via date but
+without seconds:</p>
+<!-- INDENTATION -->
+<pre> $ print ${$(date)[4][1,5]}
+</pre>
+<!-- INDENTATION -->
+<p>Calculate floating point numbers:</p>
+<!-- INDENTATION -->
+<pre> $ printf &quot;%.0f0 $[ 2.8*15 ]
+</pre>
+<!-- INDENTATION -->
+<p>Convert images from foo.gif to foo.png:</p>
+<!-- INDENTATION -->
+<pre> $ for i in **/*.gif; convert $i $i:r.png
+</pre>
+<!-- INDENTATION -->
+<p>Download files created with LaTeX2HTML (e.g. the
+ZSH-Guide):</p>
+<!-- INDENTATION -->
+<pre> $ for f in http://zsh.sunsite.dk/Guide/zshguide{,{01..08}}.html; do
+     lynx -source $f &gt;${f:t}
+   done
+</pre>
+<!-- INDENTATION -->
+<p>Make with dpkg a master-list of everyfile that it has
+installed:</p>
+<!-- INDENTATION -->
+<pre> $ diff &lt;(find / | sort) &lt;(cat /var/lib/dpkg/info/*.list | sort)
+</pre>
+<!-- INDENTATION -->
+<p>Replace this color escape-sequences:</p>
+<!-- INDENTATION -->
+<pre> $ autoload colors ; colors
+ $ print &quot;$bg[cyan]$fg[blue]Welcome to man zsh-lovers&quot; &gt;&gt; $TTY
+</pre>
+<!-- INDENTATION -->
+<p>Get ASCII value of a character:</p>
+<!-- INDENTATION -->
+<pre> $ char=N ; print $((#char))
+</pre>
+<!-- INDENTATION -->
+<p>Filename suffix. Note: (N) activates setopt nullglob only
+for this loop.</p>
+<!-- INDENTATION -->
+<pre> $ for i in *.o(N); do
+          rm $i
+   done
+</pre>
+<!-- INDENTATION -->
+<p>Rename files: &rsquo;FOO&rsquo; to &rsquo;foo&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ for i in *(.); mv $i ${i:l}
+</pre>
+<!-- INDENTATION -->
+<p>Rename files: &rsquo;bar&rsquo; to &rsquo;BAR&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ for i in *(.); mv $i ${i:u}
+</pre>
+<!-- INDENTATION -->
+<p>Show all suid-files in $PATH:</p>
+<!-- INDENTATION -->
+<pre> $ ls -latg ${(s.:.)PATH} | grep &rsquo;^...s&rsquo;
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>ZMV - multiple move with zsh</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Requires &rsquo;autoload zmv&rsquo;. Some examples:</p>
+<!-- INDENTATION -->
+<p>Move serially all files (foo.foo &gt; 1.foo, fnord.foo
+&gt; 2.foo, ..).</p>
+<!-- INDENTATION -->
+<pre> $ ls *
+ 1.c  asd.foo  bla.foo  fnord.foo  foo.fnord  foo.foo
+ $ c=1 zmv &rsquo;*.foo&rsquo; &rsquo;$((c++)).foo&rsquo;
+ $ ls *
+ 1.c  1.foo  2.foo  3.foo  4.foo  foo.fnord
+</pre>
+<!-- INDENTATION -->
+<p>See above, but now only files with a filename &gt;= 30
+chars.</p>
+<!-- INDENTATION -->
+<pre> $ c=1 zmv &quot;${(l:30-4::?:)}*.foo&quot; &rsquo;$((c++)).foo&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Replace spaces in filenames with a underline.</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;* *&rsquo; &rsquo;$f:gs/ /_&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Change the suffix from *.sh to *.pl.</p>
+<!-- INDENTATION -->
+<pre> $ zmv -W &rsquo;*.sh&rsquo; &rsquo;*.pl&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Lowercase/uppercase all files and directories.</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;(*)&rsquo; &rsquo;${(L)1}&rsquo; for lowercase
+ $ zmv &rsquo;(*)&rsquo; &rsquo;${(U)1}&rsquo; for uppercase
+</pre>
+<!-- INDENTATION -->
+<p>Remove the suffix *.c from all c-files.</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;(*).c&rsquo; &rsquo;$1&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Uppercase only the first letter of all *.mp3 - files.</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;([a-z])(*).mp3&rsquo; &rsquo;${(C)1}$2.mp3&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Copy the target &lsquo;README&rsquo; in same directory as
+each &lsquo;Makefile&rsquo;.</p>
+<!-- INDENTATION -->
+<pre> $ zmv -C &rsquo;(**/)Makefile&rsquo; &rsquo;${1}README&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Rename pic1.jpg, pic2.jpg,.. to pic0001.jpg,
+pic0002.jpg,...</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;pic(*).jpg&rsquo; &rsquo;pic${(l:4::0:)1}.jpg&rsquo;
+ $ zmv &rsquo;(**/)pic(*).jpg&rsquo; &rsquo;$1/pic${(l:4::0:)2}.jpg&rsquo; # recursive
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>MODULES</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>See also <i>man zshmodules</i>. Don&rsquo;t forget to run
+<i>zmodload &minus;i MODULENAME</i> before using a module.
+Example: <i>zmodload -i zsh/datetime</i>.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/cap</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Builtins for manipulating POSIX.1e (POSIX.6) capability
+(privilege) sets.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/clone</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin that can clone a running shell onto another
+terminal.</p>
+<!-- INDENTATION -->
+<p>Creates a forked instance of the current shell ($! is set
+to zero) and execute &lsquo;&lsquo;command&rsquo;&rsquo; on
+/dev/tty8 (for this example):</p>
+<!-- INDENTATION -->
+<pre> $ zmodload zsh/clone
+ $ clone /dev/tty8 &amp;&amp; (($! == 0)) &amp;&amp; exec command
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/compctl</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>The <b>compctl</b> builtin for controlling
+completion.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/complete</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>The basic completion code.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/complist</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Completion listing extensions.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/computil</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A module with utility builtins needed for the shell
+function based completion system.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/datetime</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Some date/time commands and parameters.</p>
+<!-- INDENTATION -->
+<p>Do not have GNU date? Let&rsquo;s replace it:</p>
+<!-- INDENTATION -->
+<pre> $ alias datereplacement=&rsquo;strftime &quot;%Y-%m-%d&quot; $EPOCHSECONDS&rsquo;
+ $ export DATE=&lsquo;datereplacement&lsquo;
+ $ echo $DATE
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/deltochar</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A ZLE function duplicating EMACS&rsquo;
+<b>zap&minus;to&minus;char</b>.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/example</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>An example of how to write a module.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/files</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Some basic file manipulation commands as builtins.</p>
+<!-- INDENTATION -->
+<pre># search a directory for files containing a certain string then copy those files to another directory.
+  $ IFS=$&rsquo; &rsquo;
+  $ cp $(grep -lZr foobar .) otherdirectory
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/mapfile</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Access to external files via a special associative
+array.</p>
+<!-- INDENTATION -->
+<pre># grepping for two patterns
+  $ pattern1=&quot;foo&quot;
+  $ pattern2=&quot;bar foo&quot;
+  $ print -l ./**/*(DN.e{&rsquo;z=$mapfile[$REPLY] &amp;&amp;
+  [[ $z = *$pattern1* &amp;&amp; $z = *$pattern2* ]]&rsquo;})
+# or a solution in combination with zsh/pcre
+  $ zmodload -i zsh/mapfile zsh/pcre
+  $ pattern1=&quot;foo&quot;
+  $ pattern2=&quot;bar foo&quot;
+  $ pcre_compile &quot;(?s)(?=.*?$pattern1).*?$pattern2&quot;
+  $ pcre_study
+  $ print -l ./**/*(DN.e{&rsquo;pcre_match $mapfile[$REPLY]&rsquo;})
+
+# equivalent for &lsquo;&lsquo;less /etc/passwd | grep -v root&rsquo;&rsquo;
+  $ IFS=$&rsquo;0
+  $ print -rl -- ${${=mapfile[/etc/passwd]}:#*root*}
+# or - for case insensitive
+  $ setopt extendedglob
+  $ print -rl -- ${${=mapfile[/etc/passwd]}:#*(#i)root*}
+
+# If a XML-file contains stuff like &lsquo;&lsquo;&lt;TAGA/&gt;&rsquo;&rsquo; and &lsquo;&lsquo;&lt;TAGB/&gt;&rsquo;&rsquo;, number this empty tags
+# (ones ending in &rsquo;/&gt;&rsquo;) so if encountered in the same order, the preceeding tags would become
+# &lsquo;&lsquo;&lt;TAGA/&gt;1&lt;/TAGA&gt;&rsquo;&rsquo; and &lsquo;&lsquo;&lt;TAGB/&gt;2&lt;/TAGB&gt;&rsquo;&rsquo;
+  $ cnt=0
+  $ apfile[data.xml.new]=${(S)mapfile[data.xml]//  &gt; (#im)&lt;TAGA&gt;*&lt;TAGA&gt;/&lt;TAGA&gt;$((++cnt))&lt;TAGA&gt;}
+
+# removing all files in users Maildir/new that contain &lsquo;&lsquo;filename=&quot;gone.src&rsquo;&rsquo;
+  $ zmodload zsh/{files,mapfile}
+  $ rm -f /u1/??/*/Maildir/new/100*(.e{&rsquo;[[ $mapfile[$REPLY] == *filename=
+
+# Grep out the Title from a postscript file and append that value to the end of
+# the filename
+  $ autoload -U zmv
+  $ zmv &rsquo;(*).ps&rsquo; &rsquo;$1-${${${mapfile[$f]##*%%Title: }%% *}//[^a-zA-Z0-9_]/}.ps&rsquo;
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/mathfunc</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Standard scientific functions for use in mathematical
+evaluations.</p>
+<!-- INDENTATION -->
+<pre>$ echo $(( sin(1/4.0)**2 + cos(1/4.0)**2 - 1 ))
+  -1.1102230246251565e-16
+$ echo $(( pi = 4.0 * atan(1.0) ))
+  3.1415926535897931
+$ echo $(( f = sin(0.3) ))
+  0.29552020666133955
+$ print $(( rand48(seed) ))
+  0.01043488334700271
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/parameter</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Access to internal hash tables via special associative
+arrays.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/pcre</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Interface to the PCRE library.</p>
+<!-- INDENTATION -->
+<p>Important: requires zsh compiled with pcre-support. Check
+whether your version supports pcre via &lsquo;ldd =zsh |
+grep pcre&lsquo;. PCRE provides support for Perl&rsquo;s
+regular expressions (regex). You have to compile a regex and
+can match it afterwards using error codes:</p>
+<!-- INDENTATION -->
+<pre> $ zmodload zsh/pcre
+ $ pcre_compile &rsquo;\s\d.\d{3}.\d{3} Euro&rsquo;  &amp;&amp;\
+   pcre_match &rsquo; 1.000.000 Euro&rsquo; &amp;&amp;\
+   echo &quot;matches&quot; || echo &quot;does not match&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Note: if you are using complex regular expressions you
+can improve speed via pcre_study.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/sched</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin that provides a timed execution facility within
+the shell.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/net/socket</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Manipulation of Unix domain sockets $ zmodload
+zsh/net/socket $ zsocket -l -d 3 #
+&lsquo;&lsquo;-l&rsquo;&rsquo;: open a socket listening on
+filename # &lsquo;&lsquo;-d&rsquo;&rsquo;: argument will be
+taken as the target file descriptor for the # connection #
+&lsquo;&lsquo;3&rsquo;&rsquo; : file descriptor. See
+&lsquo;&lsquo;A User&rsquo;s Guide to the
+Z-Shell&rsquo;&rsquo; # (3.7.2: File descriptors) $ zsocket
+-a -d 4 3 # &lsquo;&lsquo;-a&rsquo;&rsquo;: accept an
+incoming connection to the socket $ zsocket -a -d 5 3 #
+accept a connection $ echo foobar &gt;&amp;4 $ echo barfoo
+&gt;&amp;5 $ 4&gt;&amp;- 5&gt;&amp;- 3&gt;&amp;-</p>
+<!-- INDENTATION -->
+<p>In one shell:</p>
+<!-- INDENTATION -->
+<pre> $ zmodload zsh/net/socket
+ $ zsocket -l -d 3 /tmp/mysocket # open listening socket
+ $ zsocket -a -d 4 3             # accept a connection
+ $ zsocket -a -d 5 3             # accept a connection
+ $ echo Hi there &gt;&amp;4
+ $ echo Hi there also &gt;&amp;5
+ $ exec 4&gt;&amp;- 5&gt;&amp;- 3&gt;&amp;-
+</pre>
+<!-- INDENTATION -->
+<p>In another shell:</p>
+<!-- INDENTATION -->
+<pre> $ zmodload zsh/net/socket
+ $ zsocket -d 3 /tmp/mysocket # connect to /tmp/socket
+ $ zsocket -d 4 /tmp/mysocket # connect to /tmp/socket
+ $ read msg &lt;&amp;3; echo got: &quot;$msg on fd 3&quot;
+ $ read msg &lt;&amp;4; echo got: &quot;$msg on fd 4&quot;
+ $ exec 3&gt;&amp;- 4&gt;&amp;-
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/stat</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin command interface to the <b>stat</b> system
+call.</p>
+<!-- INDENTATION -->
+<p>Get size of a file in bytes:</p>
+<!-- INDENTATION -->
+<pre> $ zmodload -i zsh/stat
+ $ stat -L +size file
+</pre>
+<!-- INDENTATION -->
+<p>Equal to GNU&rsquo;s:</p>
+<!-- INDENTATION -->
+<pre> $ stat -c %s file
+</pre>
+<!-- INDENTATION -->
+<p>Comparing file dates:</p>
+<!-- INDENTATION -->
+<pre>  $ file1=foo
+  $ file2=bar
+  $ touch bar &amp; sleep 5 &amp; touch foo
+  $ echo $file1 is $(( $(stat +mtime $file2) - $(stat +mtime $file1) )) seconds older than $file2.
+  bar is 5 seconds older than foo
+</pre>
+<!-- INDENTATION -->
+<p>List the files of a disk smaller than some other
+file:</p>
+<!-- INDENTATION -->
+<pre>  $ stat -A max +size some-other-file
+  $ print -rl ./**/*(D.L-$max)
+</pre>
+<!-- INDENTATION -->
+<p>List the top 100 biggest files in a disk:</p>
+<!-- INDENTATION -->
+<pre>  $ ls -fld ./**/*(d&lsquo;stat +device .&lsquo;OL[1,100])
+</pre>
+<!-- INDENTATION -->
+<p>Get only the user name and the file names from (like ls
+-l * | awk &rsquo;{print $3&quot; &quot; $8}&rsquo;):</p>
+<!-- INDENTATION -->
+<pre>  $ for file; do
+  &gt;   stat -sA user +uid -- &quot;$file&quot; &amp;&amp;
+  &gt;     print -r -- &quot;$user&quot; &quot;$file&quot;
+  &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Get the difference between actual bytes of file and
+allocated bytes of file:</p>
+<!-- INDENTATION -->
+<pre>  $ print $(($(stat +block -- file) * 512 - $(stat +size -- file)))
+</pre>
+<!-- INDENTATION -->
+<p>Find largest file:</p>
+<!-- INDENTATION -->
+<pre>  $ stat +size ./*(DOL[1])
+  # &lsquo;&lsquo;D&rsquo;&rsquo;  : to include dot files (d lowercase is for device)
+  # &lsquo;&lsquo;O&rsquo;&rsquo;  : reverse Ordered (o lowercase for non-reverse order)
+  # &lsquo;&lsquo;L&rsquo;&rsquo;  : by file Length (l is for number of links)
+  # &lsquo;&lsquo;[1]&rsquo;&rsquo;: return only first one
+</pre>
+<!-- INDENTATION -->
+<p>Delete files in a directory that hasn&rsquo;t been
+accessed in the last ten days and send ONE mail to the owner
+of the files informing him/her of the files&rsquo;
+deletion:</p>
+<!-- INDENTATION -->
+<pre>  $ zmodload zsh/stat zsh/files
+  $ typeset -A f; f=()
+  $ rm -f /path/**/*(.a+10e{&rsquo;stat -sA u +uidr $REPLY; f[$u]=&quot;$f[$u]$REPLY&quot;&rsquo;})
+  $ for user (${(k)f}) {print -rn $f[$user]|mailx -s &quot;...&quot; $user}
+</pre>
+<!-- INDENTATION -->
+<p>Get a &quot;ls -l&quot; on all the files in the tree that
+are younger than a specified age:</p>
+<!-- INDENTATION -->
+<pre>  $ for d (. ./**/*(N/m-2))
+  &gt;   print -r -- $&rsquo;0$d: &amp;&amp; cd $d &amp;&amp; {
+  &gt;      for f (*(Nm-2om))
+  &gt;   stat -F &rsquo;%b %d %H:%M&rsquo; -LsAs -- $f &amp;&amp;
+  &gt;   print -r -- $s[3] ${(l:4:)s[4]} ${(l:8:)s[5]} \
+  &gt;   ${(l:8:)s[6]} ${(l:8:)s[8]} $s[10] $f ${s[14]:+-&gt; $s[14]}
+  &gt;   cd ~-
+  &gt; }
+</pre>
+<!-- INDENTATION -->
+<p>Get file creation date:</p>
+<!-- INDENTATION -->
+<pre>  $ stat -F &rsquo;%d %m %Y&rsquo; +mtime ~/.zshrc
+  30 06 2004
+  $ stat -F &rsquo;%D&rsquo; +mtime ~/.zshrc
+  06/30/04
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/system</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin interface to various low&minus;level system
+features.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/net/tcp</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Manipulation of TCP sockets</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/termcap</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Interface to the termcap database.</p>
+<!-- INDENTATION -->
+<pre> $ zmodload -ab zsh/termcap echotc
+ $ GREEN=&lsquo;echotc AF 2&lsquo;
+ $ YELLOW=&lsquo;echotc AF 3&lsquo;
+ $ RED=&lsquo;echotc AF 1&lsquo;
+ $ BRIGHTRED=&lsquo;echotc md ; echotc AF 1&lsquo;
+ $ print -l ${GREEN}green ${YELLOW}yellow ${RED}red ${BRIGHTRED}brightred
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/terminfo</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Interface to the terminfo database.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zftp</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin FTP client.</p>
+<!-- INDENTATION -->
+<p>Write ftp scripts as though shell:</p>
+<!-- INDENTATION -->
+<pre> $ init
+ $ autoload -U zfinit &amp;&amp; zfinit
+ $ zfparams www.example.invalid myuserid mypassword
+ $ zfopen
+ $ zfcd tips
+ $ zfls -l zsh-lovers.html
+ $ zfput zsh-lovers.html
+ $ zfls -l zsh-lovers.html
+</pre>
+<!-- INDENTATION -->
+<p>Automatically transfer files using FTP with error
+checking:</p>
+<!-- INDENTATION -->
+<pre>  $ zftp open host.name.invalid user passwd || exit
+  $ zftp get /remote/file &gt; /local/file; r=$?
+  $ zftp close &amp;&amp; exit r
+</pre>
+<!-- INDENTATION -->
+<p>Compress and ftp on the fly:</p>
+<!-- INDENTATION -->
+<pre>  $ zftp open host.name.invalid user password
+  $ zftp get $file | bzip2 &gt; ${file}.bz2
+  $ zftp close
+</pre>
+<!-- INDENTATION -->
+<p>Long list of files on a ftp:</p>
+<!-- INDENTATION -->
+<pre>  $ autoload -U zfinit
+  $ zfinit
+  $ zfopen some-host
+  $ zfcd /some/remote/Dir
+  $ cd /some/local/Dir
+</pre>
+<!-- INDENTATION -->
+<p>If the list.txt is located on the remote host, change to
+$ zfget ${(f)&quot;$(zftp get
+/path/to/remote/list.txt)&quot;} $ zfget ${(f)&quot;$(cat
+list.txt)&quot;} $ zfclose</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zle</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>The Zsh Line Editor, including the <b>bindkey</b> and
+<b>vared</b> builtins.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zleparameter</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Access to internals of the Zsh Line Editor via
+parameters.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zprof</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A module allowing profiling for shell functions.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zpty</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>A builtin for starting a command in a
+pseudo&minus;terminal.</p>
+<!-- INDENTATION -->
+<pre> $ zmodload -i zsh/zpty
+ $ zpty PW passwd $1
+ # &lsquo;&lsquo;-r&rsquo;&rsquo;: read the output of the command name.
+ # &lsquo;&lsquo;z&rsquo;&rsquo; : Parameter
+ $ zpty -r PW z &rsquo;*password:&rsquo;
+ # send the to command name the given strings as input
+ $ zpty -w PW $2
+ $ zpty -r PW z &rsquo;*password:&rsquo;
+ $ zpty -w PW $2
+ # | The second form, with the -d option, is used to delete commands
+ # | previously started, by supplying a list of their names. If no names
+ # | are given, all commands are deleted. Deleting a command causes the HUP
+ # | signal to be sent to the corresponding process.
+ $ zpty -d PW
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zselect</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Block and return when file descriptors are ready.</p>
+<!-- INDENTATION -->
+<pre># It&rsquo;s simular to
+ ,----
+ | $ sg=$(stty -g)
+ | $ stty -icanon min 0 time 50
+ | $ read yesno
+ | $ stty &quot;$sg&quot;
+ | $ case &quot;$yesno&quot; in
+ | &gt;  yes) command1;;
+ | &gt;  *) command2;;
+ | &gt; esac
+ &lsquo;----
+$ if zselect -t 500 -r 0 &amp;&amp; read yesno &amp;&amp; [ yes = &quot;$yesno&quot; ]; then
+&gt;    command1
+&gt; else
+&gt;    command1
+&gt; fi
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>zsh/zutil</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Some utility builtins, e.g. the one for supporting
+configuration via styles.</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>SUBSTITUTION</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Path substitution:</p>
+<!-- INDENTATION -->
+<pre> $ ls -l =zsh  # is like: &rsquo;ls -l /path/to/zsh&rsquo; or &rsquo;ls -l &lsquo;which zsh&lsquo;&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Process substitution:</p>
+<!-- INDENTATION -->
+<pre> $ (vi =(cmd)) # edit output of &rsquo;cmd&rsquo; (called process substitution).
+</pre>
+<!-- INDENTATION -->
+<p>Substitution of variables:</p>
+<!-- INDENTATION -->
+<pre> $ var1=42
+ $ tmp=var1
+ $ echo $((tmp))
+ 42
+ $
+
+$ var=foo
+ $ tmp=var
+ $ echo ${(P)tmp}
+ foo
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>ALIASES</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Suffix aliases are supported in zsh since version 4.2.0.
+Some examples:</p>
+<!-- INDENTATION -->
+<pre> alias -s tex=vim
+ alias -s html=w3m
+ alias -s org=w3m
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="20%"></td>
+<td width="79%">
+<p>Now pressing return-key after entering
+&rsquo;foobar.vim&rsquo; starts vim with foobar.vim. Calling
+a html-file runs browser w3m. &rsquo;www.zsh.org&rsquo; and
+pressing enter starts w3m with argument
+www.zsh.org.</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Global aliases can be used anywhere in the command line.
+Example:</p>
+<!-- INDENTATION -->
+<pre> $ alias -g C=&rsquo;| wc -l&rsquo;
+ $ grep alias ~/.zsh/* C
+ 443
+</pre>
+<!-- INDENTATION -->
+<p>Some more or less useful global aliases (choose whether
+they are useful or not for you on your own):</p>
+<!-- INDENTATION -->
+<pre> alias -g ...=&rsquo;../..&rsquo;
+ alias -g ....=&rsquo;../../..&rsquo;
+ alias -g .....=&rsquo;../../../..&rsquo;
+ alias -g CA=&quot;2&gt;&amp;1 | cat -A&quot;
+ alias -g C=&rsquo;| wc -l&rsquo;
+ alias -g D=&quot;DISPLAY=:0.0&quot;
+ alias -g DN=/dev/null
+ alias -g ED=&quot;export DISPLAY=:0.0&quot;
+ alias -g EG=&rsquo;|&amp; egrep&rsquo;
+ alias -g EH=&rsquo;|&amp; head&rsquo;
+ alias -g EL=&rsquo;|&amp; less&rsquo;
+ alias -g ELS=&rsquo;|&amp; less -S&rsquo;
+ alias -g ETL=&rsquo;|&amp; tail -20&rsquo;
+ alias -g ET=&rsquo;|&amp; tail&rsquo;
+ alias -g F=&rsquo; | fmt -&rsquo;
+ alias -g G=&rsquo;| egrep&rsquo;
+ alias -g H=&rsquo;| head&rsquo;
+ alias -g HL=&rsquo;|&amp; head -20&rsquo;
+ alias -g &sect;k=&quot;*~(*.bz2|*.gz|*.tgz|*.zip|*.z)&quot;
+ alias -g LL=&quot;2&gt;&amp;1 | less&quot;
+ alias -g L=&quot;| less&quot;
+ alias -g LS=&rsquo;| less -S&rsquo;
+ alias -g MM=&rsquo;| most&rsquo;
+ alias -g M=&rsquo;| more&rsquo;
+ alias -g NE=&quot;2&gt; /dev/null&quot;
+ alias -g NS=&rsquo;| sort -n&rsquo;
+ alias -g NUL=&quot;&gt; /dev/null 2&gt;&amp;1&quot;
+ alias -g PIPE=&rsquo;|&rsquo;
+ alias -g R=&rsquo; &gt; /c/aaa/tee.txt &rsquo;
+ alias -g RNS=&rsquo;| sort -nr&rsquo;
+ alias -g S=&rsquo;| sort&rsquo;
+ alias -g TL=&rsquo;| tail -20&rsquo;
+ alias -g T=&rsquo;| tail&rsquo;
+ alias -g US=&rsquo;| sort -u&rsquo;
+ alias -g VM=/var/log/messages
+ alias -g X0G=&rsquo;| xargs -0 egrep&rsquo;
+ alias -g X0=&rsquo;| xargs -0&rsquo;
+ alias -g XG=&rsquo;| xargs egrep&rsquo;
+ alias -g X=&rsquo;| xargs&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Array parameters [array_name=(value1 value2 ...
+valueN)].</p>
+<!-- INDENTATION -->
+<pre> $ stupid=emacs
+ $ echo $stupid[3]
+ a
+ $
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>SHELL-SCRIPTING</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>This section provides some examples for often needed
+shellscript-stuff. Notice that you should not use otherwise
+most examples won&rsquo;t work.</p>
+<!-- INDENTATION -->
+<p>Parse options in shellscripts. Example taken from ZWS by
+Adam Chodorowski
+(http://www.chodorowski.com/projects/zws/):</p>
+<!-- INDENTATION -->
+<pre>parse_options()
+{
+    o_port=(-p 9999)
+    o_root=(-r WWW)
+    o_log=(-d ZWS.log)
+
+   zparseopts -K -- p:=o_port r:=o_root h=o_help
+    if [[ $? != 0 || &quot;$o_help&quot; != &quot;&quot; ]]; then
+        echo Usage: $(basename &quot;$0&quot;) &quot;[-p PORT] [-r DIRECTORY]&quot;
+        exit 1
+    fi
+
+   port=$o_port[2]
+    root=$o_root[2]
+    log=$o_log[2]
+
+   if [[ $root[1] != &rsquo;/&rsquo; ]]; then root=&quot;$PWD/$root&quot;; fi
+}
+# now use the function:
+parse_options $*
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>MISC&minus;EXAMPLES</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Hint: A list of valid glob Qualifiers can be found in
+zshexpn(1). See &lsquo;&lsquo;man 1 zshexpn | less
+-p&rsquo;&rsquo; Qualifiers for details.</p>
+<!-- INDENTATION -->
+<p>Load all available modules at startup</p>
+<!-- INDENTATION -->
+<pre> $ typeset -U m
+ $ m=()
+ $ for md ($module_path) m=($m $md/**/*(*e:&rsquo;REPLY=${REPLY#$md/}&rsquo;::r))
+ $ zmodload -i $m
+</pre>
+<!-- INDENTATION -->
+<p>Rename all MP3-Files from &lsquo;&lsquo;name with
+spaces.mp3&rsquo;&rsquo; to &lsquo;&lsquo;Name With
+Spaces.mp3&rsquo;&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ for i in *.mp3; do
+ &gt;     mv $i ${${(C)i}:s/Mp3/mp3/}
+ &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Download with LaTeX2HTML created Files (for example the
+ZSH&minus;Guide):</p>
+<!-- INDENTATION -->
+<pre> $ for f in http://zsh.sunsite.dk/Guide/zshguide{,{01..08}}.html; do
+ &gt;     lynx -source $f &gt;${f:t}
+ &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Replace the unreadable Escape-Sequences:</p>
+<!-- INDENTATION -->
+<pre> $ autoload colors ; colors
+ $ print &quot;$bg[cyan]$fg[blue]You are an zsh user&quot; &gt;&gt; /dev/pts/3
+</pre>
+<!-- INDENTATION -->
+<p>Filename&minus;Expansion. <b>Note:</b> (N) activates
+setopt nullglob only for this loop.</p>
+<!-- INDENTATION -->
+<pre> $ for i in *.o(N); do
+ &gt;     rm $i
+ &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Re-linking broken links:</p>
+<!-- INDENTATION -->
+<pre> $ for f in ./**/*(-@); do
+ &gt;     stat +link -A l $f
+ &gt;     (cd $f:h &amp; [[ -e $l.gz ]]) &amp; ln -sf $l.gz $f
+ &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Show me all the .c files for which there doesn&rsquo;t
+exist a .o file:</p>
+<!-- INDENTATION -->
+<pre>  $ c=(*.c) o=(*.o(N)) eval &rsquo;ls ${${c:#(${~${(j:|:)${o:r}}}).c}:?done}&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Load all available modules at startup:</p>
+<!-- INDENTATION -->
+<pre>  $ typeset -U m
+  $ m=()
+  $ for md ($module_path) m=($m $md/**/*(*e:&rsquo;REPLY=${REPLY#$md/}&rsquo;::r))
+  $ zmodload -i $m
+</pre>
+<!-- INDENTATION -->
+<p>Rename all files within a directory such that their names
+get a numeral prefix in the default sort order:</p>
+<!-- INDENTATION -->
+<pre>  $ i=1; for j in *; do mv $j $i.$j; ((i++)); done
+  $ i=1; for f in *; do mv $f $(echo $i| awk &rsquo;{ printf(&quot;%03d&quot;, $0)}&rsquo;).$f; ((i++)); done
+  $ integer i=0; for f in *; do mv $f $[i+=1].$f; done
+</pre>
+<!-- INDENTATION -->
+<p>Find (and print) all symbolic links without a target
+within the current dirtree:</p>
+<!-- INDENTATION -->
+<pre>  $ $ file **/*(D@) | fgrep broken
+  $ for i in **/*(D@); [[ -f $i || -d $i ]] || echo $i
+  $ echo **/*(@-^./=%p)
+  $ print -l **/*(-@)
+</pre>
+<!-- INDENTATION -->
+<p>List all plain files that do not have extensions listed
+in &lsquo;fignore&rsquo;:</p>
+<!-- INDENTATION -->
+<pre>  $ ls **/*~*(${~${(j/|/)fignore}})(.)
+  # see above, but now omit executables
+  $ ls **/*~*(${~${(j/|/)fignore}})(.^*)
+</pre>
+<!-- INDENTATION -->
+<p>Print out files that dont have extensions (require setopt
+extendedglob dotglob):</p>
+<!-- INDENTATION -->
+<pre>  $ printf &rsquo;%s0 ^?*.*
+</pre>
+<!-- INDENTATION -->
+<p>List files in reverse order sorted by name:</p>
+<!-- INDENTATION -->
+<pre>  $ print -rl -- *(On)
+  or
+  $ print -rl -- *(^on)
+</pre>
+<!-- INDENTATION -->
+<p>Synonymic to &lsquo;&lsquo;ps ax | awk &rsquo;{print
+$1}&rsquo;&rsquo;&rsquo;:</p>
+<!-- INDENTATION -->
+<pre>  $ print -l /proc/*/cwd(:h:t:s/self//)
+</pre>
+<!-- INDENTATION -->
+<p>Get the PID of a process (without
+&lsquo;&lsquo;ps&rsquo;&rsquo;,
+&lsquo;&lsquo;sed&rsquo;&rsquo;,
+&lsquo;&lsquo;pgrep&rsquo;&rsquo;, .. (under Linux):</p>
+<!-- INDENTATION -->
+<pre>  $ pid2 () {
+  &gt;   local i
+  &gt;   for i in /proc/&lt;-&gt;/stat
+  &gt; do
+  &gt;   [[ &quot;$(&lt; $i)&quot; = *\((${(j:|:)~@})\)* ]] &amp;&amp; echo $i:h:t
+  &gt; done
+  &gt; }
+</pre>
+<!-- INDENTATION -->
+<p>for X in &rsquo;n&rsquo; &rsquo;o&rsquo; &rsquo;p&rsquo;
+&rsquo;q&rsquo; &rsquo;r&rsquo; &rsquo;s&rsquo;
+&rsquo;t&rsquo; &rsquo;u&rsquo; &rsquo;v&rsquo;
+&rsquo;w&rsquo; &rsquo;x&rsquo; &rsquo;y&rsquo;; do ...:</p>
+<!-- INDENTATION -->
+<pre>  $ for (( i = 36#n; i &lt;= 36#y; i++ )); do
+  &gt;   print ${$(([##36]i)):l}
+  &gt; done
+# or in combination with &lsquo;&lsquo;dc&rsquo;&rsquo;
+  $ print {$((##n))..$((##y))}P 10P | dc
+# or with &lsquo;&lsquo;eval&rsquo;&rsquo;
+  $ eval print &rsquo;${$(([##36]&rsquo;{$((36#n))..$((36#y))}&rsquo;)):l}&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Foreach in one line of shell:</p>
+<!-- INDENTATION -->
+<pre>  $ for f (*) print -r -- $f
+</pre>
+<!-- INDENTATION -->
+<p>Copy a directory recursively without data/files:</p>
+<!-- INDENTATION -->
+<pre>  $ dirs=(**/*(/))
+  $ cd -- $dest_root
+  $ mkdir -p -- $dirs
+# or without zsh
+  $ find . -type d -exec env d=&quot;$dest_root&quot; sh -c &rsquo; exec mkdir -p -- &quot;$d/$1&quot;&rsquo; &rsquo;{}&rsquo; &rsquo;{}&rsquo; ;
+</pre>
+<!-- INDENTATION -->
+<p>If &lsquo;foo=23&rsquo;&rsquo;, then print with 10 digit
+with leading &rsquo;0&rsquo;:</p>
+<!-- INDENTATION -->
+<pre>  $ foo=23
+  $ print ${(r:10::0:)foo}
+</pre>
+<!-- INDENTATION -->
+<p>Find the name of all the files in their home directory
+that have more than 20 characters in their file names:</p>
+<!-- INDENTATION -->
+<pre>  print -rl $HOME/${(l:20::?:)~:-}*
+</pre>
+<!-- INDENTATION -->
+<p>Save arrays:</p>
+<!-- INDENTATION -->
+<pre>  $ print -r -- ${(qq)m} &gt; $nameoffile      # save it
+  $ eval &quot;m=($(cat -- $nameoffile)&quot;            # or use
+  $ m=(&quot;${(@Q)${(z)&quot;$(cat -- $nameoffile)&quot;}}&quot;) # to restore it
+</pre>
+<!-- INDENTATION -->
+<p>Get a &quot;ls -l&quot; on all the files in the tree that
+are younger than a specified age (e.g &quot;ls -l&quot; all
+the files in the tree that where modified in the last 2
+days):</p>
+<!-- INDENTATION -->
+<pre>  $ ls -tld **/*(m-2)
+</pre>
+<!-- INDENTATION -->
+<p>This will give you a listing 1 file perl line (not
+&agrave; la ls -R). Think of an easy way to have a &quot;ls
+-R&quot; style output with only files newer than 2 day
+old.</p>
+<!-- INDENTATION -->
+<pre>  $ for d (. ./**/*(/)) {
+  &gt;   print -r -- $&rsquo;0${d}:
+  &gt;   cd $d &amp;&amp; {
+  &gt;       l=(*(Nm-2))
+  &gt;       (($#l)) &amp;&amp; ls -ltd -- $l
+  &gt;       cd ~-
+  &gt;   }
+  &gt; }
+</pre>
+<!-- INDENTATION -->
+<p>If you also want directories to be included even if their
+mtime is more than 2 days old:</p>
+<!-- INDENTATION -->
+<pre>  $ for d (. ./**/*(/)) {
+  &gt;   print -r -- $&rsquo;0${d}:
+  &gt;   cd $d &amp;&amp; {
+  &gt;      l=(*(N/,m-2))
+  &gt;      (($#l)) &amp;&amp; ls -ltd -- $l
+  &gt;      cd ~-
+  &gt;   }
+  &gt; }
+</pre>
+<!-- INDENTATION -->
+<p>And if you want only the directories with mtime &lt; 2
+days to be listed:</p>
+<!-- INDENTATION -->
+<pre>  $ for d (. ./**/*(N/m-2)) {
+  &gt;   print -r -- $&rsquo;0${d}:
+  &gt;   cd $d &amp;&amp; {
+  &gt;      l=(*(Nm-2))
+  &gt;      (($#l)) &amp;&amp; ls -ltd -- $l
+  &gt;      cd ~-
+  &gt;   }
+  &gt; }
+</pre>
+<!-- INDENTATION -->
+<p>Print 42 &lsquo;&lsquo;-&rsquo;&rsquo;:</p>
+<!-- INDENTATION -->
+<pre>  $ echo ${(l:42::-:)}
+# or use &lsquo;&lsquo;$COLUMS&rsquo;&rsquo;
+  $ echo ${(l:$COLUMNS::-:)}
+# and now with colors (require autoload colors ;colors)
+  $ echo &quot;$bg[red]$fg[black]${(l:42::-:)}&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Redirect STDERR to a command like xless without
+redirecting STDOUT as well:</p>
+<!-- INDENTATION -->
+<pre>  $ foo 2&gt;&gt;(xless)
+# but this executes the command asynchronously. To do it synchronously:
+  $ { { foo 1&gt;&amp;3 } 2&gt;&amp;1 | xless } 3&gt;&amp;1
+</pre>
+<!-- INDENTATION -->
+<p>Rename all MP3-Files from name with spaces.mp3 to Name
+With Spaces.mp3:</p>
+<!-- INDENTATION -->
+<pre>  $ for i in *.mp3; do
+  &gt;     mv $i ${${(C)i}:s/Mp3/mp3/}
+  &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Match file names containing only digits and ending with
+.xml (requiresetopt kshglob):</p>
+<!-- INDENTATION -->
+<pre>  $ ls -l [0-9]##.xml
+  $ ls -l &lt;0-&gt;.xml
+</pre>
+<!-- INDENTATION -->
+<p>Remove all &quot;non txt&quot; files:</p>
+<!-- INDENTATION -->
+<pre>  $ rm ./^*.txt
+</pre>
+<!-- INDENTATION -->
+<p>Move 200 files from a directory into another:</p>
+<!-- INDENTATION -->
+<pre>  $ mv -- *([1,200]) /another/Dir
+</pre>
+<!-- INDENTATION -->
+<p>Convert images (foo.gif =&gt; foo.png):</p>
+<!-- INDENTATION -->
+<pre>  $ for i in **/*.gif; convert $i $i:r.png
+</pre>
+<!-- INDENTATION -->
+<p>Convert a collection of mp3 files to wave or cdr (e.g.
+file.wav -&gt; file.mp3):</p>
+<!-- INDENTATION -->
+<pre>  $ for i (./*.mp3){mpg321 --w - $i &gt; ${i:r}.wav}
+</pre>
+<!-- INDENTATION -->
+<p>Download with LaTeX2HTML created Files (for example the
+ZSH-Guide):</p>
+<!-- INDENTATION -->
+<pre>  $ for f in http://zsh.sunsite.dk/Guide/zshguide{,{01..08}}.html; do
+  &gt;     lynx -source $f &gt;${f:t}
+  &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Move all files in dir1 and dir2 that have line counts
+greater than 10 to another directory say
+&quot;/more10&quot;:</p>
+<!-- INDENTATION -->
+<pre>  $ mv dir[12]/**/*.cr(-.e{&rsquo;((&lsquo;wc -l &lt; $REPLY&lsquo; &gt; 10))&rsquo;}) /more10
+</pre>
+<!-- INDENTATION -->
+<p>Make with dpkg a master-list of everyfile that it has
+installed:</p>
+<!-- INDENTATION -->
+<pre>  $ diff &lt;(find / | sort) &lt;(cat /var/lib/dpkg/info/*.list | sort)
+</pre>
+<!-- INDENTATION -->
+<p>Replace the unreadable Escape-Sequences:</p>
+<!-- INDENTATION -->
+<pre>  $ autoload colors ; colors
+  $ print &quot;$bg[cyan]$fg[blue]You are an zsh user&quot; &gt;&gt; /dev/pts/3
+</pre>
+<!-- INDENTATION -->
+<p>Get ASCII value of a character:</p>
+<!-- INDENTATION -->
+<pre>  $ char=N ; print $((#char))
+</pre>
+<!-- INDENTATION -->
+<p>Filename suffix: Note: The (N) says to use the nullglob
+option for this particular glob pattern.</p>
+<!-- INDENTATION -->
+<pre>  $ for i in *.o(N); do
+  &gt;     rm $i
+  &gt; done
+</pre>
+<!-- INDENTATION -->
+<p>Rename files; i. e. FOO to foo and bar to BAR:</p>
+<!-- INDENTATION -->
+<pre>  $ for i in *(.); mv $i ${i:l} # &lsquo;FOO&rsquo; to &lsquo;foo&rsquo;
+  $ for i in *(.); mv $i ${i:u} # &lsquo;bar to &lsquo;BAR&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Show all suid-files in $PATH:</p>
+<!-- INDENTATION -->
+<pre>  $ ls -latg ${(s.:.)PATH} | grep &rsquo;^...s&rsquo;
+# or more complex ;)
+  $ print -l ${^path}/*(Ns,S)
+# or show only executables with a user given pattern
+  $ print -l ${^path}/*vim*(*N)
+</pre>
+<!-- INDENTATION -->
+<p>gzip files when containing a certain string:</p>
+<!-- INDENTATION -->
+<pre>  $ gzip ${(ps: :)&quot;$(grep -lZ foobar ./*.txt(.))&quot;}
+</pre>
+<!-- INDENTATION -->
+<p>A small one-liner, that reads from stdin and prints to
+stdout the first unique line i. e. does not print lines that
+have been printed before (this is similar to the unique
+command, but unique can only handle adjacent lines):</p>
+<!-- INDENTATION -->
+<pre>  $ IFS=$&rsquo;0; print -rl -- ${(Oau)${(Oa)$(cat file;echo .)[1,-2]}}
+</pre>
+<!-- INDENTATION -->
+<p>Lists every executable in PATH:</p>
+<!-- INDENTATION -->
+<pre>  $ print -l ${^path}/*(-*N)
+</pre>
+<!-- INDENTATION -->
+<p>Match all .c files in all subdirectories, _except_ any
+SCCS subdirectories?</p>
+<!-- INDENTATION -->
+<pre>  $ ls **/*.c~(*/)#SCCS/*
+</pre>
+<!-- INDENTATION -->
+<p>List all &lsquo;README&rsquo; - files case-insensitive
+with max. one typo:</p>
+<!-- INDENTATION -->
+<pre>  $ ls **/*(#ia2)readme
+</pre>
+<!-- INDENTATION -->
+<p>Print version information of zsh:</p>
+<!-- INDENTATION -->
+<pre> $ print $ZSH_VERSION
+</pre>
+<!-- INDENTATION -->
+<p>Get hostspecific information:</p>
+<!-- INDENTATION -->
+<pre> $ echo $MACHTYPE $VENDOR $OSTYPE
+</pre>
+<!-- INDENTATION -->
+<p>Fast change of directories:</p>
+<!-- INDENTATION -->
+<pre> alias ...=&rsquo;cd ../..&rsquo;
+ alias ....=&rsquo;cd ../../..&rsquo;
+ alias .....=&rsquo;cd ../../../..&rsquo;
+ alias ......=&rsquo;cd ../../../../..&rsquo;
+ alias .......=&rsquo;cd ../../../../../..&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Mailpath: simple multiple mailpath:</p>
+<!-- INDENTATION -->
+<pre>  mailpath=($HOME/Mail/mbox&rsquo;?new mail in mbox&rsquo;
+            $HOME/Mail/tux.u-strasbg&rsquo;?new mail in tux&rsquo;
+            $HOME/Mail/lilo&rsquo;?new mail in lilo&rsquo;
+            $HOME/Mail/ldap-fr&rsquo;?new mail in ldap-fr&rsquo;)
+</pre>
+<!-- INDENTATION -->
+<p>Mailpath: dynamic mailpath:</p>
+<!-- INDENTATION -->
+<pre>  typeset -a mailpath
+  for i in ~/Mail/Lists/*(.); do
+     mailpath[$#mailpath+1]=&quot;${i}?You have new mail in ${i:t}.&quot;
+  done
+</pre>
+<!-- INDENTATION -->
+<p>Avoid globbing on special commands:</p>
+<!-- INDENTATION -->
+<pre>for com in alias expr find mattrib mcopy mdir mdel which;
+alias $com=&quot;noglob $com&quot;
+</pre>
+<!-- INDENTATION -->
+<p>For migrating your bashprompt to zsh use the script
+bash2zshprompt located in the zsh source distribution under
+&rsquo;Misc&rsquo;.</p>
+<!-- INDENTATION -->
+<p>For migration from (t)csh to zsh use the c2z tool that
+converts csh aliases and environment and shell variables to
+zsh. It does this by running csh, and having csh report on
+aliases and variables. The script then converts these to zsh
+startup files. It has some issues and usage information that
+are documented at the top of this script.</p>
+<!-- INDENTATION -->
+<p>Here are functions to set the title and hardstatus of an
+<b>XTerm</b> or of <b>GNU Screen</b> to &rsquo;zsh&rsquo;
+and the current directory, respectively, when the prompt is
+displayed, and to the command name and rest of the command
+line, respectively, when a command is executed:</p>
+<!-- INDENTATION -->
+<pre>  function title {
+      if [[ $TERM == &quot;screen&quot; ]]; then
+        # Use these two for GNU Screen:
+        print -nR $&rsquo; 33k&rsquo;$1$&rsquo; 33&rsquo;\
+        print -nR $&rsquo; 33]0;&rsquo;$2$&rsquo;&rsquo;
+      elif [[ $TERM == &quot;xterm&quot; || $TERM == &quot;rxvt&quot; ]]; then
+        # Use this one instead for XTerms:
+        print -nR $&rsquo; 33]0;&rsquo;$*$&rsquo;&rsquo;
+      fi
+  }
+
+ function precmd {
+      title zsh &quot;$PWD&quot;
+  }
+
+ function preexec {
+      emulate -L zsh
+      local -a cmd; cmd=(${(z)1})
+      title $cmd[1]:t &quot;$cmd[2,-1]&quot;
+  }
+</pre>
+<!-- INDENTATION -->
+<p>Put the following line into your ~/.screenrc to see this
+fancy hardstatus:</p>
+<!-- INDENTATION -->
+<pre>  caption always &quot;%3n %t%? (%u)%?%?: %h%?&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Special variables which are assigned or you can
+assign:</p>
+<!-- INDENTATION -->
+<pre> $ echo $LINENO $RANDOM $SECONDS $COLUMNS $HISTCHARS
+ $ echo $UID $EUID $GID $EGID $USERNAME
+ $ echo $fignore $mailpath $cdpath
+
+Show me all the .c files for which there doesn&rsquo;t exist a .o file:
+ $ c=(*.c) o=(*.o(N)) eval &rsquo;ls ${${c:#(${~${(j:|:)${o:r}}}).c}:?done}&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Find (and print) all symbolic links without a target
+within the current dirtree:</p>
+<!-- INDENTATION -->
+<pre> $ file **/*(D@) | fgrep broken
+ $ for i in **/*(D@); [[ &minus;f $i || &minus;d $i ]] || echo $i
+ $ echo **/*(@&minus;^./=%p)
+ $ print &minus;l **/*(&minus;@)
+</pre>
+<!-- INDENTATION -->
+<p>Rename files; i. e. FOO to foo and bar to BAR:</p>
+<!-- INDENTATION -->
+<pre> $ for i in *(.); mv $i ${i:l} # &lsquo;FOO&rsquo; to &lsquo;foo&rsquo;
+ $ for i in *(.); mv $i ${i:u} # &lsquo;bar to &lsquo;BAR&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Show all suid-files in $PATH:</p>
+<!-- INDENTATION -->
+<pre> $ ls &minus;latg ${(s.:.)PATH} | grep &rsquo;^...s&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>List all &lsquo;README&rsquo; - files case-insensitive
+with max. one typo:</p>
+<!-- INDENTATION -->
+<pre> $ ls **/*(#ia2)readme
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>(RECURSIVE) GLOBBING&minus;EXAMPLES</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Search for &lsquo;README&rsquo; in all Subdirectories</p>
+<!-- INDENTATION -->
+<pre> $ print &minus;l **/README
+</pre>
+<!-- INDENTATION -->
+<p>Recursive &lsquo;&lsquo;chmod&rsquo;&rsquo;</p>
+<!-- INDENTATION -->
+<pre> $ chmod 700 **/(.) # Only files
+ $ chmod 700 **/(/) # Only directories
+</pre>
+<!-- INDENTATION -->
+<p>List files beginning at &lsquo;foo23&rsquo; upwards
+(foo23, foo24, foo25, ..)</p>
+<!-- INDENTATION -->
+<pre> $ ls -l foo&lt;23&minus;&gt;
+</pre>
+<!-- INDENTATION -->
+<p>Remove spaces from filenames</p>
+<!-- INDENTATION -->
+<pre> $ for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done
+</pre>
+<!-- INDENTATION -->
+<p>Show only all *.c and *.h - Files</p>
+<!-- INDENTATION -->
+<pre> $ ls -l *.(c|h)
+</pre>
+<!-- INDENTATION -->
+<p>Show <b>only</b> all *.c - files and ignore
+&lsquo;foo.c&rsquo;</p>
+<!-- INDENTATION -->
+<pre> $ ls *.c~foo.c
+</pre>
+<!-- INDENTATION -->
+<p>Show only world-readable files</p>
+<!-- INDENTATION -->
+<pre> $ ls -l *(R)
+</pre>
+<!-- INDENTATION -->
+<p>find and delete the files which are older than a given
+parameter (seconds/minutes/hours)</p>
+<!-- INDENTATION -->
+<pre> # deletes all regular file in /Dir that are older than 3 hours
+   $ rm -f /Dir/**/*(.mh+3)
+ # # deletes all symlinks in /Dir that are older than 3 minutes
+   $ rm -f /Dir/**/*(@mm+3)
+ # deletes all non dirs in /Dir that are older than 30 seconds
+   $ rm -f /Dir/**/*(ms+30^/)
+ # deletes all files more than 6 hours old
+   $ rm -f **/*(mh+6)
+ # deletes all folders, sub-folders and files older than one hour
+   $ rm ./**/*(.Dmh+1,.DL0)
+ # removes all files but the ten newer ones (delete all but last 10 files in a directory)
+  $ rm ./*(Om[1,-11])
+
+Note: If you get a arg list too long, you use the builtin rm. For example:
+  $ zmodload zsh/files ; rm -f **/*(mh+6)
+  or use the zargs function:
+  $ autoload zargs ; zargs **/*(mh+6) -- rm -f
+</pre>
+<!-- INDENTATION -->
+<p><b>Explanation:</b></p>
+<!-- INDENTATION -->
+<pre>   ./: to avoid problem with files starting with &quot;&minus;&quot;
+  **/: recursively descend
+   *.: any file
+(...): qualifiers:
+</pre>
+</td>
+</table>
+<!-- TABS -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>(&lt;a&gt;,&lt;b&gt;): files of &lt;a&gt; type or
+&lt;b&gt; type</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>&lt;a&gt;:</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>.: regular files</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>D: including dot files</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>mh+1: whose [m]odification time, is more (+) than
+[1]</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>[h]our in the past.</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>&lt;b&gt;:</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>.: regular files</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>D: including dot files</p>
+</td>
+<td width="80%">
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>L0: of 0 [L]ength.</p>
+</td>
+<td width="80%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>If you want to remove empty directories afterwards:</p>
+<!-- INDENTATION -->
+<pre> # &lsquo;&lsquo;/&rsquo;&rsquo; matches only directories and &lsquo;&lsquo;od&rsquo;&rsquo; sorted in depth order (so
+ # that dir/subdir is removed before directory).
+ $ rmdir ./**/*(/od) 2&gt; /dev/null
+</pre>
+<!-- INDENTATION -->
+<p><b>Note:</b> If you get a arg list too long, you use the
+builtin rm. For example:</p>
+<!-- INDENTATION -->
+<pre> $ zmodload zsh/files ; rm -f **/*(mh+6)
+</pre>
+<!-- INDENTATION -->
+<p>or use the zargs function:</p>
+<!-- INDENTATION -->
+<pre> $ autoload zargs ; zargs **/*(mh+6) -- rm -f
+</pre>
+<!-- INDENTATION -->
+<p>Delete only the oldest file in a directory:</p>
+<!-- INDENTATION -->
+<pre> $ rm ./*filename*(Om[1])
+</pre>
+<!-- INDENTATION -->
+<p>Sort the output from &lsquo;ls &minus;l&rsquo; by file
+size:</p>
+<!-- INDENTATION -->
+<pre> $ ls -fld *(OL)
+</pre>
+<!-- INDENTATION -->
+<p>Find most recent file in a directory:</p>
+<!-- INDENTATION -->
+<pre> $ setopt dotglob ; print directory/**/*(om[1])
+</pre>
+<!-- INDENTATION -->
+<p>List the top 100 biggest files in a disk</p>
+<!-- INDENTATION -->
+<pre> $ zmodload &minus;i zsh/stat ; ls &minus;fld ./**/*(d&lsquo;stat +device .&lsquo;OL[1,100])
+</pre>
+<!-- INDENTATION -->
+<pre> $ ls *(L0f.go-w.)
+</pre>
+<!-- INDENTATION -->
+<p>Find all files without a valid owner:</p>
+<!-- INDENTATION -->
+<pre> $ chmod someuser /**/*(D^u:${(j.:u:.)${(f)&quot;$(&lt;/etc/passwd)&quot;}%%:*}:)
+</pre>
+<!-- INDENTATION -->
+<p>Show only files are owned from group
+&lsquo;users&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ ls -l *(G[users])
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>ZMV&minus;EXAMPLES</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>Note:</b> &lsquo;&lsquo;autoload zmv&rsquo;&rsquo;
+needed! See &lsquo;&lsquo;man zshcontrib | less -p
+zmv&rsquo;&rsquo; for more details.</p>
+<!-- INDENTATION -->
+<p>Serially all files (foo.foo &gt; 1.foo, fnord.foo &gt;
+2.foo, ..):</p>
+<!-- INDENTATION -->
+<pre> $ ls *
+ 1.c  asd.foo  bla.foo  fnord.foo  foo.fnord  foo.foo
+ $ c=1 zmv &rsquo;*.foo&rsquo; &rsquo;$((c++)).foo&rsquo;
+ $ ls *
+ 1.c  1.foo  2.foo  3.foo  4.foo  foo.fnord
+</pre>
+<!-- INDENTATION -->
+<p>See above, but now only files with a filename &gt;= 30
+chars:</p>
+<!-- INDENTATION -->
+<pre> $ c=1 zmv &quot;${(l:30-4::?:)}*.foo&quot; &rsquo;$((c++)).foo&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Replace spaces in filenames with a underline:</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;* *&rsquo; &rsquo;$f:gs/ /_&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Change the suffix from *.sh to *.pl:</p>
+<!-- INDENTATION -->
+<pre> $ zmv -W &rsquo;*.sh&rsquo; &rsquo;*.pl&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>lowercase/uppercase all files/directories:</p>
+<!-- INDENTATION -->
+<pre> # lowercase
+   $ zmv &rsquo;(*)&rsquo; &rsquo;${(L)1}&rsquo;
+ # uppercase
+   zmv &rsquo;(*)&rsquo; &rsquo;${(U)1}&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Remove the suffix *.c from all C-Files:</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;(*).c&rsquo; &rsquo;$1&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Uppercase only the first letter of all *.mp3 - files:</p>
+<!-- INDENTATION -->
+<pre> $ zmv &rsquo;([a-z])(*).mp3&rsquo; &rsquo;${(C)1}$2.mp3&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Copy the target &lsquo;README&rsquo; in same directory as
+each &lsquo;Makefile&rsquo;:</p>
+<!-- INDENTATION -->
+<pre> $ zmv -C &rsquo;(**/)Makefile&rsquo; &rsquo;${1}README&rsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Removing single quote from filenames (recursive):</p>
+<!-- INDENTATION -->
+<pre>$ zmv -Q &quot;(**/)(*&rsquo;*)(D)&quot; &quot;\$1\${2//&rsquo;/}&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Replace spaces with underscores in filenames
+(recursive):</p>
+<!-- INDENTATION -->
+<pre>$ zmv -Q &quot;(**/)(* *)(D)&quot; &quot;\$1\${2// /_}&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Rename pic1.jpg, pic2.jpg, .. to pic0001.jpg,
+pic0002.jpg, ..:</p>
+<!-- INDENTATION -->
+<pre> # Not recursively
+   $ zmv &rsquo;pic(*).jpg&rsquo; &rsquo;pic${(l:4::0:)1}.jpg&rsquo;
+ # Recursively
+   $ zmv &rsquo;(**/)pic(*).jpg&rsquo; &rsquo;$1/pic${(l:4::0:)2}.jpg&rsquo;
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="4%"></td>
+<td width="95%">
+<p><b>TIPS BY ZZAPPER
+(http://www.rayninfo.co.uk/tips/zshtips.html)</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre> !! #  last command
+ !$ #  last argument
+ !$:h (last argument, strip one level)
+ !?echo
+ vi !* (all parameters)
+ vi !$ (last parameters)
+ !42
+ history
+ ^fred^joe             # edit previous command replace fred by joe
+ !42:p
+ also use control-R
+
+cmdy !?cmd1?:*&lt;TAB&gt;   #get parameters of a previous command
+
+!:0 is the previous command name
+ !^, !:2, !:3, ?, !$ are the arguments
+ !* is all the arguments
+ !-2, !-3, ? are earlier commands
+ !-2^, !-2:2, !-2$, !-2*
+
+cd !$:h  (remove file name)
+ cat !!:t (only file name)
+ print ${param:&amp;}   (last substitute)
+
+# globbing modifiers
+ # :r removes the suffix from the result,
+ # :t takes away the directory part
+ # . means must be regular files not directories etc
+ # *(om[1]) picks most recently modified file
+ # (.N) no warning message if any file absent
+ print *(om[1])   # print the most recent file
+ print *(.om[1])  # print the most recent file (not directory)
+ ls -l *(Om[1])   # oldest file
+ print *(om[1,5]) # print the 5 most recent files
+ vi *(.om[1]^D)   # vi newest file ^D means switch off GLOB_DOTS
+ ls -l *(m4)      # list files modified exactly 4 days ago
+ ls -ltd *(mw3)   # list files 3 weeks old
+ echo *(m-1)      # files modified today
+ echo *(m0)       # files modified today
+ rm *.{aux,dvi,log,toc}(.N) # rm latex temp files N means no error msg is any file absent
+
+print *(n:t)     # order by name strip directory
+ print **/*(On:t) # recursive reverse order by name, strip directory
+ print *.c(:r)    # strip suffix
+ ls **/*(.)       # only files no directories
+ -ld *(/)      # list only directories
+ FOO = (#i)foo ]]  # case insensitive matching
+ #oddities
+ fred=$((6**2 + 6)) # can do maths
+ print ${#path}     # length of &quot;path&quot; array
+ print ${#path[1]}  # length of first element in path array
+ ls fred{joe,sid}.pl
+ ls fred{09..13}.pl
+
+# arrays
+ array=(~/.zshenv ~/.zshrc ~/.zlogout)
+ % print ${array:t}
+ .zshenv .zshrc .zlogout
+
+x=&quot;bu&amp;^*ck&quot;                  # variable with mucky characters
+ print ${x//[^[:alnum:]]/_}   # replace all non-alphanumerics with _
+
+cp file ~1                   # where 1 is first entry in pushd stack
+ #zsh completion
+ startfilename&lt;tab&gt;           # will complete matching files anywhere in $PATH
+ startfilename&lt;C-D&gt;           # will list matching files anywhere in $PATH
+ #directory sizes
+ du -sk *(/)
+
+ls * | grep foo | less
+ #to
+ ls * G foo L
+ #
+
+#magic equals
+ vim =some_file                            # edits file anywhere in $PATH
+ ls =some_file                             # lists file anywhere in $PATH
+ #magic ** (recursion)
+ vim **/some_file                          # edits file under under current dir
+ # modifying more than one file (multios)
+ # writes ls results to file1 &amp; file2 appends to filec
+ ls &gt; file1 &gt; file2 &gt;&gt; file3 | wc
+</pre>
+<!-- INDENTATION -->
+<p>Find file containing string &rsquo;printf&rsquo; in
+/usr/include.</p>
+<!-- INDENTATION -->
+<pre> $ zargs /usr/include/**/*.h &minus;&minus; grep printf /dev/null
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ find /usr/include -name \*.h &minus;exec grep printf /dev/null {} ;
+</pre>
+<!-- INDENTATION -->
+<p>Create a directory structure based on an existing
+one.</p>
+<!-- INDENTATION -->
+<pre> $ dirs=(**/*(/))
+ $ cd &minus;&minus; $dest_root
+ $ mkdir &minus;p &minus;&minus; $dirs
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ src=/usr/local
+ $ dst=/opt
+ $ cd &quot;$src&quot;
+ $ find . -type d | cpio -pdmv &quot;$dst&quot;
+</pre>
+<!-- INDENTATION -->
+<p>Uncompress file and read it</p>
+<!-- INDENTATION -->
+<pre>less &lt;(gzip -cd foo.gz)
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ gzip -cd foo.gz &amp;&amp; less foo
+</pre>
+<!-- INDENTATION -->
+<p>Print two files and sort them</p>
+<!-- INDENTATION -->
+<pre> $ sort &lt;f{oo,ubar}
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ cat foo fubar | sort
+</pre>
+<!-- INDENTATION -->
+<p>Find files up from current directory and change
+permissions to &rsquo;700&rsquo;.</p>
+<!-- INDENTATION -->
+<pre> $ chmod 700 **/*(.)
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ find . &minus;type f &minus;exec chmod 700 {} \;
+</pre>
+<!-- INDENTATION -->
+<p>List details of the executable &rsquo;foobar&rsquo;.</p>
+<!-- INDENTATION -->
+<pre> $ ls -l =foobar
+</pre>
+<!-- INDENTATION -->
+<p>A solution without zsh could look like:</p>
+<!-- INDENTATION -->
+<pre> $ ls -l &lsquo;which foobar&lsquo;
+</pre>
+<!-- INDENTATION -->
+<p>Small examples</p>
+<!-- INDENTATION -->
+<pre>&acute;cd old new&rsquo; replaces &rsquo;old&rsquo; with &rsquo;new&rsquo; in directory-names.
+&acute;which -a cmd&rsquo; lists all occurences of &rsquo;cmd&rsquo; in $PATH.
+</pre>
+</td>
+</table>
+<a name="OPTIONS"></a>
+<h2>OPTIONS</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Navigation options</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>auto_cd (allow one to change to a directory by entering
+it as a command). auto_pushd (automatically append dirs to
+the push/pop list) pushd_ignore_dups (and don&rsquo;t
+duplicate them)</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="5%">
+
+<p>Misc</p>
+</td>
+<td width="82%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>no_hup (don&rsquo;t send HUP signal to background jobs
+when exiting ZSH) print_exit_value (show a message with the
+exit code when a command returns with a non-zero exit
+code)</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>History options</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>hist_verify (let the user edit the command line after
+history expansion (e.g. !ls) instead of immediately running
+it)</p>
+<!-- INDENTATION -->
+<p>Use the same history file for all sessions :</p>
+<!-- INDENTATION -->
+<pre> setopt SHARE_HISTORY
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Privacy / Security</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>no_clobber (or set -C; prevent &rsquo;&gt;&rsquo;
+redirection from truncating the given file if it already
+exists)</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Spelling correction</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>correct (automatically correct the spelling of commands)
+correct_all (automatically correct the spelling of each word
+on the command line) dvorak (dvorak layout)</p>
+</td>
+</table>
+<a name="LINKS"></a>
+<h2>LINKS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The Z shell Homepage</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://www.zsh.org/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The Z shell FAQ</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://zsh.sunsite.dk/FAQ/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The Z shell wiki</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://www.zshwiki.org/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Mailinglistarchive</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://www.zsh.org/mla/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The Z shell reference-card (included in the
+zsh-lovers</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>debian-package)
+<b>http://zsh.sunsite.dk/Refcard/refcard.ps.gz</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Adam Spier&rsquo;s UNIX shells page</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://adamspiers.org/computing/shells/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The Single UNIX (R) Specification, Version 2 - Shell
+Command Language Index</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+
+<p><b>http://www.opengroup.org/onlinepubs/007908799/xcu/shellix.html</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Zzappers Best of ZSH Tips</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://www.rayninfo.co.uk/tips/zshtips.html</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The ZSH area on dotfiles.com</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://www.dotfiles.com/index.php3?app_id=4</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Zsh Webpage by Christian Schneider</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://strcat.neessen.net/zsh/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The zsh-lovers webpage</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>http://grml.org/zsh/</b></p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>IRC channel</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p><b>#zsh at irc.freenode.org</b></p>
+</td>
+</table>
+<a name="AUTHORS"></a>
+<h2>AUTHORS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>This manpage was written by Michael Prokop, Christian
+&acute;strcat&rsquo; Schneider and Matthias Kopfermann. But
+many ideas have been taken from zsh-geeks e.g. from the
+zsh-mailinglists (zsh-users and zsh-workers), google,
+newsgroups and the zsh-Wiki. Thanks for your cool and
+incredible tips. We learned much from you!</p>
+<!-- INDENTATION -->
+<p>In alphabetic order:</p>
+<!-- INDENTATION -->
+<pre>Andrew &rsquo;zefram&rsquo; Main  - http://www.fysh.org/~zefram/
+Barton E. Schaefer    - http://www.well.com/user/barts/
+Matthias Kopfermann   - http://www.infodrom.north.de/~matthi/
+Oliver Kiddle         - http://people.freenet.de/opk/
+Paul Falstad          - http://www.falstad.com/
+Peter Stephenson      - http://python.swan.ac.uk/~pypeters/
+Richard Coleman
+St&eacute;phane Chazelas     - http://stephane.chazelas.free.fr/
+Sven Guckes           - http://www.guckes.net/
+Sven Wischnowsky      - http://w9y.de/zsh/zshrc
+</pre>
+</td>
+</table>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Manpages of zsh:</p>
+<!-- INDENTATION -->
+<pre>zsh          Zsh overview (this section)
+zshmisc      Anything not fitting into the other sections
+zshexpn      Zsh command and parameter expansion
+zshparam     Zsh parameters
+zshoptions   Zsh options
+zshbuiltins  Zsh built-in functions
+zshzle       Zsh command line editing
+zshcompwid   Zsh completion widgets
+zshcompsys   Zsh completion system
+zshcompctl   Zsh completion control
+zshmodules   Zsh loadable modules
+zshzftpsys   Zsh built-in FTP client
+zshall       Meta-man page containing all of the above
+
+Note: especially &rsquo;man zshcontrib&rsquo; covers very useful topics!
+
+Book:
+From Bash to Z Shell
+by Oliver  Kiddle, Jerry Peck and Peter Stephenson
+ISBN: 1590593766
+
+Also take a look at the section
+<b>LINKS
+</b>in this manpage.
+
+</pre>
+</td>
+</table>
+<a name="BUGS"></a>
+<h2>BUGS</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Probably. This manpage might be never complete. So please
+report bugs, feedback and suggestions to
+&lt;zsh-lovers@michael-prokop.at&gt;. Thank you!</p>
+</td>
+</table>
+<a name="COPYRIGHT"></a>
+<h2>COPYRIGHT</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Copyright &copy; 2005 Michael Prokop, Christian Schneider
+and Matthias Kopfermann.</p>
+</td>
+</table>
+<hr>
+</body>
+</html>

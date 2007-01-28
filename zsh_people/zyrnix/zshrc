@@ -1,0 +1,205 @@
+#!/usr/bin/zsh
+# -*- mode: shell-script -*-
+
+# In Emacs, use M-x folding.  Quick reference:
+#
+# Show all sections' text 'C-c @ C-o'
+# Hide all sections' text 'C-c @ C-w'
+# Show a section's text   'C-c @ C-s'
+# Hide a section's text   'C-c @ C-x'
+
+# {{{ zstyle completions
+
+## These next 2 lines are from compinstall.
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+
+## All of the following zstyles are from:
+## (http://www.zshwiki.org/cgi-bin/wiki.pl?ZshCompletionTips)
+
+### Use cache
+## Some functions, like _apt and _dpkg, are very slow. You can use a cache in
+## order to proxy the list of results (like the list of available debian
+## packages)
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+## Prevent CVS files/directories from being completed
+zstyle ':completion:*:(all-|)files' ignored-patterns '(|*/)CVS'
+zstyle ':completion:*:cd:*' ignored-patterns '(*/)#CVS'
+
+# Allow zsh to complete on hostnames found in common config files.
+local _myhosts;
+_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
+         );
+zstyle ':completion:*' hosts $_myhosts;
+
+## With commands like `rm' it's annoying if one gets offered the same filename
+## again even if it is already on the command line. To avoid that:
+#
+zstyle ':completion:*:rm:*' ignore-line yes
+
+## Load the completion module.
+zstyle :compinstall filename '/home/zyrnix/.zshrc'
+autoload -U compinit
+compinit
+
+# }}}
+# {{{ PS1 prompt
+
+# Enable this for a nice interactive way to get a decent prompt.
+# autoload -U promptinit
+# promptinit
+# prompt adam1
+## At the command line, you can do this to see the various prompts:
+# prompt -l # display all
+# prompt -h # help
+
+# This is based on adam1 from promptinit.  I altered it so it includes a
+# history number and return code.  It does not truncate the path.
+#
+# It looks like this (with colors):
+# 384 zyrnix@server ~/tmp %
+#
+PS1=$'%h %{\e[22;44m%}%n@%m%{\e[00m%} %{\e[01;36m%}%0~%{\e[01;37m%} %# %{\e[00m%}'
+
+# }}}
+# {{{ xterm tweaks
+
+## FAQ 3.5 How do I get the meta key to work on my xterm?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l21
+[[ $TERM = "xterm" ]] && stty pass8 && bindkey -me
+
+## FAQ 3.6 How do I automatically display the directory in my xterm title bar?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l22
+##
+## I modified the xterm version because it was too plain.
+chpwd() {
+  [[ -t 1 ]] || return
+  case $TERM in
+    sun-cmd) print -Pn "\e]l%~\e\\"
+      ;;
+    *xterm*|rxvt|(dt|k|E)term) print -Pn "\e]2;% [zsh $ZSH_VERSION] %n@%m: %~\a"
+      ;;
+  esac
+}
+
+# }}}
+# {{{ Zsh FAQ entries
+
+## FAQ 3.18: Why does zsh kill off all my background jobs when I logout?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l34
+# setopt nohup
+#
+## Or start jobs with &! instead of & to disown them
+## (disown = don't kill at logout)
+
+## FAQ 3.21: Why is my history not being saved?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l37
+##
+## I modified this to allow for 2,000 entries instead of 200.
+HISTSIZE=2000
+HISTFILE=~/.zsh_history
+SAVEHIST=2000
+
+## FAQ 3.23: How do I prevent the prompt overwriting output when there is no
+##           newline?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l39
+##
+## According to the manual, this prevents multi-line editing because the editor
+## does not know where the start of the line appears.
+##
+# unsetopt prompt_cr
+
+# }}}
+# {{{ General setopts
+
+## Don't clobber files by default.  Force myself to use >! or >| and >>! or >>|
+## to clobber the file
+unsetopt clobber
+
+## I use dvorak, so correct spelling mistakes that a dvorak user would make
+setopt dvorak
+
+## Extended history.
+## Instead of just a list of commands, append it with this:
+## `:<beginning time since epoch>:<elapsed seconds>:<command>'.
+setopt extended_history
+
+## Automatically append directories to the push/pop list
+setopt auto_pushd
+
+## Maximum size of the directory stack
+DIRSTACKSIZE=50
+
+## Allow for 10MB max coredumps
+limit coredumpsize 10m
+
+# }}}
+# {{{ Emacs compatibility
+
+## FAQ 3.10: Why does zsh not work in an Emacs shell mode any more?
+## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l26
+[[ $EMACS = t ]] && unsetopt zle
+
+# Enable emacs keymap
+bindkey -e
+
+# From resolve (http://repose.cx/conf/.zshrc)
+WORDCHARS=''                    # Emacs compatible M-b and M-f
+bindkey "\C-w" kill-region      # Emacs C-w command support
+
+# }}}
+# {{{ Watch logins
+
+## Watch for logins and logouts from all accounts including mine.
+watch=all
+
+## Watch every 30 seconds
+logcheck=30
+
+## Change the watch format to something more informative
+# %n = username, %M = hostname, %a = action, %l = tty, %T = time,
+# %W = date
+WATCHFMT="%n from %M has %a tty%l at %T %W"
+
+# }}}
+# {{{ Aliases
+
+## Aliases
+alias ls="ls --color=auto"
+alias targx="tar -zxvf"
+alias targc="tar -cxvf"
+alias tarbx="tar --bzip2 -xvf"
+alias tarbc="tar --bzip2 -cvf"
+
+# }}}
+# {{{ Setopts from Resolve
+
+## From resolve's config (http://repose.cx/conf/.zshrc)
+setopt extended_glob            # Weird & wacky pattern matching - yay zsh!
+setopt complete_in_word         # Not just at the end
+setopt always_to_end            # When complete from middle, move cursor
+setopt correct                  # Spelling correction
+setopt hist_verify              # When using ! cmds, confirm first
+setopt interactive_comments     # Escape commands so I can use them later
+setopt print_exit_value         # Alert me if something's failed
+
+## Anti-aliasing in the two toolkits
+## Use this type of assignment to set the variable if not already set
+(( ${+QT_XFT} )) || export QT_XFT=1
+(( ${+GDK_USE_XFT} )) || export GDK_USE_XFT=1
+
+# }}}
+# {{{ GNU Arch tagline - Do not edit this section
+
+# To insert a uuid with Linux kernel 2.3.16 or newer, do:
+# echo -e "\n# arch-tag: `cat /proc/sys/kernel/random/uuid`\n" >> file
+#
+# arch-tag: 223a17f5-7c19-4f32-8fa7-0c14054128be
+
+# }}}

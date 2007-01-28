@@ -1,0 +1,41 @@
+# -*- shell-script -*-
+
+periodic () {
+ rehash
+}
+
+export PERIOD=300
+
+###
+# Mail
+
+if [[ -x `which fetchmail` && ! -f ~/.fetchmail.pid && ! -f /tmp/.${USER}.fetchmailnoask ]]
+then
+	local ans
+	echo -n "Start fetchmail ? [y/n] "
+	read -q ans
+	if [[ $ans == "y" ]]
+	then
+		fetchmail
+	else
+		echo -n "Ask again ? [y/n] "
+		read -q ans
+		if [[ $ans == "n" ]]
+		then
+			# I use /tmp since it's purge every reboot
+			echo "" >| /tmp/.${USER}.fetchmailnoask
+		fi
+	fi
+fi
+
+
+###
+# Zftp
+#
+
+# load zftp module
+autoload -U zfinit
+zfinit
+
+# email address for anonymous ftp
+export EMAIL_ADDR=enjoy.zsh@foo.bar

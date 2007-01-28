@@ -1,0 +1,33 @@
+#!/bin/sh
+# Filename:      preinst
+# Purpose:       preinst script for package zsh-lovers
+# Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
+# Bug-Reports:   see http://grml.org/bugs/
+# License:       This file is licensed under the GPL v2.
+# Latest change: Sam Jun 18 19:34:55 CEST 2005 [mika]
+################################################################################
+
+set -e
+TO_DIVERT="zsh.vim"
+divert_gen() {
+    DEXT=${3:-original}
+    dpkg-divert --add --rename --package zsh-lovers \
+        --divert $2/$1.$DEXT $2/$1 > /dev/null
+}
+
+case "$1" in
+   install|upgrade)
+	for cmd in $TO_DIVERT; do
+        	divert_gen $cmd /usr/share/vim/syntax
+    	done
+     ;;
+   *)
+     echo "preinst called with unknown argument \`$1'" >&2
+     exit 1
+esac
+
+exit 0
+
+## END OF FILE #################################################################
+
+#DEBHELPER#

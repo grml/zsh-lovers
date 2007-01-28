@@ -1,0 +1,644 @@
+### OPTIONS
+setopt completeinword
+setopt no_always_last_prompt
+setopt rm_star_silent
+setopt automenu
+setopt extended_glob
+setopt autopushd
+setopt nobgnice
+setopt hist_ignore_all_dups
+setopt sharehistory
+unsetopt promptcr
+### path history
+DIRSTACKSIZE=15
+setopt autopushd pushdminus pushdsilent pushdtohome
+setopt autolist
+setopt extendedglob
+
+
+### ALIASES
+alias dh="dirs -v"
+# I used to use xv to often...
+alias xv="gqview -l"
+alias run-help=man
+alias lterm="export TERM=linux"
+alias ll="ls -al --color"
+alias ls="ls --color"
+alias l="ls -a --color"
+#alias ll="/bin/ls -al"
+#alias ls="/bin/ls"
+#alias l="/bin/ls -a"
+# export LYNX_CFG=~/.lynxrc
+alias lynx="noglob command lynx -cfg=~/.lynxrc"
+
+### ENVIRONMENT VARIABLES
+LC_COLLATE=C ; export LC_COLLATE
+MAILCHECK=86400
+# export LANG=de_DE@euro
+export LANG=de_DE
+export LC_MESSAGES=en_US
+
+export ORACLE_HOME=/home/oracle/OraHome1
+# export ORACLE_SID=whatever
+
+COLORX="[0;31;47m"
+COLOR0="[0m"
+COLOR1="[0;30;41m"
+COLOR2="[0;30;42m"
+COLOR3="[0;30;43m"
+COLOR4="[0;30;44m"
+COLOR5="[0;30;45m"
+COLOR6="[0;30;46m"
+COLOR7="[0;30;47m"
+COLOR8="[0;34;41m"
+COLOR9="[0;34;43m"
+COLOR10="[0;37;44m"
+COLOROFF="[0m"
+
+red='%{[0;31m%}'
+white_on_blue='%{[0;37;44m%}'
+green='%{[0;32m%}'
+yellow='%{[0;33m%}'
+blue='%{[0;34m%}'
+magenta='%{[0;35m%}'
+cyan='%{[0;36m%}'
+nocolor='%{[0m%}'
+
+ZDOTDIR="$HOME/.zsh"
+
+if [ "$TERM" = "xterm-debian" ] ; then 
+   chpwd () {
+      echo -n "]2;$LOGNAME@$(hostname): $(pwd)"
+   }
+fi
+
+PROMPT2='%_> '
+RPROMPT='%{[0;33m%}%1v%{[0m%}'
+
+export HISTFILE=~/.zshhistory
+export HISTSIZE=500
+export SAVEHIST=500
+export NNTPSERVER=picard.franken.de
+###        
+export PATH="/usr/lib/compilercache:$JAVA_HOME/bin:/home/tkoehler/bin:/usr/local/bin/X11:/usr/local/bin:/bin:/usr/X11R6/bin:/usr/bin:/usr/sbin:/usr/bin/X11:/local/bin:/usr/games:/usr/lib/mutt:${ORACLE_HOME}/bin:/usr/lib/ICAClient:/usr/local/sap/SAPGUI/6.30/bin"
+
+VIM=/usr/local/share/vim
+echo ~VIM >/dev/null
+
+# alias JAVA_HOME="export JAVA_HOME=/usr/lib/jdk1.1/"
+export JAVA_HOME=/usr/local/java/j2sdk1.4.2_01
+
+## SAP
+#### PLATINHOME="/usr/local/sap/SAPGUI/6.30/"
+PLATIN_JAVA="/usr/local/java/j2sdk1.4.2_01/bin/java"
+PLATIN_JAVA_VER=1.4.2
+###   export PLATINHOME PLATIN_JAVA PLATIN_JAVA_VER
+export PLATIN_JAVA PLATIN_JAVA_VER
+export EDITOR=/usr/local/bin/vim
+export SLANG_EDITOR="/usr/local/bin/vim %s"
+
+export MOZILLA_HOME="/usr/local/netscape"
+
+export QTDIR PATH MANPATH LD_LIBRARY_PATH LIBRARY_PATH
+export CPLUS_INCLUDE_PATH
+
+export IRCNAME="http://jeanluc-picard.de/irc.html"
+export PAGER=less
+
+export LD_LIBRARY_PATH=/home/tkoehler/lib:/home/oracle/OraHome1/lib/
+
+# export LESS
+
+
+export ZLS_COLOURS
+ZLS_COLOURS="no=36;40:fi=36;40:di=32;40:ln=33;40:pi=31;40:so=22;40:bd=44;37:cd=44;37:ex=35;40:mi=36;40:lc=\e[:rc=m:mi=37;41"
+LS_COLORS=$ZLS_COLOURS
+export LS_COLORS
+#### muß mal noch rausfinden, warum die hier in ganz neuen zsh-Versionen nicht
+#### mehr so tun...
+export ZLS_COLOURS
+#       no 0   for normal text  (i.e.  when  displaying  something
+#              other than a matched file)
+#       fi 0   for regular files
+#       di 32  for directories
+#       ln 36  for symbolic links
+#       pi 31  for named pipes (FIFOs)
+#       so 33  for sockets
+#       bd 44;37
+#              for block devices
+#       cd 44;37
+#              for character devices
+#       ex 35  for executable files
+#       mi none
+#              for non-existent file (default is the value defined
+#              for fi)
+#       lc \e[ for the left code (see below)
+#       rc m   for the right code
+#       ec none
+#              for the end code
+MANPATH=/usr/man:/usr/share/man:/usr/X11R6/man:/usr/local/man
+
+### cool
+export REPORTTIME=3
+
+### FUNCTIONS
+x() { a=$1 ; shift ; echo "$@" |  xargs $a }
+prepare_ssh() {
+   if [ -f $HOME/.ssh/agent_var ] ; then
+      . $HOME/.ssh/agent_var
+   else
+      SSH_AGENT_PID=1
+   fi
+   if kill -0 $SSH_AGENT_PID ; then
+      :
+   else
+      eval `ssh-agent`
+      ssh-add $HOME/.ssh/id_rsa
+      touch $HOME/.ssh/agent_var ; chmod 600 $HOME/.ssh/agent_var
+      echo "export SSH_AGENT_PID=$SSH_AGENT_PID" > $HOME/.ssh/agent_var
+      echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $HOME/.ssh/agent_var
+   fi
+}
+
+if [ -z "$SSH_AGENT_PID" ] ; then
+    prepare_ssh
+fi
+
+archive_this_dir() {
+        if [ -z "$1" ] ; then
+                echo "Usage: archive_this_dir LABEL"
+                return 1
+        fi
+        ARCHIVE_TO_CD $1 $PWD 0xEA8CFEDE
+}
+
+archive_this_dir_as_pics() {
+        if [ -z "$1" ] ; then
+                echo "Usage: archive_this_dir_as_pics LABEL"
+                return 1
+        fi
+        ARCHIVE_PICTURES_TO_CD $1 $PWD 0xEA8CFEDE
+}
+
+gpg_recv_key() {
+        gpg --keyserver wwwkeys.pgp.net --keyserver-options honor-http-proxy --recv-keys $@
+}
+
+### highlight current line's {} pairs
+### yes, this functions doesn't work correct in all situations,
+### but it's a nice thing
+highlight() {
+   line=$*
+   i=0
+   j=0
+   strlen=$#line
+   while [ $i -le $strlen ] ; do
+      i=$[i+1]
+      x=$line[$i]
+      case $x in
+         (\{) j=$[j+1] ; eval print -n $"COLOR$j"$"x"$"COLOROFF" ;;
+         (\})  eval print -n $"COLOR$j"$"x"$"COLOROFF" ; j=$[j-1] ;;
+         (*) print -n $x ;;
+      esac
+   done
+   print $COLOROFF
+}
+
+NEW() {
+    vim -c "se tw=70" `date +%Y%m%d-%R`.txt
+}
+
+### set xterm's icon text, its titletext, or both at once
+seticontext() {
+   print "\033]1;$@\007"
+}
+settitletext() {
+   print "\033]2;$@\007"
+}
+settitle() {
+   print "\033]0;$@\007"
+}
+
+### a function for setting up proxy settings
+set_proxy() {
+export http_proxy="http://proxy:3128"
+export https_proxy="http://proxy:3128"
+export ftp_proxy="http://proxy:3128"
+}
+
+namedir () { eval "$1=$PWD" ; eval "echo  ~$1" }
+
+### run help on a vim help topic
+vimhelp () { vim -c "help $1" -c on -c "au! VimEnter *" }
+gvimhelp () { gvim -c "help $1" -c on -c "au! VimEnter *" }
+
+acroread() {
+   LANG=C command acroread $@
+}
+galeon() {
+   LANG=de_DE command galeon $@
+}
+aumix() {
+   LANG=en command aumix $@
+}
+function startx() {
+   command startx "$@" >& ~/.startx.out
+}
+
+
+function precmd {
+# echo -n "]2;$LOGNAME@$(hostname): $(pwd)\a"
+#  if [ "$TERM" = "screen-w" ] ; then
+#    perl ~/bin/screen_hardstatus.pl $MYTTY $USER $HOST &!
+#   PROMPT=$(perl ~/bin/screen_hardstatus.pl " " $USER $HOST $ZSH_VERSION)
+   apm=$(apm|sed -e 's/%/%%/')
+   PROMPT="${green}$(uptime) $nocolor
+${white_on_blue}--INSERT--${cyan}  zsh version: $ZSH_VERSION $yellow Return Code: %? $nocolor
+$blue%h $red%n@%m ${yellow}TTY:%l$cyan - $apm
+$cyan%~>$nocolor "
+   # PROMPT="$PROMPT$WHO\n"
+#  fi
+
+    case "$jobstates" in
+    (*running*suspended*)
+      psvar[1]="There are running and stopped jobs.";;
+    (*suspended*running*)
+      psvar[1]="There are running and stopped jobs.";;
+    (*suspended*)
+      psvar[1]="There are stopped jobs.";;
+    (*running*)
+      psvar[1]="There are running jobs.";;
+    (*)
+      psvar[1]="";;
+    esac
+}
+
+# pipe jobs to less
+jless() {
+   typeset -x -A tmpstates
+   for i in $jobstates[(I)*] 
+   do
+      tmpstates[$i]=$jobstates[$i]
+   done
+   for i in $tmpstates[(I)*]
+   do
+      echo "[$i]\t$tmpstates[$i]"
+   done  | sort -n |  less
+   unset tmpstates
+}
+
+function dmalloc { eval `command dmalloc -b $*` }
+
+### KEY BINDINGS
+# vi keybindings
+bindkey -v
+
+bindkey "[A" history-beginning-search-backward
+bindkey "[B" history-beginning-search-forward
+bindkey "[C" forward-char
+bindkey "[D" backward-char
+bindkey "^Xq" push-line
+bindkey "^Xr" history-incremental-search-backward
+bindkey "^Xs" history-incremental-search-forward
+bindkey "^X_" insert-last-word
+bindkey "^Xa" accept-and-hold
+bindkey "^X^H" run-help
+bindkey "^Xh" _complete_help
+bindkey "^I" expand-or-complete
+bindkey "^E" expand-word
+bindkey "^N" menu-complete
+bindkey "^P" reverse-menu-complete
+bindkey -M vicmd "^R" redo
+bindkey -M vicmd "u" undo
+bindkey -M vicmd "ga" what-cursor-position
+
+
+### VI MODE EXTENSIONS
+redisplay() {
+   builtin zle .redisplay
+#   L=$[LINES - 1]
+#   echo -n "\033[$L;0;H"
+   ( true ; show_mode "INSERT") &!
+}
+redisplay2() {
+   builtin zle .redisplay
+#   L=$[LINES - 1]
+#   echo -n "\033[$L;0;H"
+   (true ; show_mode "NORMAL") &!
+}
+zle -N redisplay
+zle -N redisplay2
+bindkey -M viins "^X^R" redisplay
+bindkey -M vicmd "^X^R" redisplay2
+
+screenclear () {
+   echo -n "\033[2J\033[400H"
+#repeat $[LINES - 2] echo
+   builtin zle .redisplay
+#   builtin zle .clear-screen
+   (true ; show_mode "INSERT") &!
+}
+zle -N screenclear
+bindkey "" screenclear
+
+screenclearx () {
+   # print -n '7'
+   repeat 2 print 
+   local MYLINE="$LBUFFER$RBUFFER"
+   highlight $MYLINE
+   repeat 4 print 
+   builtin zle redisplay
+   # print -n '8'
+#   print "${COLORX}Hit Enter to continue${COLOROFF}"
+#   read -k
+}
+zle -N screenclearx
+bindkey "^Xl" screenclearx
+#bindkey "^L" screenclearx
+
+
+
+show_mode() {
+   local COL
+   local x
+   COL=$[COLUMNS-3]
+   COL=$[COL-$#1]
+   #x=$(wc -l $PREBUFFER)
+   x=$(echo $PREBUFFER | wc -l )
+   x=$[x+1]
+#   echo -n "7[0;$COL;H"
+   echo -n "7[$x;A[0;G"
+   echo -n ""
+#    c='`'
+#    echo -n "7[5A[0$c"
+   echo -n "[0;37;44m--$1--[0m"
+   echo -n "8"
+}
+
+###       vi-add-eol (unbound) (A) (unbound)
+###              Move  to the end of the line and enter insert mode.
+
+vi-add-eol() {
+   show_mode "INSERT"
+   builtin zle .vi-add-eol
+}
+zle -N vi-add-eol
+bindkey -M vicmd "A" vi-add-eol
+
+###       vi-add-next (unbound) (a) (unbound)
+###              Enter insert mode after the  current  cursor  posi­
+###              tion, without changing lines.
+
+vi-add-next() {
+   show_mode "INSERT"
+   builtin zle .vi-add-next
+   # OLDLBUFFER=$LBUFFER
+   # OLDRBUFFER=$RBUFFER
+   # NNUMERIC=$NUMERIC
+   # bindkey -M viins "" vi-cmd-mode-a
+}
+zle -N vi-add-next
+bindkey -M vicmd "a" vi-add-next
+
+#vi-cmd-mode-a() {
+#   show_mode "NORMAL"
+#   STRING="LLBUFFER=\${LBUFFER:s/$OLDLBUFFER//}"
+#   eval $STRING
+#   STRING="RRBUFFER=\${RBUFFER:s/$OLDRBUFFER/}"
+#   eval $STRING
+#   INS="$LLBUFFER$RRBUFFER"
+#   LBUFFER=$OLDLBUFFER
+#   repeat $NNUMERIC LBUFFER="$LBUFFER$INS"
+#   builtin zle .vi-cmd-mode
+#   unset LLBUFFER RRBUFFER NNUMERIC INS
+#   bindkey -M viins "" vi-cmd-mode
+#}
+#zle -N vi-cmd-mode-a
+
+###       vi-change (unbound) (c) (unbound)
+###              Read a movement command from the keyboard, and kill
+###              from  the  cursor  position  to the endpoint of the
+###              movement.  Then enter insert mode.  If the  command
+###              is vi-change, change the current line.
+
+vi-change() {
+   show_mode "INSERT"
+   builtin zle .vi-change
+}
+zle -N vi-change
+bindkey -M vicmd "c" vi-change
+
+###       vi-change-eol (unbound) (C) (unbound)
+###              Kill  to the end of the line and enter insert mode.
+
+vi-change-eol() {
+   show_mode "INSERT"
+   builtin zle .vi-change-eol
+}
+zle -N vi-change-eol
+bindkey -M vicmd "C" vi-change-eol
+
+###       vi-change-whole-line (unbound) (S) (unbound)
+###              Kill the current line and enter insert mode.
+
+vi-change-whole-line() {
+   show_mode "INSERT"
+   builtin zle .vi-change-whole-line
+}
+zle -N vi-change-whole-line
+bindkey -M vicmd "S" vi-change-whole-line
+
+###       vi-insert (unbound) (i) (unbound)
+###              Enter insert mode.
+
+vi-insert() {
+   show_mode "INSERT"
+   builtin zle .vi-insert
+}
+zle -N vi-insert
+bindkey -M vicmd "i" vi-insert
+
+###       vi-insert-bol (unbound) (I) (unbound)
+###              Move to the first non-blank character on  the  line
+###              and enter insert mode.
+
+vi-insert-bol() {
+   show_mode "INSERT"
+   builtin zle .vi-insert-bol
+}
+zle -N vi-insert-bol
+bindkey -M vicmd "I" vi-insert-bol
+
+###       vi-open-line-above (unbound) (O) (unbound)
+###              Open a line above the cursor and enter insert mode.
+
+vi-open-line-above() {
+   show_mode "INSERT"
+   builtin zle .vi-open-line-above
+}
+zle -N vi-open-line-above
+bindkey -M vicmd "O" vi-open-line-above
+
+###       vi-open-line-below (unbound) (o) (unbound)
+###              Open a line below the cursor and enter insert mode.
+
+vi-open-line-below() {
+   show_mode "INSERT"
+   builtin zle .vi-open-line-below
+}
+zle -N vi-open-line-below
+bindkey -M vicmd "o" vi-open-line-below
+
+###       vi-substitute (unbound) (s) (unbound)
+###              Substitute the next character(s).
+
+vi-substitute() {
+   show_mode "INSERT"
+   builtin zle .vi-substitute
+}
+zle -N vi-substitute
+bindkey -M vicmd "s" vi-substitute
+
+
+###       vi-replace (unbound) (R) (unbound)
+###              Enter overwrite mode.
+###
+
+vi-replace() {
+   show_mode "REPLACE"
+   builtin zle .vi-replace
+}
+zle -N vi-replace
+bindkey -M vicmd "R" vi-replace
+
+###       vi-cmd-mode (^X^V) (unbound) (^[)
+###              Enter  command  mode;  that  is, select the `vicmd'
+###              keymap.  Yes, this is bound  by  default  in  emacs
+###              mode.
+
+vi-cmd-mode() {
+   show_mode "NORMAL"
+   builtin zle .vi-cmd-mode
+}
+zle -N vi-cmd-mode
+bindkey -M viins "" vi-cmd-mode
+
+
+
+###       vi-oper-swap-case
+###              Read a movement command from the keyboard, and swap
+###              the case of all characters from the cursor position
+###              to the endpoint of the movement.  If  the  movement
+###              command  is vi-oper-swap-case, swap the case of all
+###              characters on the current line.
+###
+
+bindkey -M vicmd "g~" vi-oper-swap-case
+
+
+
+### LOAD EXTENSIONS
+zmodload zsh/parameter
+# zmodload zftp
+
+### MISC
+
+umask 022
+mesg n
+ulimit -c unlimited
+
+# create iab's for my mutt-aliases to be sourced from within vim
+# cat ~/.muttrc.aliases | sed -e 's/^#/"/' -e 's/^alias/iab/' > ~/.vim_mutt.aliases
+
+# Colourize cursor on Linux console
+# echo -e "\033[?17;216;64c"
+# echo -e "\033[?17;215;55c"
+
+######   ### a clock in the prompt. Yes, this _is_ cool. But sometimes, it interferes with
+######   ### other things.
+######   ### I no longer need it as I have a running clock on my desktop when running
+######   ### X and a clock in screen's hardstatus line when running on the console
+######   trap CRON ALRM
+######   TMOUT=1
+######   CRON() {
+######      local STRING
+######      local COL
+######      local x
+######      STRING=$(date)
+######      COL=$[COLUMNS-5]
+######      COL=$[COL-$#STRING]
+######      x=$(echo $PREBUFFER | wc -l )
+######      x=$[x+1]
+######      echo -n "7[$x;A[$COL;G[0;37;44m-- $STRING --[0m8"
+######   }
+
+### thanks to Riviera for this one...
+### don't use it at the moment
+#*Riviera* chpwd () {
+#*Riviera*         dirs >| $ZDOTDIR/zsave/zsh_dirstack_tty$tti
+#*Riviera* }
+#*Riviera* cdt () {
+#*Riviera*         cd $(cut -d\  -f1 ~/.zsh/zsave/zsh_dirstack_tty$1|sed s/~/${HOME:gs./.\\\\/}/g)
+#*Riviera* }
+#*Riviera* und
+#*Riviera* in .zshrc
+#*Riviera* dirs $(sed s/~/${HOME:gs./.\\\\/}/g $ZDOTDIR/zsave/zsh_dirstack_tty$tti)
+#*Riviera* und in .zlogout nochmal das, was in chpwd steht.
+#*Riviera*
+#*Riviera* Damit kann ich 1. mit "cdt 3" in das in tty3 aktuelle Verzeichnis wechseln
+#*Riviera* und 2. nach nem login wieder denselben dirstack vorfinden auf derselben tty wie vorm ausloggen.
+#*Riviera* tti=$(tty)
+#*Riviera* tti=${tti#*/dev/tty}
+#*Riviera* Kommt noch dazu. Eigentlich hatte ich dann immer noch
+#*Riviera* case $tti in
+#*Riviera*  [A-Za-z]*)tti=${tti%*[0-9]};;
+#*Riviera*  *);;
+#*Riviera* esac
+#*Riviera* aber das hab ich rausgenommen
+#*Riviera* :)
+
+
+### COMPLETION AND MORE
+
+# The following lines were added by compinstall
+[[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
+#fpath=(/home/tkoehler/zsh/foo $fpath)
+
+autoload -U compinit
+compinit
+
+local _myhosts
+_myhosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
+# zstyle ':completion:*' hosts $_myhosts
+
+zstyle ':completion:*' auto-description 'specify %d'
+zstyle ':completion:*' completer _complete _ignored _match _correct _approximate _prefix
+zstyle ':completion:*' file-sort name
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+## domains to use for mutt user@host<TAB> completion
+zstyle '*mutt*' hosts 'picard.franken.de' 'vim.org'
+zstyle '*' hosts 'picard.franken.de' 'unser.linux.laeuft.auf.s390.org'
+zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
+zstyle ':completion:*' matcher-list 'r:|[._-]=** r:|=**' 'l:|=* r:|=*' 'm:{a-z}={A-Z}'
+zstyle ':completion:*' match-original both
+zstyle ':completion:*' max-errors 3
+zstyle ':completion:*' menu select=0
+zstyle ':completion:*' prompt 'CORRECT (%e errors found) > '
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' squeeze-slashes true
+zstyle '*mutt*' users vim vim-dev tkoehler
+zstyle '*' users thomas tkoehler
+zstyle ':completion:*' verbose true
+zstyle :compinstall filename '/home/tkoehler/.zshrc'
+# End of lines added by compinstall
+#fpath=(/usr/share/doc/zsh/examples/Functions/Misc/ $fpath)
+#autoload nslookup
+
+
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:*:*:hosts' list-colors '=(#b)(*)(to.com)=34;40=35;40' '=(#b)(*)(mayn.de)=36;40=35;40' '=unser.linux.laeuft.auf.s390.org=33;40' '=*=31;40'
+zstyle ':completion:*:*:*:*:users' list-colors '=*=32;40'
+
+autoload -U zfinit
+zfinit

@@ -1,0 +1,132 @@
+#  ,----
+#  | [dope@painless:~]% ulimit -a
+#  | -t: cpu time (seconds)         2000
+#  | -f: file size (blocks)         500000
+#  | -d: data seg size (kbytes)     100000
+#  | -s: stack size (kbytes)        8192
+#  | -c: core file size (blocks)    0
+#  | -m: resident set size (kbytes) unlimited
+#  | -u: processes                  1791
+#  | -n: file descriptors           1024
+#  | -l: locked-in-memory size (kb) 50000
+#  | -v: address space (kb)         unlimited
+#  | -N 10: file locks              unlimited
+#  | [dope@painless:~]%
+#  `----
+#
+# Note: This settings protect *not* against 'fork'-bombs like
+#  $ (){ :|:&};:
+#  $ perl -e 'while(1){ fork();}'
+# but i don't care a pap for it. Trust me. I know what I'm doing. See
+# zshbuiltins(1) /ulimit for details.
+ulimit -c 0       # prevent core files from being written at al
+ulimit -d 100000  #  100 MB  data segment
+ulimit -f 500000  #  500 MB  file size
+ulimit -l unlimited 
+#ulimit -l 50000   #   50 MB  locked memory
+ulimit -n 1024    # 1024 open files
+ulimit -s 8192    #    8 kb stack size
+ulimit -t 2000    #  200 sec CPU time
+
+# An array (colon separated list) containing the suffixes of files to
+# be ignored during filename completion. However, if completion only
+# generates files with suffixes in this list, then these files are
+# completed anyway.
+# Note: U can use ``ls **/*~*(${~${(j/|/)fignore}})(.)'' to list all
+#       plain files that do not have extensions listed in `fignore'
+fignore=( ,v .aux .toc .lot .lof .blg .bbl .bak .BAK .sav .old .o .trace .swp \~)
+
+# Setting abbreviation like 'iab' with Vim.. YES! Zsh _IS_ evil *hr*. I
+# use this instead of "global aliases".
+#  $ Igr<Space>
+# will be expanded to
+#  $ groff -s -p -t -e -Tlatin1 -mandoc
+typeset -A myiabs
+myiabs=(
+        "Im"    "| more"
+        "Ig"    "| grep"
+        "Ieg"   "| egrep"
+        "Iag"   "| agrep"
+        "Igr"   "groff -s -p -t -e -Tlatin1 -mandoc"
+        "Ip"    "| $PAGER"
+        "Ih"    "| head"
+        "It"    "| tail"
+        "Is"    "| sort"
+        "Iv"    "| $EDITOR"
+        "Iw"    "| wc"
+        "Ix"    "| xargs"
+)
+my-expand-abbrev() {
+    local MATCH
+    LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
+    LBUFFER+=${myiabs[$MATCH]:-$MATCH}
+    zle self-insert
+}
+
+#--------------------------------------------------
+# Now in ~/.zsh/zshbindings
+# bindkey     " "        my-expand-abbrev 
+#-------------------------------------------------- 
+
+# Set the "umask" (see "man umask"):
+# ie read and write for the owner only.
+# umask 002 # relaxed   -rwxrwxr-x
+# umask 022 # cautious  -rwxr-xr-x
+# umask 027 # uptight   -rwxr-x---
+# umask 077 # paranoid  -rwx------
+# umask 066 # bofh-like -rw-------
+umask 066
+
+# If root set unmask to 022 to prevent new files being created group and world writable
+if (( EUID == 0 )); then
+    umask 022
+fi
+
+# fucking "dead.letter" *narf*
+if [ -e ~/dead.letter ]; then
+         mv ~/dead.letter ~/.dead_letter.`date +%Y%m%d-%R`
+fi
+
+# >painless< is a "what happend if< - box (OpenBSD -current) and *.core -
+# files is a matter of course :>
+if [ "$HOSTNAME" = painless ]; then
+	if
+		[ -e ${HOME}/{mutt,xmms,zsh,irssi,perl,fvwm,opera}.core ]; then
+		zmv -M '(*).core' ~/.Core-Files/'$1.core-`date +%Y%m%d-%S`' && echo "Checkout ~/.Core-Files"
+	fi
+fi
+
+# 'hash' often visited directorys
+#   Note: That's *not* variables or aliase!
+#    ,----
+#    | $ hash -d M=~/.mutt
+#    | $ M
+#    | ~/.mutt
+#    | $ echo $M
+#    |
+#    | $ pwd
+#    | /home/dope/.mutt
+#    | $ 
+#    `----
+hash -d D=~/download/					# there are my downloads
+hash -d F=/usr/local/share/zsh/$ZSH_VERSION/functions	# ZSH functions (OpenBSD)
+hash -d F=/usr/share/zsh/$ZSH_VERSION/functions/        # ZSH functions (Slackware)
+hash -d FD=/backups/Documentations			# usefull documentations
+hash -d FDD=/backups/Downloads				# /new/ software an own make packages/ports
+hash -d FF=/backups/Files				# Pics, movies, ..
+hash -d FS=/backups/System				# my local backups
+hash -d H=/backups/					# Backups from this host
+hash -d HJ=~/.jed					# $JED_ROOT (${HOME})
+hash -d I=~/.irssi/					# Files for Irssi
+hash -d J=/usr/local/jed/				# $JED_ROOT (Change it!)
+hash -d L=~/.slang/					# Files for Slrn
+hash -d M=~/.mutt/					# Files for Mutt
+hash -d P=~/homepage/					# My personal webpage
+hash -d RC=/etc/rc.d/					# executed files from init (Slackware)
+hash -d S=~/scripts/					# (Un)tested local hacks
+hash -d SO=/backups/Source				# Mutt, Slrn, Vim, ..
+hash -d U=/usr/src/linux/                               # Linux-Kernel
+hash -d V=~/.vim/					# Files for Vim
+hash -d VL=/var/log					# often visited ;)
+hash -d Z=~/.zsh/					# "setupfiles" for ZSH
+hash -d _S=~/.sigs/					# My signature collection
