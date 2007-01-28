@@ -150,7 +150,7 @@ zstyle ':completion:*:approximate:*' max-errors 1 numeric
 And  if  you  want  the  number  of  errors  allowed by _approximate to
 increase with the length of what you have typed so far:
 ---------------------------------------------------------------------------------------------------
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )'
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 ---------------------------------------------------------------------------------------------------
 
 Ignore completion functions for commands you don't have:
@@ -256,13 +256,17 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ ls *~*.*(.)
   
 # Show only the ip-address from ``ifconfig device''
-  $ print ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} # ifconfig from net-tools (Linux)
-  $ print ${$(/sbin/ifconfig tun0)[6]} # ifconfig from 4.2BSD {Free,Net,Open}BSD
+  # ifconfig from net-tools (Linux)
+  $ print ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} 
+  # ifconfig from 4.2BSD {Free,Net,Open}BSD
+  $ print ${$(/sbin/ifconfig tun0)[6]} 
 
-# Ping all the IP addresses in a couple of class C's or all hosts into /etc/hosts
+# Ping all the IP addresses in a couple of class C's or all hosts 
+# into /etc/hosts
   $ for i in {1..254}; do ping -c 1 192.168.13.$i; done
   or
-  $ I=1; while ( [[ $I -le 255 ]] ) ; do ping -1 2 150.150.150.$I; let I++; done
+  $ I=1
+  $ while ( [[ $I -le 255 ]] ) ; do ping -1 2 150.150.150.$I; let I++; done
   or
   $ for i in $(sed 's/#.*//' > /etc/hosts | awk '{print $2}')
   : do
@@ -277,12 +281,15 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ for md ($module_path) m=($m $md/**/*(*e:'REPLY=${REPLY#$md/}'::r))
   $ zmodload -i $m
 
-# Rename all files within a directory such that their names get a numeral prefix in the default sort order.
+# Rename all files within a directory such that their names get a numeral 
+# prefix in the default sort order.
   $ i=1; for j in *; do mv $j $i.$j; ((i++)); done
-  $ i=1; for f in *; do mv $f $(echo $i| awk '{ printf("%03d", $0)}').$f; ((i++)); done
+  $ i=1; for f in *; do mv $f $(echo $i | \
+    awk '{ printf("%03d", $0)}').$f; ((i++)); done
   $ integer i=0; for f in *; do mv $f $[i+=1].$f; done
 
-# Find (and print) all symbolic links without a target within the current dirtree.
+# Find (and print) all symbolic links without a target within the current 
+# dirtree.
   $ $ file **/*(D@) | fgrep broken
   $ for i in **/*(D@); [[ -f $i || -d $i ]] || echo $i
   $ echo **/*(@-^./=%p)
@@ -293,7 +300,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   # see above, but now omit executables
   $ ls **/*~*(${~${(j/|/)fignore}})(.^*)
 
-# Print out files that dont have extensions (require setopt extendedglob dotglob)
+# Print out files that dont have extensions (require *setopt extendedglob*
+# and *setopt dotglob*)
   $ printf '%s\n' ^?*.*
 
 # List files in reverse order sorted by name
@@ -304,7 +312,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # Synonymic to ``ps ax | awk '{print $1}'''
   $ print -l /proc/*/cwd(:h:t:s/self//)
 
-# Get the PID of a process (without ``ps'', ``sed'', ``pgrep'', .. (under Linux)
+# Get the PID of a process (without ``ps'', ``sed'', ``pgrep'', .. 
+# (under Linux)
   $ pid2 () {
   >   local i
   >   for i in /proc/<->/stat
@@ -330,13 +339,15 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ cd -- $dest_root
   $ mkdir -p -- $dirs
 # or without zsh
-  $ find . -type d -exec env d="$dest_root" sh -c ' exec mkdir -p -- "$d/$1"' '{}' '{}' \;
+  $ find . -type d -exec env d="$dest_root" \ 
+    sh -c ' exec mkdir -p -- "$d/$1"' '{}' '{}' \;
 
 # If `foo=23'', then print with 10 digit with leading '0'.
   $ foo=23
   $ print ${(r:10::0:)foo}
 
-# find the name of all the files in their home directory that have more than 20 characters in their file names
+# find the name of all the files in their home directory that have 
+# more than 20 characters in their file names
   print -rl $HOME/${(l:20::?:)~:-}*
 
 # Save arrays
@@ -344,8 +355,9 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ eval "m=($(cat -- $nameoffile)"            # or use
   $ m=("${(@Q)${(z)"$(cat -- $nameoffile)"}}") # to restore it
 
-# get a "ls -l" on all the files in the tree that are younger than a specified age (e.g
-# "ls -l" all the files in the tree that where modified in the last 2 days)
+# get a "ls -l" on all the files in the tree that are younger than a specified 
+# age (e.g "ls -l" all the files in the tree that where modified in the last 2 
+# days)
   $ ls -tld **/*(m-2)
 # This will give you a listing 1 file perl line (not à la ls -R).
 # Think of an easy way to have a "ls -R" style output with
@@ -385,7 +397,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # and now with colors (require autoload colors ;colors)
   $ echo "$bg[red]$fg[black]${(l:42::-:)}"
 
-# Redirect STDERR to a command like xless without redirecting  STDOUT as well.
+# Redirect STDERR to a command like xless without redirecting STDOUT as well.
   $ foo 2>>(xless)
 # but this executes the command asynchronously. To do it synchronously:
   $ { { foo 1>&3 } 2>&1 | xless } 3>&1
@@ -395,7 +407,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   >     mv $i ${${(C)i}:s/Mp3/mp3/}
   > done
 
-# Match file names containing only digits and ending with .xml (requiresetopt kshglob)
+# Match file names containing only digits and ending with .xml (require
+# *setopt kshglob*)
   $ ls -l [0-9]##.xml
   $ ls -l <0->.xml
 
@@ -408,7 +421,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # Convert images (foo.gif => foo.png):
   $ for i in **/*.gif; convert $i $i:r.png
 
-# convert a collection of mp3 files to wave or cdr (e.g. file.wav -> file.mp3)
+# convert a collection of mp3 files to wave or cdr, 
+# e.g. file.wav -> file.mp3)
   $ for i (./*.mp3){mpg321 --w - $i > ${i:r}.wav}
   
 # Download with LaTeX2HTML  created Files (for example the ZSH-Guide):
@@ -416,7 +430,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   >     lynx -source $f >${f:t}
   > done
 
-# Move all files in dir1 and dir2 that have line counts greater than 10 to another directory say "/more10"
+# Move all files in dir1 and dir2 that have line counts greater than 10 to 
+# another directory say "/more10"
   $ mv dir[12]/**/*.cr(-.e{'((`wc -l < $REPLY` > 10))'}) /more10
 
 # Make with dpkg a master-list of everyfile that it has installed
@@ -430,7 +445,8 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ char=N ; print $((#char))
 
 # Filename "Erweiterung"
-# Note: The (N) says to use the nullglob option for this particular glob pattern.
+# Note: The (N) says to use the nullglob option for this particular 
+# glob pattern.
   $ for i in *.o(N); do
   >     rm $i
   > done
@@ -449,9 +465,10 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # gzip files when containing a certain string
   $ gzip ${(ps:\0:)"$(grep -lZ foobar ./*.txt(.))"}
 
-# A small  one-liner, that reads from stdin and prints to stdout the first unique line
-# i. e. does not print lines that have been printed before (this is similar to the unique 
-# command, but unique can only handle adjacent lines).
+# A small  one-liner, that reads from stdin and prints to stdout the first 
+# unique line i. e. does not print lines that have been printed before 
+# (this is similar to the unique command, but unique can only handle 
+# adjacent lines).
   $ IFS=$'\n\n'; print -rl -- ${(Oau)${(Oa)$(cat file;echo .)[1,-2]}}
 
 # Lists every executable in PATH
@@ -486,8 +503,8 @@ zsh-4.2.3/Doc/zsh_us.ps
 # Search for `README' in all Subdirectories
   $ ls -l **/README
 
-# find directories that contain both "index.php" and "index.html", or in general, directories
-# that contain more than one file matching "index.*"
+# find directories that contain both "index.php" and "index.html", or in 
+# general, directories that contain more than one file matching "index.*"
   $ ls **/*(D/e:'[[ -e $REPLY/index.php && -e $REPLY/index.html ]]':)
   # or
   $ ls **/*(D/e:'l=($REPLY/index.*(N)); (( $#l >= 2 ))':)
@@ -497,13 +514,14 @@ zsh-4.2.3/Doc/zsh_us.ps
   # or - without Zsh
   $ find / | grep -e /path/ -e '/path$'
 
-# Print he path of the directories holding the ten biggest C regular files in the current 
-# directory and subdirectories. 
+# Print he path of the directories holding the ten biggest C regular files
+# in the current directory and subdirectories. 
   $ print -rl -- **/*.c(D.OL[1,10]:h) | sort -u 
 
 # Find files with size == 0 and send a mail
   $ files=(**/*(ND.L0m+0m-2)) 
-  > (( $#files > 0 )) && print -rl -- $files | mailx -s "empty files" foo@bar.tdl
+  > (( $#files > 0 )) && print -rl -- $files | \ 
+    mailx -s "empty files" foo@bar.tdl
 
 # recursive chmod
   $ chmod 700 **/(.) # Only files
@@ -516,21 +534,24 @@ zsh-4.2.3/Doc/zsh_us.ps
   $ list=(${1:[...]}/*(ND:t))
   $ (($#list)) && print -rC2 -- ${(V)list}
 
-# Search all files in /home/*/*-mail/ with a setting ``chmod -s'' flag (recursive, include 
-# dotfiles) remove the setgid/setuid flag and print a message
+# Search all files in /home/*/*-mail/ with a setting ``chmod -s'' flag 
+# (recursive, include  dotfiles) remove the setgid/setuid flag and print 
+# a message
   $ chmod -s /home/*/*-mail(DNs,S) /home/*/*-mail/**/*(DNs,S))
 # or with a small script
   $ for file (/home/*/*-mail(DNs,S) /home/*/*-mail/**/*(DNs,S)) {
   >    print -r -- $file
   >    chmod -s $file && print -r fixed $file
   > }
-# or use ``zargs'' (require autoload zargs) prevent the arg list too long error
+# or use ``zargs'' (require autoload zargs) prevent the arg list too 
+# long error
   $ zargs /home/*/*-mail(DNs,S) /home/*/*-mail/**/*(DNs,S)) -- chmod -s
 
 # List files beginning at `foo23' upwards (foo23, foo24, foo25, ..)
   $ ls -l foo<23->
 
-# get all files that begin with the date strings from June 4 through June 9 of 2004
+# get all files that begin with the date strings from June 4 through 
+# June 9 of 2004
   $ ls -l 200406{04..10}*(N)
 # or if they are of the form 200406XX (require ``setopt extended_glob''
   $ ls -l 200306<4-10>.*
@@ -554,23 +575,33 @@ zsh-4.2.3/Doc/zsh_us.ps
 # List files in the current directory are not writable by the owner
   $ print -l ~/*(ND.^w)
 
-# find and delete the files which are older than a given parameter (seconds/minutes/hours)
-  $ rm -f /Dir/**/*(.mh+3)   # deletes all regular file in /Dir that are older than 3 hours
-  $ rm -f /Dir/**/*(@mm+3)   # deletes all symlinks in /Dir that are older than 3 minutes
-  $ rm -f /Dir/**/*(ms+30^/) # deletes all non dirs in /Dir that are older than 30 seconds
-  $ rm ./**/*(.Dmh+1,.DL0)   # deletes all folders, sub-folders and files older than one hour
-  $ rm -f **/*(mh+6)         # deletes all files more than 6 hours old 
-  $ rm ./*(Om[1,-11])        # removes all files but the ten newer ones (delete all but last 10 files in a directory)
- Note: If you get a arg list too long, you use the builtin rm. For example:
-  $ zmodload zsh/files ; rm -f **/*(mh+6)
+# find and delete the files which are older than a given parameter 
+# (seconds/minutes/hours)
+  # deletes all regular file in /Dir that are older than 3 hours
+   $ rm -f /Dir/**/*(.mh+3)
+  # deletes all symlinks in /Dir that are older than 3 minutes
+   $ rm -f /Dir/**/*(@mm+3)
+  # deletes all non dirs in /Dir that are older than 30 seconds
+   $ rm -f /Dir/**/*(ms+30^/)
+  # deletes all folders, sub-folders and files older than one hour
+   $ rm ./**/*(.Dmh+1,.DL0)
+  # deletes all files more than 6 hours old
+   $ rm -f **/*(mh+6)
+  # removes all files but the ten newer ones (delete all but last 10 
+  # files in a directory)
+   $ rm ./*(Om[1,-11])
+ Note: If you get a arg list too long, you use the builtin rm. For 
+       example:
+   $ zmodload zsh/files ; rm -f **/*(mh+6)
   or use the zargs function:
-  $ autoload zargs ; zargs **/*(mh+6) -- rm -f
+   $ autoload zargs ; zargs **/*(mh+6) -- rm -f
 
-# A User's Guide to the Z-Shell /5.9: Filename Generation and Pattern Matching
-# find all files in all subdirectories, searching recursively, which have a given 
-# name, case insensitive, are at least 50 KB large, no more than a week old and 
-# owned by the root user, and allowing up to a single error in the spelling of 
-# the name. In fact, the required expression looks like this:
+# A User's Guide to the Z-Shell /5.9: Filename Generation and Pattern 
+# Matching find all files in all subdirectories, searching recursively, 
+# which have a given name, case insensitive, are at least 50 KB large, 
+# no more than a week old and owned by the root user, and allowing up 
+# to a single error in the spelling of the name. In fact, the required 
+# expression looks like this:
   $ ls **/(#ia1)name(LK+50mw-1u0)
   
 # Change the UID from 102 to 666
@@ -591,7 +622,8 @@ zsh-4.2.3/Doc/zsh_us.ps
 # Show only empty files which nor `group' or `world writable'
   $ ls *(L0f.go-w.)
 
-# find - and list - the ten newest files in directories and subdirs (recursive)
+# find - and list - the ten newest files in directories and subdirs 
+# (recursive)
   $ print -rl -- **/*(Dom[1,10])
 
 # Print only 5 lines by "ls" command (like ``ls -laS | head -n 5'')
@@ -605,9 +637,9 @@ zsh-4.2.3/Doc/zsh_us.ps
 
 # find all the empty directories in a tree
   $ for f in ***/*(/l2); do foo=($f/*(N)); [[ -z $foo ]] && print $f; done
-# Note:Since Zsh 4.2.1(?) the glob qualifier F indicates a non-empty directory.
-  Hence *(F) indicates all subdirectories with entries, *(/^F) means all subdirectories with no
-  entries.
+# Note:Since Zsh 4.2.1 the glob qualifier F indicates a non-empty directory.
+# Hence *(F) indicates all subdirectories with entries, *(/^F) means all 
+# subdirectories with no entries.
   $ ls -ld *(/^F)
 
 # remove empty directories afterwards
@@ -624,11 +656,13 @@ Modifiers are a powerful mechanism that let you modify the results
 returned by parameter, filename and history expansion. See zshexpn(1)
 for details.
 -------------------------------------------------------------------------------
-# Remove a trailing pathname component, leaving the head. This works like `dirname'.
+# Remove a trailing pathname component, leaving the head. This works like 
+# `dirname'.
   $ echo =ls(:h)
   /bin
 
-# Remove all leading pathname components, leaving the tail. This works like `basename'.
+# Remove all leading pathname components, leaving the tail. This works 
+# like `basename'.
   $ echo =ls(:t)
   ls
 
@@ -652,7 +686,8 @@ for details.
   $ echo $foo:e
   42
 
-# Print the new command but do not execute it. Only works with history expansion.
+# Print the new command but do not execute it. Only works with history 
+# expansion.
   $ echo =ls(:h)
   /bin
   $ !echo:p
@@ -711,7 +746,8 @@ See zshmisc(1) for more informations (or less ${^fpath}/zmv(N))
 # Pipe STDERR
   $ echo An error >&2 2>&1 | sed -e 's/A/I/'
 
-# send standard output of one process to standard input of several processes in the pipeline
+# send standard output of one process to standard input of several processes
+# in the pipeline
   $ setopt multios
   $ process1 > >(process1) > >(process2)
 
@@ -729,11 +765,12 @@ See zshmisc(1) for more informations (or less ${^fpath}/zmv(N))
   $ command 2>&2 2>stderr
 # redirect stderr and stdout to separate files and both to orig. stdout:
   $ command 2>&1 1>&1 2>stderr 1>stdout
-# redirect stderr and stdout to separate files and stdout to orig. stdout AND stderr to orig. stderr:
+# redirect stderr and stdout to separate files and stdout to orig. stdout 
+# AND stderr to orig. stderr:
   $ command 2>&2 1>&1 2>stderr 1>stdout
 
 # More fun with STDERR ;)
-  $ ./my-script.sh 2> >(grep -v moron >error.log) | process-output > output.log
+  $ ./my-script.sh 2> >(grep -v moron >error.log)|process-output >output.log
   $  echo "Thats STDOUT" >>(sed 's/stdout/another example/' > foobar)
 -------------------------------------------------------------------------------
 
@@ -757,7 +794,8 @@ ZMV-Examples (require autoload zmv)
 # Remove the first 4 chars from a filename
   $ zmv -n '*' '$f[5,-1]' # NOTE: The "5" is NOT a mistake in writing!
 
-# Rename names of all files under the current Dir to lower case, but keep Dir names as-is. 
+# Rename names of all files under the current Dir to lower case, but keep 
+# dirnames as-is. 
   $ zmv -Qv '(**/)(*)(.D)' '$1${(L)2}' 
 
 # replace all 4th character, which is "1",  with "2" and so on
@@ -785,8 +823,8 @@ ZMV-Examples (require autoload zmv)
   $ autoload zmv 
   $ zmv -n '(**/)(*)' '$1${2//[^A-Za-z0-9._]/_}' 
 
-# Add *.py to a bunch of python scripts in a directory (some of them end in *.py and give them
-# all a proper extension
+# Add *.py to a bunch of python scripts in a directory (some of them end 
+# in *.py and give them all a proper extension
   $ autoload zmv 
   $ zmv -n '(**/)(con*)(#qe,file $REPLY | grep "python script",)' '$1$2.py'
 
@@ -809,15 +847,15 @@ ZMV-Examples (require autoload zmv)
   filename.002  filename.004  filename.006  filename.008  filename.010
   $ zmv '(filename.)0##(?*)' '$1$2'
   $ ls
-  filename.1  filename.10  filename.2  filename.3  filename.4  filename.5  filename.6 ...
+  filename.1  filename.10  filename.2  filename.3  filename.4  filename.5 ..
 
 # renumber files. 
   $ autoload zmv 
   $ ls *
-  foo_10.jpg  foo_2.jpg  foo_3.jpg  foo_4.jpg  foo_5.jpg  foo_6.jpg  foo_7.jpg  foo_8.jpg  foo_9.jpg
+  foo_10.jpg  foo_2.jpg  foo_3.jpg  foo_4.jpg  foo_5.jpg  foo_6.jpg ..
   $ zmv -fQ 'foo_(<0->).jpg(.nOn)' 'foo_$(($1 + 1)).jpg'
   $ ls *
-  foo_10.jpg  foo_11.jpg  foo_3.jpg  foo_4.jpg  foo_5.jpg  foo_6.jpg  foo_7.jpg  foo_8.jpg foo_9.jpg
+  foo_10.jpg  foo_11.jpg  foo_3.jpg  foo_4.jpg  foo_5.jpg  ...
 
 # adding leading zeros to a filename (1.jpg -> 001.jpg, ..  
   $ autoload zmv 
@@ -852,9 +890,9 @@ ZMV-Examples (require autoload zmv)
   $ autoload zmv 
   $ zmv -Q "(**/)(*'*)(D)" "\$1\${2//'/}"
 
-# When a new file arrives (named file.txt) rename all files in order to get (e. g.
-# file119.txt becomes file120.txt, file118.txt becomes file119.txt and so on ending 
-# with file.txt becoming file1.txt
+# When a new file arrives (named file.txt) rename all files in order to 
+# get (e. g. file119.txt becomes file120.txt, file118.txt becomes 
+# file119.txt and so on ending with file.txt becoming file1.txt
   $ autoload zmv 
   $ zmv -fQ 'file([0-9]##).txt(On)' 'file$(($1 + 1)).txt'
 
@@ -922,18 +960,20 @@ zsh/datetime (require zmodload zsh/datetime)
   $ $ zmodload zsh/datetime
   $ setopt extendedglob
   $ touch aaa_bbb_20041212_c.dat eee_fff_20051019_g.dat
-  $ strftime -s pattern '???_???_<0-%Y%m%d>_?.dat' $((EPOCHSECONDS - 365 * 24 * 60 * 60 / 2))
+  $ strftime -s pattern \ 
+    '???_???_<0-%Y%m%d>_?.dat' $((EPOCHSECONDS - 365 * 24 * 60 * 60 / 2))
   $ print -rl -- $~pattern
   aaa_bbb_20041212_c.dat
   $ print -rl -- $pattern 
   ???_???_<0-20050815>_?.dat
 
-# Search files size == 0, to be based on the file name containing a date rather than the "last
-# modified" date of the file
+# Search files size == 0, to be based on the file name containing a date 
+# rather than the "last modified" date of the file
   $ zmodload -i zsh/datetime 
   $ strftime -s file "abc_de_%m%d%Y.dat" $((EPOCHSECONDS - 24 * 60 * 60 )) 
   $ files=(**/$file(N.L0)) 
-  $ (( $#files > 0 )) && print -rl -- $files | mailx -s "empty files"  foo@bar.tdl  
+  $ (( $#files > 0 )) && print -rl -- $files | \ 
+    mailx -s "empty files"  foo@bar.tdl  
 -------------------------------------------------------------------------------
 
 zsh/stat (require zmodload zsh/stat)
@@ -944,7 +984,8 @@ zsh/stat (require zmodload zsh/stat)
   $ file1=foo
   $ file2=bar
   $ touch bar & sleep 5 & touch foo
-  $ echo $file1 is $(( $(stat +mtime $file2) - $(stat +mtime $file1) )) seconds older than $file2.
+  $ echo $file1 is \ 
+    $(($(stat +mtime $file2) - $(stat +mtime $file1))) seconds older than $file2.
   bar is 5 seconds older than foo
 
 # list the files of a disk smaller than some other file
@@ -956,7 +997,8 @@ zsh/stat (require zmodload zsh/stat)
   $ zmodload zsh/stat
   $ ls -fld ./**/*(d`stat +device .`OL[1,100])
 
-# Get only the user name and the file names from (like ls -l * | awk '{print $3" " $8}')
+# Get only the user name and the file names from (like 
+# ls -l * | awk '{print $3" " $8}')
   $ zmodload zsh/stat
   $ for file; do
   >   stat -sA user +uid -- "$file" &&
@@ -981,13 +1023,15 @@ zsh/stat (require zmodload zsh/stat)
   4707
 
 # Delete files in a directory that hasn't been accessed in the last ten days
-# and send ONE mail to the owner of the files informing him/her of the files' deletion.
+# and send ONE mail to the owner of the files informing him/her of the files' 
+# deletion.
   $ zmodload zsh/stat zsh/files
   $ typeset -A f; f=()
   $ rm -f /path/**/*(.a+10e{'stat -sA u +uidr $REPLY; f[$u]="$f[$u]$REPLY"'})
   $ for user (${(k)f}) {print -rn $f[$user]|mailx -s "..." $user}
 
-# Get a "ls -l" on all the files in the tree that are younger than a specified age
+# Get a "ls -l" on all the files in the tree that are younger than a 
+# specified age
   $ zmodload zsh/stat
   $ for d (. ./**/*(N/m-2))
   >   print -r -- $'\n'$d: && cd $d && {
@@ -1009,7 +1053,8 @@ zsh/stat (require zmodload zsh/stat)
 zsh/files (require zmodload zsh/files)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------------------------------------
-# search a directory for files containing a certain string then copy those files to another directory.
+# search a directory for files containing a certain string then copy those 
+# files to another directory.
   $ zmodload zsh/files
   $ IFS=$'\0'
   $ cp $(grep -lZr foobar .) otherdirectory
@@ -1022,7 +1067,8 @@ zsh/mapfile (require zmodload zsh/mapfile)
   $ zmodload zsh/mapfile
   $ pattern1="foo"
   $ pattern2="bar foo"
-  $ print -l ./**/*(DN.e{'z=$mapfile[$REPLY] && [[ $z = *$pattern1* && $z = *$pattern2* ]]'})
+  $ print -l ./**/*(DN.e{'z=$mapfile[$REPLY] && [[ $z = *$pattern1* && \ 
+    $z = *$pattern2* ]]'})
 # or a solution in combination with zsh/pcre
   $ zmodload -i zsh/mapfile zsh/pcre
   $ pattern1="foo"
@@ -1039,9 +1085,10 @@ zsh/mapfile (require zmodload zsh/mapfile)
   $ setopt extendedglob
   $ print -rl -- ${${=mapfile[/etc/passwd]}:#*(#i)root*}
   
-# If a XML-file contains stuff like ``<TAGA/>'' and ``<TAGB/>'', number this empty tags
-# (ones ending in '/>') so if encountered in the same order, the preceeding tags would become
-# ``<TAGA/>1</TAGA>'' and ``<TAGB/>2</TAGB>''
+# If a XML-file contains stuff like ``<TAGA/>'' and ``<TAGB/>'', number 
+# this empty tags (ones ending in '/>') so if encountered in the same 
+# order, the preceeding tags would become ``<TAGA/>1</TAGA>'' and 
+# ``<TAGB/>2</TAGB>''
   $ zmodload zsh/mapfile
   $ cnt=0
   $ apfile[data.xml.new]=${(S)mapfile[data.xml]//\
@@ -1049,10 +1096,11 @@ zsh/mapfile (require zmodload zsh/mapfile)
 
 # removing all files in users Maildir/new that contain ``filename="gone.src''
   $ zmodload zsh/{files,mapfile}
-  $ rm -f /u1/??/*/Maildir/new/100*(.e{'[[ $mapfile[$REPLY] == *filename=\"gone.scr\"* ]]'})
+  $ rm -f /u1/??/*/Maildir/new/100*(.e{'[[ $mapfile[$REPLY] == \ 
+    *filename=\"gone.scr\"* ]]'})
 
-# Grep out the Title from a postscript file and append that value to the end of
-# the filename
+# Grep out the Title from a postscript file and append that value to the 
+# end of the filename
   $ autoload -U zmv
   $ zmodload zsh/mapfile
   $ zmv '(*).ps' '$1-${${${mapfile[$f]##*%%Title: }%% *}//[^a-zA-Z0-9_]/}.ps'
@@ -1156,8 +1204,8 @@ zsh/zftp (require zmodload zsh/zftp)
   $ done
   $ zfclose
   
-# Upload all regular files in $HOME/foobar (recursive) that are newer than two hours 
-# to ftp.foobar.invalid/path/to/upload
+# Upload all regular files in $HOME/foobar (recursive) that are newer than 
+# two hours to ftp.foobar.invalid/path/to/upload
   $ autoload -U zfinit ; zfinit
   $ zfopen ftp.foobar.invalid/path/to/upload
   $ cd $HOME/foobar
