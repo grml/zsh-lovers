@@ -7,7 +7,7 @@ zsh-lovers - tips, tricks and examples for the Z shell
 
 SYNOPSIS
 --------
-Just read it ;-)
+Just read it. ;-)
 
 OVERVIEW
 --------
@@ -1353,6 +1353,8 @@ Project-page::
   *http://sourceforge.net/projects/zsh/[]*
 Z shell page at sunsite.dk::
     *http://zsh.sunsite.dk/[]*
+From Bash to Z Shell: Conquering the Command Line - the book::
+    *http://www.bash2zsh.com/[]*
 Mailinglistarchive::
     *http://www.zsh.org/mla/[]*
 ZSH-FAQ::
@@ -1375,8 +1377,6 @@ Making the Transition to Zsh::
     *http://www.linux-mag.com/cgi-bin/printer.pl?issue=2002-05&article=power[]*
 Curtains up: introducing the Z shell::
     *http://www-128.ibm.com/developerworks/linux/library/l-z.html?dwzone=linux[]*
-Die Zsh-Liebhaber-Seite::
-    *http://www.infodrom.north.de/~matthi/zsh/[]*
 ZSH-Liebhaberseite::
     *http://michael-prokop.at/computer/tools_zsh_liebhaber.html[]*
 ZSH-Seite von Michael Prokop::
@@ -1384,7 +1384,7 @@ ZSH-Seite von Michael Prokop::
 A Case for the Z Shell on *http://www.daemonnews.org/[]*::
     *http://ezine.daemonnews.org/199910/zsh.html[]*
 ZSH-Section from Dotfiles.com::
-    *http://www.dotfiles.com/index.php3?app_id=4[]*
+    *http://www.dotfiles.com/index.php?app_id=4[]*
 Writing Zsh Completion Functions::
     *http://www.linux-mag.com/2002-07/power_01.html[]*
 ZSH Prompt introduction::
@@ -1400,7 +1400,7 @@ The zsh-lovers webpage::
 IRC channel::
     *#zsh at irc.freenode.org*
 The Z shell reference-card (included in the zsh-lovers debian-package)::
-    *http://zsh.sunsite.dk/Refcard/refcard.ps.gz[]*
+    *http://www.bash2zsh.com/zsh_refcard/refcard.pdf[]*
 
 AUTHORS
 -------
@@ -1445,7 +1445,7 @@ Manpages of zsh:
 
 Note: especially 'man zshcontrib' covers very useful topics! +
 Book: *From Bash to Z Shell* by Oliver Kiddle, Jerry Peck and Peter
-Stephenson. *ISBN: 1590593766*. +
+Stephenson. *ISBN: 1590593766*. - *http://www.bash2zsh.com/[bash2zsh.com]* +
 Also take a look at the section *LINKS* in this manpage.
 
 BUGS
@@ -1459,4 +1459,4 @@ COPYRIGHT
 Copyright  \(C) Michael Prokop, Christian Schneider and Matthias
 Kopfermann.
 
-// vim:tw=80
+// vim:tw=80 ai
