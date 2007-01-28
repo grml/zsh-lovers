@@ -9,10 +9,8 @@ you notice in 'man zsh-lovers' to zsh-lover (at) michael-prokop.at
 
 zsh-lovers.*: zsh-lovers project -> man zsh-lovers
 
-refcard.*:    reference card for the Z shell
-              Please notice that the reference card for zsh was
-              created based on version 3.1.9 so is a little
-              out-of-date. 
+refcard.*:    reference card for the Z shell by Peter Stephenson,
+              taken from http://www.bash2zsh.com/
 
 zsh.vim:      syntax file for zsh for editor Vim by Nikolai Weibull
 

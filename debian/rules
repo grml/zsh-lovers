@@ -47,6 +47,8 @@ binary-arch: build install
 	dh_installman zsh-lovers.1
 	dh_link
 	dh_compress
+	mkdir -p debian/zsh-lovers/usr/share/lintian/overrides/
+	cp -av debian/overrides debian/zsh-lovers/usr/share/lintian/overrides/zsh-lovers
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps

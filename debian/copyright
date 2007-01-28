@@ -7,21 +7,9 @@ Upstream Author: Michael Prokop <mika@grml.org>
 
 Copyright:
 
-   This software is copyright (c) 2004-2005 by Michael Prokop.
+   Debian packaging is copyright (c) 2004++ by Michael Prokop.
 
-   This package is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; version 2 dated June, 1991.
-
-   This package is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this package; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-   02111-1307, USA.
-
-On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
+   The files written by the grml-team are available under
+   the GPL license version 2. For license information regarding
+   files not deriving from the grml project please take a look
+   at the affected file itself.
