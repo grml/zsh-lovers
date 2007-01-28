@@ -1,3 +1,14 @@
+zsh-lovers (0.6-1) unstable; urgency=low
+
+  * Rewrite of zsh-lovers in asciidoc, done by Christian Schneider
+    - thanks a lot!
+  * Adjusted package for new format:
+    - add asciidoc and fop to Build-Depends
+    - mention hg repos in debian/control
+    - bumb standard version to 3.7.2
+
+ -- Michael Prokop <mika@grml.org>  Sun, 28 Jan 2007 09:46:08 +0100
+
 zsh-lovers (0.5-2) unstable; urgency=low
 
   * Fixed small typo (mp3 vs. pdf) (thanks Florian Hassler).

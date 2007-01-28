@@ -5,16 +5,15 @@ build: build-stamp
 build-stamp: 
 	dh_testdir
 
-	# save old files
-	mkdir $(CURDIR)/debian/saved
-	cp zsh-lovers.1 $(CURDIR)/debian/saved
-	cp *pdf $(CURDIR)/debian/saved
-	cp *ps $(CURDIR)/debian/saved
-	cp zsh-lovers.html $(CURDIR)/debian/saved
+        # html:
+	asciidoc zsh-lovers.1.txt
+        # manpage:
+	a2x -f manpage zsh-lovers.1.txt
 
-	groff -Tps -mandoc zsh-lovers.1 > zsh-lovers.ps
-	ps2pdf zsh-lovers.ps
-	man -Thtml ./zsh-lovers.1 > zsh-lovers.html
+        # pdf:
+	#  notice: you might have to run: ln -s /usr/bin/fop ~/bin/fop.sh
+	#  to work around http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=376523
+	a2x -f pdf zsh-lovers.1.txt
 
 	touch build-stamp
 
@@ -22,21 +21,22 @@ clean:
 	dh_testdir
 	dh_testroot
 
-	if [ -d $(CURDIR)/debian/saved ]; then \
-		mv $(CURDIR)/debian/saved/* $(CURDIR); \
-		rmdir $(CURDIR)/debian/saved ; \
-	fi
+	#if [ -d $(CURDIR)/debian/saved ]; then \
+	#	mv $(CURDIR)/debian/saved/* $(CURDIR); \
+	#	rmdir $(CURDIR)/debian/saved ; \
+	#fi
 	rm -f build-stamp
 	dh_clean 
-	rm -rf $(CURDIR)/debian/zsh-lovers/
+	# rm -rf $(CURDIR)/debian/zsh-lovers/
 
 install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
-	dh_installdirs
+	dh_installdirs usr/share/doc/zsh-lovers/zsh_people usr/share/man/man1 usr/share/vim/syntax
 
-	install -m 644 $(CURDIR)/zsh.vim $(CURDIR)/debian/zsh-lovers/usr/share/vim/syntax/zsh.vim
+	cp -a zsh_people       debian/zsh-lovers/usr/share/doc/zsh-lovers/
+	install -m 644 zsh.vim debian/zsh-lovers/usr/share/vim/syntax/zsh.vim
 
 binary-indep: build install
 	# We have nothing to do
@@ -57,4 +57,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+.PHONY: build clean binary-indep binary-arch binary install

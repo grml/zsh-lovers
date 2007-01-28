@@ -2,8 +2,9 @@ Source: zsh-lovers
 Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
-Build-Depends-Indep: debhelper (>= 4.0.0), gs-common, troffcvt, groff-base
-Standards-Version: 3.6.1
+Build-Depends-Indep: debhelper (>= 4.0.0), asciidoc, fop
+Standards-Version: 3.7.2
+S-X-Vcs-Hg: http://hg.grml.org/zsh-lovers
 
 Package: zsh-lovers
 Architecture: all
@@ -14,3 +15,5 @@ Description: tips, tricks and examples for the zsh
  there was no manpage with some examples (like
  procmailex(5)). That's why the package zsh-lovers
  exists. See man zsh-lovers and included documentation.
+ .
+  Homepage: http://grml.org/zsh/
