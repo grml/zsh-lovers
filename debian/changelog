@@ -1,3 +1,10 @@
+zsh-lovers (0.6-2) unstable; urgency=low
+
+  * Fix typo: it is foobar.tex and not foobar.tex, thanks to
+    Jens Heidrich.
+
+ -- Michael Prokop <mika@grml.org>  Sat,  3 Feb 2007 11:21:40 +0100
+
 zsh-lovers (0.6-1) unstable; urgency=low
 
   * Rewrite of zsh-lovers in asciidoc, done by Christian Schneider
