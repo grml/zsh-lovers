@@ -67,8 +67,8 @@ alias -s tex=vim
 alias -s html=w3m
 alias -s org=w3m
 -----------------
-Now pressing return-key after entering 'foobar.vim' starts vim with
-foobar.vim. Calling a html-file runs browser w3m. 'www.zsh.org' and pressing
+Now pressing return-key after entering 'foobar.tex' starts vim with
+foobar.tex. Calling a html-file runs browser w3m. 'www.zsh.org' and pressing
 enter starts w3m with argument www.zsh.org. +
 Global aliases can be used anywhere in the command line. Example:
 ----------------------
