@@ -1,3 +1,10 @@
+zsh-lovers (0.6-3) unstable; urgency=low
+
+  * Applied patch by Christian Schneider which updates some URLs,
+    manpage references and adds "test if a parameter is numeric".
+
+ -- Michael Prokop <mika@grml.org>  Sat, 24 Feb 2007 13:12:02 +0100
+
 zsh-lovers (0.6-2) unstable; urgency=low
 
   * Fix typo: it is foobar.tex and not foobar.tex, thanks to

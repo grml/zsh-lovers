@@ -78,6 +78,7 @@ $ grep alias ~/.zsh/* C
 ----------------------
 Some more or less useful global aliases (choose whether they are useful  or not
 for you on your own):
+
 --------------------------------------------------------
 alias -g ...='../..'
 alias -g ....='../../..'
@@ -195,6 +196,13 @@ Hint: A list of valid glob Qualifiers can be found in zshexpn(1).
 See ``man 1 zshexpn | less -p'' Qualifiers for details.
 
 -------------------------------------------------------------------------------
+# test if a parameter is numeric
+  $ if [[ $1 == <-> ]] ; then
+         echo numeric
+    else
+         echo non-numeric
+    fi
+
 # Show me all the .c files for which there doesn't exist a .o file.
   $ c=(*.c) o=(*.o(N)) eval 'ls ${${c:#(${~${(j:|:)${o:r}}}).c}:?done}'
 
@@ -1394,7 +1402,8 @@ Adam's ZSH page::
 Zzappers Best of ZSH Tips::
     *http://www.rayninfo.co.uk/tips/zshtips.html[]*
 Zsh Webpage by Christian Schneider::
-    *http://strcat.de/zsh/[]*
+    *http://strcat.de/wiki/zsh/[]*
+    *http://strcat.de/wiki/zsh-german[]* (German translation. Help needed!)
 The zsh-lovers webpage::
     *http://grml.org/zsh/[]*
 IRC channel::
@@ -1417,7 +1426,7 @@ Barton E. Schaefer    - http://www.well.com/user/barts/
 Matthias Kopfermann   - http://www.infodrom.north.de/~matthi/
 Oliver Kiddle         - http://people.freenet.de/opk/
 Paul Falstad          - http://www.falstad.com/
-Peter Stephenson      - http://python.swan.ac.uk/~pypeters/
+Peter Stephenson      - http://homepage.ntlworld.com/p.w.stephenson/
 Richard Coleman
 Stephane Chazelas     - http://stephane.chazelas.free.fr/
 Sven Guckes           - http://www.guckes.net/
@@ -1428,17 +1437,21 @@ SEE ALSO
 --------
 Manpages of zsh:
 ------------------------------------------------------------------
-       zsh          Zsh overview (this section)
-       zshmisc      Anything not fitting into the other sections
-       zshexpn      Zsh command and parameter expansion
-       zshparam     Zsh parameters
-       zshoptions   Zsh options
-       zshbuiltins  Zsh built-in functions
-       zshzle       Zsh command line editing
-       zshcompwid   Zsh completion widgets
-       zshcompsys   Zsh completion system
+       zsh          Zsh overview 
+       zshall       Tthe Z shell meta-man page
+       zshbuiltins  Zsh built-in commands
        zshcompctl   Zsh completion control
+       zshcompsys   Zsh completion system
+       zshcompwid   Zsh completion widgets
+       zshcontrib   User contributions to zsh
+       zshexpn      Zsh expansion and substitution
+       zshmisc      Anything not fitting into the other sections
        zshmodules   Zsh loadable modules
+       zshoptions   Zsh options
+       zshparam     Zsh parameters
+       zshroadmap   Informal introduction to the zsh manual
+       zshtcpsys    Zsh tcp system
+       zshzle       Zsh command line editing
        zshzftpsys   Zsh built-in FTP client
        zshall       Meta-man page containing all of the above
 ------------------------------------------------------------------
