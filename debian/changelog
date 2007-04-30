@@ -1,3 +1,11 @@
+zsh-lovers (0.6-4) unstable; urgency=low
+
+  * Cleanup of spaces at end of lines.
+  * Add missing 'l:=o_log' to first code example. Thanks to
+    Mike Leary!
+
+ -- Michael Prokop <mika@grml.org>  Mon, 30 Apr 2007 19:47:23 +0200
+
 zsh-lovers (0.6-3) unstable; urgency=low
 
   * Applied patch by Christian Schneider which updates some URLs,
