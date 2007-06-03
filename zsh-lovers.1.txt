@@ -190,12 +190,29 @@ cd will never select the parent directory (e.g.: cd ../<TAB>):
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 ---------------------------------------------------------------------------------------------------
 
+Another method for 'quick change directories'. Add this to your ~/.zshrc, then just enter
+``cd ..../dir''
+---------------------------------------------------------------------------------------------------
+rationalise-dot() {
+  if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+=/..
+  else
+    LBUFFER+=.
+  fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+---------------------------------------------------------------------------------------------------
+
 UNSORTED/MISC examples
 ~~~~~~~~~~~~~~~~~~~~~~
 Hint: A list of valid glob Qualifiers can be found in zshexpn(1).
 See ``man 1 zshexpn | less -p'' Qualifiers for details.
 
 -------------------------------------------------------------------------------
+# cat first line in all files in this dir
+  $ for file (*(ND-.)) IFS= read -re < $file
+
 # test if a parameter is numeric
   $ if [[ $1 == <-> ]] ; then
          echo numeric
@@ -665,7 +682,32 @@ Modifiers are a powerful mechanism that let you modify the results
 returned by parameter, filename and history expansion. See zshexpn(1)
 for details.
 -------------------------------------------------------------------------------
+<<<<<<< /home/dope/download/Source/HG-Repos/zsh-lovers/zsh-lovers.1.txt.orig.432616858
+# NOTE: Zsh 4.3.4 needed!
+$ autoload -U age
+# files modified today
+  $ print *(e:age today now:)             
+# files modified since 5 pm
+  $ print *(e-age 17:00 now-)             
+# ... since 5 o'clock yesterda
+  $ print *(e-age yesterday,17:00 now-)
+# ... from last Christmas before today
+  $ print *(e-age 2006/12/25 today-)
+# ... before yesterday
+  $ print *(e-age 1970/01/01 yesterday-) 
+# all files modified between the start of those dates
+  $ print *(e:age 2006/10/04 2006/10/09:) 
+# all files modified on that date
+  $ print *(e:age 2006/10/04:) 
+# Supply times.
+  $ print *(e-age 2006/10/04:10:15 2006/10/04:10:45-)
+
+# Remove a trailing pathname component, leaving the head. This works like 
+||||||| /tmp/zsh-lovers.1.txt~base.AvW_ZW
+# Remove a trailing pathname component, leaving the head. This works like 
+=======
 # Remove a trailing pathname component, leaving the head. This works like
+>>>>>>> /tmp/zsh-lovers.1.txt~other.vDaddL
 # `dirname'.
   $ echo =ls(:h)
   /bin
@@ -988,6 +1030,10 @@ zsh/datetime (require zmodload zsh/datetime)
 zsh/stat (require zmodload zsh/stat)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------------------------------------
+# test if a symbolic link links to a certain file
+  $ zmodload -i zsh/stat
+  $ ! stat -LH s foo.ln || [[ $s[link] != "foo.exe" ]] || ln -sf foo.exe foo.ln
+
 # comparing file dates
   $ zmodload zsh/stat
   $ file1=foo
@@ -1440,7 +1486,8 @@ Manpages of zsh:
        zsh          Zsh overview
        zshall       Tthe Z shell meta-man page
        zshbuiltins  Zsh built-in commands
-       zshcompctl   Zsh completion control
+       zshcalsys    zsh calendar system
+       zshcompctl   zsh programmable completion
        zshcompsys   Zsh completion system
        zshcompwid   Zsh completion widgets
        zshcontrib   User contributions to zsh
