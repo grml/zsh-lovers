@@ -4,7 +4,9 @@ Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends-Indep: debhelper (>= 4.0.0), asciidoc, fop
 Standards-Version: 3.7.2
-S-X-Vcs-Hg: http://hg.grml.org/zsh-lovers
+Homepage: http://grml.org/zsh/
+XS-Vcs-hg: http://hg.grml.org/zsh-lovers/
+XS-Vcs-Browser: http://hg.grml.org/zsh-lovers/
 
 Package: zsh-lovers
 Architecture: all
