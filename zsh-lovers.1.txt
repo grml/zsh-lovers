@@ -221,7 +221,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
     fi
 
 # Show me all the .c files for which there doesn't exist a .o file.
-  $ c=(*.c) o=(*.o(N)) eval 'ls ${${c:#(${~${(j:|:)${o:r}}}).c}:?done}'
+  $ print *.c(e_'[[ ! -e $REPLY:r.o ]]'_)
 
 # All files in /var/ that are not owned by root
   $ ls -ld /var/*(^u:root)
