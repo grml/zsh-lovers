@@ -13,8 +13,9 @@ build-stamp:
 	a2x -f manpage zsh-lovers.1.txt
 
         # pdf:
-	#  notice: you might have to run: ln -s /usr/bin/fop ~/bin/fop.sh
-	#  to work around http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=376523
+	#  notice: current version of fop (1:0.93.dfsg.1-2) is horrible broken
+	#  download http://snapshot.debian.net/archive/2005/10/15/debian/pool/contrib/f/fop/fop_0.20.5-8_all.deb
+	#  to work around this bug
 	a2x -f pdf zsh-lovers.1.txt
 	mv zsh-lovers.1.pdf zsh-lovers.pdf
 

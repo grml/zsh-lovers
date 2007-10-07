@@ -1,3 +1,12 @@
+zsh-lovers (0.7.0) unstable; urgency=low
+
+  * Better example for 'Show me all the .c files for which
+    there doesn't exist a .o', see Clint's
+    http://xana.scru.org/quanks/zshloverscando.html
+  * Move from x.y-z version schema to x.y.z.
+
+ -- Michael Prokop <mika@grml.org>  Sun, 07 Oct 2007 13:38:36 +0200
+
 zsh-lovers (0.6-5) unstable; urgency=low
 
   * Applied patch by Christian Schneider which adds some more
