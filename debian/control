@@ -3,7 +3,7 @@ Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends-Indep: debhelper (>= 4.0.0), asciidoc, fop
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 Homepage: http://grml.org/zsh/
 XS-Vcs-hg: http://hg.grml.org/zsh-lovers/
 XS-Vcs-Browser: http://hg.grml.org/zsh-lovers/
