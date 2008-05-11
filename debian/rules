@@ -34,10 +34,10 @@ install: build
 	dh_clean -k 
 	dh_installdirs usr/share/doc/zsh-lovers/zsh_people usr/share/man/man1
 
-binary-indep: build install
+binary-arch: build install
 	# We have nothing to do
 
-binary-arch: build install
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
