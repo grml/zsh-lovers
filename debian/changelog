@@ -1,11 +1,11 @@
-zsh-lovers (0.7.1) unstable; urgency=low
+zsh-lovers (0.8.0) unstable; urgency=low
 
   * Apply patch by Christian Schneider providing some further
     examples, thanks!
-  * No longer install zsh.vim.
-  * Some small cleanups to make lintian happy.
+  * No longer install zsh.vim. [Closes: issue458]
+  * Some small package cleanups to make lintian happy.
 
- -- Michael Prokop <mika@grml.org>  Sun, 11 May 2008 10:55:48 +0200
+ -- Michael Prokop <mika@grml.org>  Sun, 11 May 2008 11:12:36 +0200
 
 zsh-lovers (0.7.0) unstable; urgency=low
 
