@@ -2,8 +2,9 @@ zsh-lovers (0.7.1) unstable; urgency=low
 
   * Apply patch by Christian Schneider providing some further
     examples, thanks!
+  * No longer install zsh.vim.
 
- -- Michael Prokop <mika@grml.org>  Sun, 28 Oct 2007 01:31:51 +0200
+ -- Michael Prokop <mika@grml.org>  Sun, 11 May 2008 10:55:48 +0200
 
 zsh-lovers (0.7.0) unstable; urgency=low
 

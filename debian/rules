@@ -35,7 +35,7 @@ install: build
 	dh_installdirs usr/share/doc/zsh-lovers/zsh_people usr/share/man/man1 usr/share/vim/syntax
 
 	# cp -a zsh_people       debian/zsh-lovers/usr/share/doc/zsh-lovers/
-	install -m 644 zsh.vim debian/zsh-lovers/usr/share/vim/syntax/zsh.vim
+	# install -m 644 zsh.vim debian/zsh-lovers/usr/share/vim/syntax/zsh.vim
 
 binary-indep: build install
 	# We have nothing to do

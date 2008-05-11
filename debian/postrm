@@ -4,32 +4,25 @@
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Sam Jun 18 19:34:53 CEST 2005 [mika]
+# Latest change: Son Mai 11 10:54:57 CEST 2008 [mika]
 ################################################################################
 
-set -e
-TO_UNDIVERT="zsh.vim"
-undivert_gen() {
-    DEXT=${3:-original}
-    dpkg-divert --remove --rename --package zsh-lovers \
-        --divert $2/$1.$DEXT $2/$1 #> /dev/null
-}
-
-case "$1" in
-    remove|purge)
-	for cmd in $TO_UNDIVERT; do
-        	undivert_gen $cmd /usr/share/vim/syntax
-    	done
-     ;;
-
-    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-      ;;
-    *)
-      echo "postrm called with unknown argument \`$1'" >&2
-      exit 1
-esac
-
-exit 0
+#set -e
+#
+#case "$1" in
+#    remove|purge)
+#	dpkg-divert --remove --rename --package zsh-lovers --divert /usr/share/vim/syntax/zsh.vim.original \
+#	/usr/share/vim/syntax/zsh.vim
+#     ;;
+#
+#    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+#      ;;
+#    *)
+#      echo "postrm called with unknown argument \`$1'" >&2
+#      exit 1
+#esac
+#
+#exit 0
 
 ## END OF FILE #################################################################
 
