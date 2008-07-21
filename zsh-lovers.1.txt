@@ -782,7 +782,7 @@ $ autoload -U age
 
 # convert 1st char of a word to uppercase
   $ foo="one two three four"
-  $ print -r -- "${(C)var}"
+  $ print -r -- "${(C)foo}"
   One Two Three Four
 -------------------------------------------------------------------------------
 
