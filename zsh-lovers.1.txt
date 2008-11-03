@@ -210,6 +210,12 @@ Hint: A list of valid glob Qualifiers can be found in zshexpn(1).
 See ``man 1 zshexpn | less -p'' Qualifiers for details.
 
 -------------------------------------------------------------------------------
+# Get the names of all files that *don't* match a pattern *anywhere* on the
+# file (and without ``-L'' because its GNUish)
+  $ print -rl -- *(.^e{'grep -q pattern $REPLY'}) 
+  # or
+  $ : *(.e{'grep -q pattern $REPLY || print -r -- $REPLY'}) 
+
 # random numbers
   $ echo $[${RANDOM}%1000]     # random between 0-999
   $ echo $[${RANDOM}%11+10]    # random between 10-20
@@ -844,6 +850,17 @@ ZMV-Examples (require autoload zmv)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *Note:* '-n' means no execution (just print what would happen). At
 -------------------------------------------------------------------------------
+# Remove illegal characters in a fat32 file system. Illegal characters are
+#   / :  ;  *  ?  "  <  >  |
+# NOTE: ``-Q'' and (D) is to include hidden files.
+  $ unwanted='[:;*?\"<>|]' 
+  $ zmv -Q "(**/)(*$~unwanted*)(D)" '$1${2//$~unwanted/}' 
+
+# Changing part of a filename (i. e. "file-hell.name" -> "file-heaven.name")
+  $ zmv '(*)hell(*)' '${1}heaven${2}'
+  # or
+  $ zmv '*' '$f:s/hell/heaven/'
+
 # remove round bracket within filenames
 # i. e. foo-(bar).avi -> foo-bar.avi
   $ zmv '*' '${f//[()]/}'
