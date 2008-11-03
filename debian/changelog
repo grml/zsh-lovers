@@ -1,8 +1,10 @@
 zsh-lovers (0.8.1) unstable; urgency=low
 
   * Apply patch from Tyler Oderkirk which fixes a typo.
+  * Apply patch from Christian Schneider which adds some further
+    examples.
 
- -- Michael Prokop <mika@grml.org>  Mon, 21 Jul 2008 02:15:13 +0200
+ -- Michael Prokop <mika@grml.org>  Mon, 03 Nov 2008 19:00:13 +0100
 
 zsh-lovers (0.8.0) unstable; urgency=low
 
