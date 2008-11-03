@@ -2,11 +2,12 @@ Source: zsh-lovers
 Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
-Build-Depends: debhelper (>= 4.0.0), asciidoc, fop
-Standards-Version: 3.7.3
+Build-Depends: debhelper (>= 4.0.0)
+Build-Depends-Indep: asciidoc, fop
+Standards-Version: 3.8.0
 Homepage: http://grml.org/zsh/
-XS-Vcs-hg: http://hg.grml.org/zsh-lovers/
-XS-Vcs-Browser: http://hg.grml.org/zsh-lovers/
+Vcs-git: git://git.grml.org/zsh-lovers.git
+Vcs-Browser: http://git.grml.org/?p=zsh-lovers.git
 
 Package: zsh-lovers
 Architecture: all

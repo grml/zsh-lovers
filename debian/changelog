@@ -3,8 +3,11 @@ zsh-lovers (0.8.1) unstable; urgency=low
   * Apply patch from Tyler Oderkirk which fixes a typo.
   * Apply patch from Christian Schneider which adds some further
     examples.
+  * Update VCS headers (we use git nowadays).
+  * Move asciidoc and fop to Build-Depends-Indep.
+  * Bump Standard Version to 3.8.0 (no further changes).
 
- -- Michael Prokop <mika@grml.org>  Mon, 03 Nov 2008 19:00:13 +0100
+ -- Michael Prokop <mika@grml.org>  Mon, 03 Nov 2008 19:04:54 +0100
 
 zsh-lovers (0.8.0) unstable; urgency=low
 
