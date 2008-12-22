@@ -703,7 +703,6 @@ Modifiers are a powerful mechanism that let you modify the results
 returned by parameter, filename and history expansion. See zshexpn(1)
 for details.
 -------------------------------------------------------------------------------
-<<<<<<< /home/dope/download/Source/HG-Repos/zsh-lovers/zsh-lovers.1.txt.orig.432616858
 # NOTE: Zsh 4.3.4 needed!
 $ autoload -U age
 # files modified today
@@ -723,12 +722,7 @@ $ autoload -U age
 # Supply times.
   $ print *(e-age 2006/10/04:10:15 2006/10/04:10:45-)
 
-# Remove a trailing pathname component, leaving the head. This works like 
-||||||| /tmp/zsh-lovers.1.txt~base.AvW_ZW
-# Remove a trailing pathname component, leaving the head. This works like 
-=======
 # Remove a trailing pathname component, leaving the head. This works like
->>>>>>> /tmp/zsh-lovers.1.txt~other.vDaddL
 # `dirname'.
   $ echo =ls(:h)
   /bin

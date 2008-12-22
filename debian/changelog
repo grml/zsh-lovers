@@ -1,3 +1,9 @@
+zsh-lovers (0.8.2) unstable; urgency=low
+
+  * Drop some left over merge crap.
+
+ -- Michael Prokop <mika@grml.org>  Mon, 22 Dec 2008 16:32:55 +0100
+
 zsh-lovers (0.8.1) unstable; urgency=low
 
   * Apply patch from Tyler Oderkirk which fixes a typo.
