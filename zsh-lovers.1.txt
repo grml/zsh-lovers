@@ -212,9 +212,9 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 -------------------------------------------------------------------------------
 # Get the names of all files that *don't* match a pattern *anywhere* on the
 # file (and without ``-L'' because its GNUish)
-  $ print -rl -- *(.^e{'grep -q pattern $REPLY'}) 
+  $ print -rl -- *(.^e{'grep -q pattern $REPLY'})
   # or
-  $ : *(.e{'grep -q pattern $REPLY || print -r -- $REPLY'}) 
+  $ : *(.e{'grep -q pattern $REPLY || print -r -- $REPLY'})
 
 # random numbers
   $ echo $[${RANDOM}%1000]     # random between 0-999
@@ -669,30 +669,30 @@ zsh-4.2.3/Doc/zsh_us.ps
 # Show only empty files which nor `group' or `world writable'
   $ ls *(L0f.go-w.)
 
-# find - and list - the ten newest files in directories and subdirs
+# Find - and list - the ten newest files in directories and subdirs.
 # (recursive)
   $ print -rl -- **/*(Dom[1,10])
 
-# Print only 5 lines by "ls" command (like ``ls -laS | head -n 5'')
+# Print only 5 lines by "ls" command (like ``ls -laS | head -n 5'').
   $ ls -fl *(DOL[1,5])
 
-# display the 5-10 last modified files
+# Display the 5-10 last modified files.
   $ print -rl -- /path/to/dir/**/*(D.om[5,10])
 
-# find all files without a valid owner
+# Find all files without a valid owner.
   $ chmod someuser /**/*(D^u:${(j.:u:.)${(f)"$(</etc/passwd)"}%%:*}:)
 
-# find all the empty directories in a tree
+# Find all the empty directories in a tree.
   $ for f in ***/*(/l2); do foo=($f/*(N)); [[ -z $foo ]] && print $f; done
 # Note:Since Zsh 4.2.1 the glob qualifier F indicates a non-empty directory.
 # Hence *(F) indicates all subdirectories with entries, *(/^F) means all
 # subdirectories with no entries.
   $ ls -ld *(/^F)
 
-# remove empty directories afterwards
+# Remove empty directories afterwards.
   $ rmdir ./**/*(/od) 2> /dev/null
 
-# Show only files are owned from group `users'
+# Show only files which are owned by group `users'.
   $ ls -l *(G[users])
 
 -------------------------------------------------------------------------------
@@ -704,21 +704,21 @@ returned by parameter, filename and history expansion. See zshexpn(1)
 for details.
 -------------------------------------------------------------------------------
 # NOTE: Zsh 4.3.4 needed!
-$ autoload -U age
+  $ autoload -U age
 # files modified today
-  $ print *(e:age today now:)             
+  $ print *(e:age today now:)
 # files modified since 5 pm
-  $ print *(e-age 17:00 now-)             
+  $ print *(e-age 17:00 now-)
 # ... since 5 o'clock yesterda
   $ print *(e-age yesterday,17:00 now-)
 # ... from last Christmas before today
   $ print *(e-age 2006/12/25 today-)
 # ... before yesterday
-  $ print *(e-age 1970/01/01 yesterday-) 
+  $ print *(e-age 1970/01/01 yesterday-)
 # all files modified between the start of those dates
-  $ print *(e:age 2006/10/04 2006/10/09:) 
+  $ print *(e:age 2006/10/04 2006/10/09:)
 # all files modified on that date
-  $ print *(e:age 2006/10/04:) 
+  $ print *(e:age 2006/10/04:)
 # Supply times.
   $ print *(e-age 2006/10/04:10:15 2006/10/04:10:45-)
 
@@ -847,8 +847,8 @@ ZMV-Examples (require autoload zmv)
 # Remove illegal characters in a fat32 file system. Illegal characters are
 #   / :  ;  *  ?  "  <  >  |
 # NOTE: ``-Q'' and (D) is to include hidden files.
-  $ unwanted='[:;*?\"<>|]' 
-  $ zmv -Q "(**/)(*$~unwanted*)(D)" '$1${2//$~unwanted/}' 
+  $ unwanted='[:;*?\"<>|]'
+  $ zmv -Q "(**/)(*$~unwanted*)(D)" '$1${2//$~unwanted/}'
 
 # Changing part of a filename (i. e. "file-hell.name" -> "file-heaven.name")
   $ zmv '(*)hell(*)' '${1}heaven${2}'

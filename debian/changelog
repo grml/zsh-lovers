@@ -1,8 +1,10 @@
 zsh-lovers (0.8.2) unstable; urgency=low
 
   * Drop some left over merge crap.
+  * Deleted trailing whitespace as well as incorporated some
+    punctuation characters, thanks, z3ttacht.
 
- -- Michael Prokop <mika@grml.org>  Mon, 22 Dec 2008 16:32:55 +0100
+ -- Michael Prokop <mika@grml.org>  Thu, 29 Jan 2009 16:58:43 +0100
 
 zsh-lovers (0.8.1) unstable; urgency=low
 
