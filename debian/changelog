@@ -1,3 +1,10 @@
+zsh-lovers (0.8.3) unstable; urgency=low
+
+  * Update Links section. Thanks for reporting some broken links
+    to Jon Strait.
+
+ -- Michael Prokop <mika@grml.org>  Thu, 12 Mar 2009 21:29:51 +0100
+
 zsh-lovers (0.8.2) unstable; urgency=low
 
   * Drop some left over merge crap.

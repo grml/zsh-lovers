@@ -1432,45 +1432,33 @@ $EUID $GID $EGID $USERNAME $fignore $mailpath $cdpath
 LINKS
 -----
 Primary site::
-  *http://www.zsh.org/[]*
+    *http://www.zsh.org/[]*
 Project-page::
-  *http://sourceforge.net/projects/zsh/[]*
+    *http://sourceforge.net/projects/zsh/[]*
 Z shell page at sunsite.dk::
     *http://zsh.sunsite.dk/[]*
 From Bash to Z Shell: Conquering the Command Line - the book::
     *http://www.bash2zsh.com/[]*
+"Zsh - die magische Shell" (german book about Zsh) by Sven Guckes and Julius Plenz::
+    *http://zshbuch.org/[]*
 Mailinglistarchive::
     *http://www.zsh.org/mla/[]*
 ZSH-FAQ::
-    *http://www.zsh.org/FAQ/[]*
+    *http://zsh.dotsrc.org/FAQ/[]*
 Userguide::
     *http://zsh.sunsite.dk/Guide/[]*
 ZSH-Wiki::
-    *http://www.zshwiki.org/[]*
-Die Zsh als interaktive Shell::
-    *http://cssun.rrze.uni-erlangen.de/~sipakale/zshreferat.html[]*
+    *http://zshwiki.org/home/[]*
 A short introduction from BYU::
-    *http://docs.cs.byu.edu/docs/zsh/index.php[]*
+    *http://docs.cs.byu.edu/linux/advanced/zsh.html[]*
 Mouse-Support ;)::
     *http://stchaz.free.fr/mouse.zsh[]*
-Shell Corner: Zsh Suite of "keeper" Functions::
-    *http://www.unixreview.com/documents/s=9513/ur0501a/ur0501a.htm[]*
-The Z Shell (A Fan Page)::
-    *http://www.princeton.edu/~kmccarty/zsh.html[]*
-Making the Transition to Zsh::
-    *http://www.linux-mag.com/cgi-bin/printer.pl?issue=2002-05&article=power[]*
 Curtains up: introducing the Z shell::
     *http://www-128.ibm.com/developerworks/linux/library/l-z.html?dwzone=linux[]*
-ZSH-Liebhaberseite::
+ZSH-Liebhaberseite (german)::
     *http://michael-prokop.at/computer/tools_zsh_liebhaber.html[]*
-ZSH-Seite von Michael Prokop::
-    *http://www.michael-prokop.at/computer/tools_zsh.html[]*
-A Case for the Z Shell on *http://www.daemonnews.org/[]*::
-    *http://ezine.daemonnews.org/199910/zsh.html[]*
-ZSH-Section from Dotfiles.com::
-    *http://www.dotfiles.com/index.php?app_id=4[]*
-Writing Zsh Completion Functions::
-    *http://www.linux-mag.com/2002-07/power_01.html[]*
+ZSH-Seite von Michael Prokop (german)::
+    *http://michael-prokop.at/computer/tools_zsh.html[]*
 ZSH Prompt introduction::
     *http://aperiodic.net/phil/prompt/[]*
 Adam's ZSH page::
@@ -1478,8 +1466,7 @@ Adam's ZSH page::
 Zzappers Best of ZSH Tips::
     *http://www.rayninfo.co.uk/tips/zshtips.html[]*
 Zsh Webpage by Christian Schneider::
-    *http://strcat.de/wiki/zsh/[]*
-    *http://strcat.de/wiki/zsh-german[]* (German translation. Help needed!)
+    *http://www.strcat.de/zsh/[]*
 The zsh-lovers webpage::
     *http://grml.org/zsh/[]*
 IRC channel::
