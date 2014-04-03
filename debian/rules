@@ -32,7 +32,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
-	dh_installdirs usr/share/doc/zsh-lovers/zsh_people usr/share/man/man1
+	dh_installdirs usr/share/man/man1
 
 binary-arch: build install
 	# We have nothing to do
