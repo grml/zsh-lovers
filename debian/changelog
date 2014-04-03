@@ -1,3 +1,17 @@
+zsh-lovers (0.9.0) unstable; urgency=medium
+
+  * [570683a] Add ft's zsh configuration to links section. Thanks to
+    Yu.A.Rogovsky <Yu.A.Rogovsky@inp.nsk.su>
+  * [5cb88f9] Get rid of files where we don't own the copyright or license
+    is unclear. Thanks to Ulrich Mueller <ulm@gentoo.org> for raising the
+    issue
+  * [aa6d665] Refresh Debian packaging, bring it to 2014
+  * [e666457] Refresh and clarify copyright information
+  * [b382392] Use xsltproc/dblatex instead of fop in Build-Depends, enable
+    verbose execution with --no-xmllint for a2px
+
+ -- Michael Prokop <mika@grml.org>  Thu, 03 Apr 2014 12:41:02 +0200
+
 zsh-lovers (0.8.3) unstable; urgency=low
 
   * Update Links section. Thanks for reporting some broken links
