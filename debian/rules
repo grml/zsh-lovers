@@ -1,58 +1,7 @@
 #!/usr/bin/make -f
 
-build: build-stamp
+# Uncomment this to turn on verbose mode.
+# export DH_VERBOSE=1
 
-build-stamp: 
-	dh_testdir
-
-        # html:
-	asciidoc zsh-lovers.1.txt
-	mv zsh-lovers.1.html zsh-lovers.html
-
-        # manpage:
-	a2x -f manpage zsh-lovers.1.txt
-
-        # pdf:
-	#  notice: current version of fop (1:0.93.dfsg.1-2) is horrible broken
-	#  download http://snapshot.debian.net/archive/2005/10/15/debian/pool/contrib/f/fop/fop_0.20.5-8_all.deb
-	#  to work around this bug
-	a2x -f pdf zsh-lovers.1.txt
-	mv zsh-lovers.1.pdf zsh-lovers.pdf
-
-	touch build-stamp
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f zsh-lovers.1 zsh-lovers.1.fo zsh-lovers.1.xml zsh-lovers.html zsh-lovers.pdf
-	rm -f build-stamp
-	dh_clean 
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
-	dh_installdirs usr/share/man/man1
-
-binary-arch: build install
-	# We have nothing to do
-
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installman zsh-lovers.1
-	dh_link
-	dh_compress
-	mkdir -p debian/zsh-lovers/usr/share/lintian/overrides/
-	cp -av debian/overrides debian/zsh-lovers/usr/share/lintian/overrides/zsh-lovers
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+%:
+	dh $@

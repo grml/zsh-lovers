@@ -2,9 +2,9 @@ Source: zsh-lovers
 Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
-Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: debhelper (>= 8.0.0)
 Build-Depends-Indep: asciidoc, fop
-Standards-Version: 3.8.0
+Standards-Version: 3.9.5
 Homepage: http://grml.org/zsh/
 Vcs-git: git://git.grml.org/zsh-lovers.git
 Vcs-Browser: http://git.grml.org/?p=zsh-lovers.git
