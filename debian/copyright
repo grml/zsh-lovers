@@ -1,15 +1,17 @@
-This package was debianized by Michael Prokop <mika@grml.org> on
-Wed, 18 Aug 2004 12:19:12 +0200.
+Format: http://dep.debian.net/deps/dep5
+Upstream-Name: zsh-lovers
+Source: http://git.grml.org/?p=zsh-lovers.git
 
-It was downloaded from http://grml.org/zsh/
+Files: *
+Copyright: 2014-2014 Michael Prokop <mika@grml.org>
+License: GPL-2
 
-Upstream Author: Michael Prokop <mika@grml.org>
+Files: zsh-lovers.1.txt
+Copyright: 2004, 2007, 2008, 2009, 2010, Michael Prokop <mika@grml.org>
+           2004, Matthias Kopfermann <matthi@infodrom.north.de>
+           2004, 2008, Christian Schneider <strcat@gulli.com>
+License: GPL-2
 
-Copyright:
-
-   Debian packaging is copyright (c) 2004++ by Michael Prokop.
-
-   The files written by the grml-team are available under
-   the GPL license version 2. For license information regarding
-   files not deriving from the grml project please take a look
-   at the affected file itself.
+License: GPL-2
+ The full text of the GPL is distributed as COPYING in zsh-lovers' source,
+ and is distributed in /usr/share/common-licenses/GPL-2 on Debian systems.
