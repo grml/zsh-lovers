@@ -1462,7 +1462,7 @@ ZSH-Seite von Michael Prokop (german)::
 ZSH Prompt introduction::
     *http://aperiodic.net/phil/prompt/[]*
 ft's zsh configuration::
-    *http://ft.bewatermyfriend.org/comp/zsh.html[]*
+    *http://ft.bewatermyfriend.org/computer/zsh.html[]*
 Adam's ZSH page::
     *http://www.adamspiers.org/computing/zsh/[]*
 Zzappers Best of ZSH Tips::
