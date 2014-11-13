@@ -12,12 +12,12 @@ Just read it. ;-)
 OVERVIEW
 --------
 Whenever we look at the zsh manual we wonder why there are no examples or those
-simply things in (shell) life.  The zsh contains many features, but there was no
+simple things in (shell) life.  The zsh contains many features, but there was no
 manpage with some examples (like procmailex(5)).  That's why we wrote this
 manpage.
 
-Most of the tricks and oneliner come from the mailinglists zsh-users,
-zsh-workers, google, newsgroups and from ourself.  See section *LINKS* for
+Most of the tricks and oneliners come from the mailing lists zsh-users,
+zsh-workers, google, newsgroups and from ourselves.  See section *LINKS* for
 details.
 
 Note: This manpage (zsh-lovers(1)) is *not* an offical part of the Z shell! It's
@@ -26,8 +26,8 @@ For comments, bugreports and feedback take a quick look at the section *BUGS*.
 
 SHELL-SCRIPTING
 ---------------
-This section provides some examples for often needed shellscript-stuff. Notice
-that you should not use otherwise most examples won't work. +
+This section provides some examples for often needed shellscript-stuff.
+*Note:* You should not use this otherwise most examples won't work. +
 Parse options in shellscripts. Example taken from ZWS by Adam Chodorowski
 (http://www.chodorowski.com/projects/zws/[]):
 ----------------------------------------------
@@ -67,8 +67,8 @@ alias -s tex=vim
 alias -s html=w3m
 alias -s org=w3m
 -----------------
-Now pressing return-key after entering 'foobar.tex' starts vim with
-foobar.tex. Calling a html-file runs browser w3m. 'www.zsh.org' and pressing
+Now pressing the return-key after entering 'foobar.tex' starts vim with
+foobar.tex. Calling an html-file runs browser w3m. 'www.zsh.org' and pressing
 enter starts w3m with argument www.zsh.org. +
 Global aliases can be used anywhere in the command line. Example:
 ----------------------
@@ -1478,10 +1478,10 @@ The Z shell reference-card (included in the zsh-lovers debian-package)::
 
 AUTHORS
 -------
-This manpage was written by Michael Prokop, Christian 'strcat'
-Schneider and Matthias Kopfermann. But many ideas have been taken from
-zsh-geeks e.g. from the zsh-mailinglists (zsh-users and zsh-workers),
-google, newsgroups and the zsh-Wiki. +
+This manpage was written by Michael Prokop, Christian 'strcat' Schneider and
+Matthias Kopfermann.  But many ideas have been taken from zsh-geeks e.g. from
+the zsh-mailinglists (zsh-users and zsh-workers), google, newsgroups and the
+zsh-Wiki. +
 Thanks for your cool and incredible tips. We learned much from you!
 
 In alphabetic order:
