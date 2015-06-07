@@ -20,7 +20,7 @@ Most of the tricks and oneliner come from the mailinglists zsh-users,
 zsh-workers, google, newsgroups and from ourself.  See section *LINKS* for
 details.
 
-Note: This manpage (zsh-lovers(1)) is *not* an offical part of the Z shell! It's
+Note: This manpage (zsh-lovers(1)) is *not* an official part of the Z shell! It's
 just a just for fun - manpage ;) +
 For comments, bugreports and feedback take a quick look at the section *BUGS*.
 
