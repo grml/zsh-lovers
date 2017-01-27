@@ -16,6 +16,7 @@ Vcs-Browser: https://git.grml.org/?p=zsh-lovers.git
 
 Package: zsh-lovers
 Architecture: all
+Depends: ${misc:Depends}
 Description: tips, tricks and examples for the zsh
  Whenever you look at the zsh manual you might wonder
  why there are no examples for those simply things in
