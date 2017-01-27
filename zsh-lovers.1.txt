@@ -76,7 +76,7 @@ $ alias -g C='| wc -l'
 $ grep alias ~/.zsh/* C
 443
 ----------------------
-Some more or less useful global aliases (choose whether they are useful  or not
+Some more or less useful global aliases (choose whether they are useful or not
 for you on your own):
 
 --------------------------------------------------------
@@ -180,7 +180,7 @@ zstyle ':completion:*:kill:*'   force-list always
 ---------------------------------------------------------------------------------------------------
 
 If you end up using a directory  as  argument,  this  will  remove  the
-trailing slash (usefull in ln)
+trailing slash (useful in ln)
 ---------------------------------------------------------------------------------------------------
 zstyle ':completion:*' squeeze-slashes true
 ---------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # All files for which the owner hat read and execute permissions
   $ echo *(f:u+rx:)
 
-# The same, but also others dont have execute permissions
+# The same, but also others don't have execute permissions
   $ echo *(f:u+rx,o-x:)
 
 # brace expansion - example
@@ -279,7 +279,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
 # Remove zero length and .bak files in a directory
   $ rm -i *(.L0) *.bak(.)
 
-# print out files that dont have extensions
+# print out files that don't have extensions
   $ printf '%s\n' ^?*.*
   $ printf '%s\n' ^?*.[^.]*(D)
   $ ls -d -- ^?*.*(D)
@@ -347,7 +347,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   # see above, but now omit executables
   $ ls **/*~*(${~${(j/|/)fignore}})(.^*)
 
-# Print out files that dont have extensions (require *setopt extendedglob*
+# Print out files that don't have extensions (require *setopt extendedglob*
 # and *setopt dotglob*)
   $ printf '%s\n' ^?*.*
 
@@ -788,7 +788,7 @@ for details.
 
 Redirection-Examples
 ~~~~~~~~~~~~~~~~~~~~
-See zshmisc(1) for more informations (or less ${^fpath}/zmv(N))
+See zshmisc(1) for more information (or less ${^fpath}/zmv(N))
 
 -------------------------------------------------------------------------------
 # Append `exit 1' at the end of all *.sh - files
@@ -867,7 +867,7 @@ ZMV-Examples (require autoload zmv)
   $ ls *
   1.c  1.foo  2.foo  3.foo  4.foo  foo.fnord
 
-# Rename "file.with.many.dots.txt" by substituting dots (exept for the last
+# Rename "file.with.many.dots.txt" by substituting dots (except for the last
 # one!) with a space
   $ touch {1..20}-file.with.many.dots.txt
   $ zmv '(*.*)(.*)' '${1//./ }$2'
@@ -1172,7 +1172,7 @@ zsh/mapfile (require zmodload zsh/mapfile)
 
 # If a XML-file contains stuff like ``<TAGA/>'' and ``<TAGB/>'', number
 # this empty tags (ones ending in '/>') so if encountered in the same
-# order, the preceeding tags would become ``<TAGA/>1</TAGA>'' and
+# order, the preceding tags would become ``<TAGA/>1</TAGA>'' and
 # ``<TAGB/>2</TAGB>''
   $ zmodload zsh/mapfile
   $ cnt=0
