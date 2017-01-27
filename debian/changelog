@@ -1,3 +1,24 @@
+zsh-lovers (0.9.1) unstable; urgency=medium
+
+  [ Frank Terbeck ]
+  * [bdc422c] Update URL of my zsh config's webpage
+  * [1baecf1] Rename README → README.md
+
+  [ Rogerio Prado de Jesus ]
+  * [fb93254] Fix typo in zsh-lovers.1.txt
+
+  [ Michael Prokop ]
+  * [f4cff9e] Bump Standards-Version to 3.9.8
+  * [8291449] Bump debian/compat to 9
+  * [622bc48] Use SSL for Homepage + Vcs-Browser headers
+  * [30c36f8] Add asciidoc-dblatex to Build-Depends-Indep
+  * [f580d6a] Add debian/source/format with 3.0 (native)
+  * [a6cc16c] Fix typos caught by lintian
+  * [469d69a] Run wrap-and-sort -a -s -t on debian/
+  * [7f50f20] Add ${misc:Depends} to Depends
+
+ -- Michael Prokop <mika@grml.org>  Fri, 27 Jan 2017 16:50:19 +0100
+
 zsh-lovers (0.9.0) unstable; urgency=medium
 
   * [570683a] Add ft's zsh configuration to links section. Thanks to
