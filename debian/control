@@ -2,8 +2,13 @@ Source: zsh-lovers
 Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
-Build-Depends: debhelper (>= 8.0.0)
-Build-Depends-Indep: asciidoc, asciidoc-dblatex, xsltproc, dblatex
+Build-Depends:
+ debhelper (>= 8.0.0),
+Build-Depends-Indep:
+ asciidoc,
+ asciidoc-dblatex,
+ dblatex,
+ xsltproc,
 Standards-Version: 3.9.8
 Homepage: https://grml.org/zsh/
 Vcs-git: git://git.grml.org/zsh-lovers.git
