@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends: debhelper (>= 8.0.0)
 Build-Depends-Indep: asciidoc, xsltproc, dblatex
-Standards-Version: 3.9.5
+Standards-Version: 3.9.8
 Homepage: http://grml.org/zsh/
 Vcs-git: git://git.grml.org/zsh-lovers.git
 Vcs-Browser: http://git.grml.org/?p=zsh-lovers.git
