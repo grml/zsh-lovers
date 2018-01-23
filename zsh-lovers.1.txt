@@ -1488,14 +1488,14 @@ In alphabetic order:
 -------------------------------------------------------------------------
 Andrew 'zefram' Main  - http://www.fysh.org/~zefram/
 Barton E. Schaefer    - http://www.well.com/user/barts/
-Matthias Kopfermann   - http://www.infodrom.north.de/~matthi/
+Matthias Kopfermann   - http://www.guckes.net/zsh/lover.html
 Oliver Kiddle         - http://people.freenet.de/opk/
 Paul Falstad          - http://www.falstad.com/
 Peter Stephenson      - http://homepage.ntlworld.com/p.w.stephenson/
 Richard Coleman
 Stephane Chazelas     - http://stephane.chazelas.free.fr/
 Sven Guckes           - http://www.guckes.net/
-Sven Wischnowsky      - http://w9y.de/zsh/zshrc
+Sven Wischnowsky     
 -------------------------------------------------------------------------
 
 SEE ALSO
