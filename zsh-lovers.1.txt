@@ -394,7 +394,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ print ${(r:10::0:)foo}
 
 # find the name of all the files in their home directory that have
-# more than 20 characters in their file names
+# 20 or more characters in their file names
   print -rl $HOME/${(l:20::?:)~:-}*
 
 # Save arrays
