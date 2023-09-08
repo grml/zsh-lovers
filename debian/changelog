@@ -1,3 +1,24 @@
+zsh-lovers (0.10.0) unstable; urgency=medium
+
+  [ pfefferminz132 ]
+  * [eed6063] Fix broken links for Matthias Kopfermann + Sven Wischnowsky
+
+  [ Michael Prokop ]
+  * [a1b0175] Fix comment regarding number of characters. Thanks to Jim
+    Murphy
+  * [6f4e68e] Replace my no longer active mail address with a link towards
+    the github repository
+  * [cea4010] Update URL for ZSH-FAQ. Thanks to Christopher Bock for the
+    hint
+  * [b77b031] Update URLs for userguide
+  * [3ffb00b] Drop deprecated URL for introduction from BYU. Thanks to
+    Christopher Bock for the hint
+  * [f0c4286] Drop deprecated URL for Z shell introduction from ibm.com.
+    Thanks to Christopher Bock for the hint
+  * [40d803d] Drop my own web pages which are no longer maintained/arround
+
+ -- Michael Prokop <mika@grml.org>  Fri, 08 Sep 2023 13:54:22 +0200
+
 zsh-lovers (0.9.1) unstable; urgency=medium
 
   [ Frank Terbeck ]
