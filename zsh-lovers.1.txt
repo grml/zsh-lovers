@@ -1529,9 +1529,9 @@ Also take a look at the section *LINKS* in this manpage.
 
 BUGS
 ----
-Probably. This manpage might be never complete. So please report bugs,
-feedback and suggestions to <zsh-lovers@michael-prokop.at>. Thank
-you!
+Probably. This manpage might be never complete.
+So please report bugs, feedback and suggestions via https://github.com/grml/zsh-lovers
+Thank you!
 
 COPYRIGHT
 ---------
