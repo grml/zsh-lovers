@@ -1451,8 +1451,6 @@ ZSH-Wiki::
     *http://zshwiki.org/home/[]*
 Mouse-Support ;)::
     *http://stchaz.free.fr/mouse.zsh[]*
-Curtains up: introducing the Z shell::
-    *http://www-128.ibm.com/developerworks/linux/library/l-z.html?dwzone=linux[]*
 ZSH-Liebhaberseite (german)::
     *http://michael-prokop.at/computer/tools_zsh_liebhaber.html[]*
 ZSH-Seite von Michael Prokop (german)::
