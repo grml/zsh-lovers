@@ -1451,10 +1451,6 @@ ZSH-Wiki::
     *http://zshwiki.org/home/[]*
 Mouse-Support ;)::
     *http://stchaz.free.fr/mouse.zsh[]*
-ZSH-Liebhaberseite (german)::
-    *http://michael-prokop.at/computer/tools_zsh_liebhaber.html[]*
-ZSH-Seite von Michael Prokop (german)::
-    *http://michael-prokop.at/computer/tools_zsh.html[]*
 ZSH Prompt introduction::
     *http://aperiodic.net/phil/prompt/[]*
 ft's zsh configuration::
