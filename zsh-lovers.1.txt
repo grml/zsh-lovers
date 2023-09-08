@@ -473,7 +473,7 @@ See ``man 1 zshexpn | less -p'' Qualifiers for details.
   $ for i (./*.mp3){mpg321 --w - $i > ${i:r}.wav}
 
 # Download with LaTeX2HTML  created Files (for example the ZSH-Guide):
-  $ for f in http://zsh.sunsite.dk/Guide/zshguide{,{01..08}}.html; do
+  $ for f in https://zsh.sourceforge.io/Guide/zshguide{,{01..08}}.html; do
   >     lynx -source $f >${f:t}
   > done
 
@@ -1433,10 +1433,10 @@ LINKS
 -----
 Primary site::
     *http://www.zsh.org/[]*
+Zsh Web Pages::
+    *https://zsh.sourceforge.io/[]*
 Project-page::
     *http://sourceforge.net/projects/zsh/[]*
-Z shell page at sunsite.dk::
-    *http://zsh.sunsite.dk/[]*
 From Bash to Z Shell: Conquering the Command Line - the book::
     *http://www.bash2zsh.com/[]*
 "Zsh - die magische Shell" (german book about Zsh) by Sven Guckes and Julius Plenz::
@@ -1446,7 +1446,7 @@ Mailinglistarchive::
 ZSH-FAQ::
     *https://zsh.sourceforge.io/FAQ/zshfaq.html[]*
 Userguide::
-    *http://zsh.sunsite.dk/Guide/[]*
+    *https://zsh.sourceforge.io/Guide/[]*
 ZSH-Wiki::
     *http://zshwiki.org/home/[]*
 A short introduction from BYU::
