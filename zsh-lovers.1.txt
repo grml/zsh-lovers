@@ -1449,8 +1449,6 @@ Userguide::
     *https://zsh.sourceforge.io/Guide/[]*
 ZSH-Wiki::
     *http://zshwiki.org/home/[]*
-A short introduction from BYU::
-    *http://docs.cs.byu.edu/linux/advanced/zsh.html[]*
 Mouse-Support ;)::
     *http://stchaz.free.fr/mouse.zsh[]*
 Curtains up: introducing the Z shell::
