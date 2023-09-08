@@ -1444,7 +1444,7 @@ From Bash to Z Shell: Conquering the Command Line - the book::
 Mailinglistarchive::
     *http://www.zsh.org/mla/[]*
 ZSH-FAQ::
-    *http://zsh.dotsrc.org/FAQ/[]*
+    *https://zsh.sourceforge.io/FAQ/zshfaq.html[]*
 Userguide::
     *http://zsh.sunsite.dk/Guide/[]*
 ZSH-Wiki::
