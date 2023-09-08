@@ -1461,8 +1461,10 @@ ZSH-Seite von Michael Prokop (german)::
     *http://michael-prokop.at/computer/tools_zsh.html[]*
 ZSH Prompt introduction::
     *http://aperiodic.net/phil/prompt/[]*
+ft's blog posts around zsh::
+    *http://bewatermyfriend.org/tag/zsh/[]*
 ft's zsh configuration::
-    *http://ft.bewatermyfriend.org/computer/zsh.html[]*
+    *https://gitlab.com/ft/etc-zsh[]*
 Adam's ZSH page::
     *http://www.adamspiers.org/computing/zsh/[]*
 Zzappers Best of ZSH Tips::
