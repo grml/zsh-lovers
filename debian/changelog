@@ -1,3 +1,10 @@
+zsh-lovers (0.10.1) unstable; urgency=medium
+
+  * [8da4647] Update link for ft's zsh configuration + add his zsh tagged
+    blog posts
+
+ -- Michael Prokop <mika@grml.org>  Thu, 14 Sep 2023 17:52:09 +0200
+
 zsh-lovers (0.10.0) unstable; urgency=medium
 
   [ pfefferminz132 ]
