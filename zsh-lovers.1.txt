@@ -1447,8 +1447,8 @@ ZSH-FAQ::
     *https://zsh.sourceforge.io/FAQ/zshfaq.html[]*
 Userguide::
     *https://zsh.sourceforge.io/Guide/[]*
-ZSH-Wiki::
-    *http://zshwiki.org/home/[]*
+ZSH-Wiki (Archived link)::
+    *http://zshwiki.org/home/[https://web.archive.org/web/20160304135622/http://zshwiki.org/home/]*
 Mouse-Support ;)::
     *http://stchaz.free.fr/mouse.zsh[]*
 ZSH Prompt introduction::
@@ -1459,8 +1459,8 @@ ft's zsh configuration::
     *https://gitlab.com/ft/etc-zsh[]*
 Adam's ZSH page::
     *http://www.adamspiers.org/computing/zsh/[]*
-Zzappers Best of ZSH Tips::
-    *http://www.rayninfo.co.uk/tips/zshtips.html[]*
+Zzappers Best of ZSH Tips (Archived link)::
+    *http://www.rayninfo.co.uk/tips/zshtips.html[https://web.archive.org/web/20190517011103/http://www.rayninfo.co.uk/tips/zshtips.html]*
 Zsh Webpage by Christian Schneider::
     *http://www.strcat.de/zsh/[]*
 The zsh-lovers webpage::
