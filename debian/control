@@ -11,8 +11,8 @@ Build-Depends-Indep:
  xsltproc,
 Standards-Version: 3.9.8
 Homepage: https://grml.org/zsh/
-Vcs-git: git://git.grml.org/zsh-lovers.git
-Vcs-Browser: https://git.grml.org/?p=zsh-lovers.git
+Vcs-git: https://github.com/grml/zsh-lovers.git
+Vcs-Browser: https://github.com/grml/zsh-lovers
 
 Package: zsh-lovers
 Architecture: all
