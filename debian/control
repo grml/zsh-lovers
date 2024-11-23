@@ -3,7 +3,7 @@ Section: doc
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends:
- debhelper (>= 8.0.0),
+ debhelper-compat (= 12),
 Build-Depends-Indep:
  asciidoc,
  asciidoc-dblatex,
