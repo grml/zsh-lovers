@@ -1,3 +1,18 @@
+zsh-lovers (0.11.0) unstable; urgency=medium
+
+  [ sudocurse ]
+  * [49e5967] Update zsh-lovers.1.txt
+
+  [ Christopher Bock ]
+  * [e865f1d] updated vcs-url
+
+  [ Michael Prokop ]
+  * [c27d9ac] d/control: Bump Standards-Version to 4.7.0
+  * [8dfbbd2] debian: bump compat level via switching to debhelper-compat
+  * [aacffdb] Ship debian/gbp.conf for gbp usage
+
+ -- Michael Prokop <mika@grml.org>  Sat, 23 Nov 2024 14:04:59 +0100
+
 zsh-lovers (0.10.1) unstable; urgency=medium
 
   * [8da4647] Update link for ft's zsh configuration + add his zsh tagged
