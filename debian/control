@@ -9,7 +9,7 @@ Build-Depends-Indep:
  asciidoc-dblatex,
  dblatex,
  xsltproc,
-Standards-Version: 3.9.8
+Standards-Version: 4.7.0
 Homepage: https://grml.org/zsh/
 Vcs-git: https://github.com/grml/zsh-lovers.git
 Vcs-Browser: https://github.com/grml/zsh-lovers
