@@ -1,0 +1,97 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y asciidoc asciidoc-dblatex dblatex xsltproc
+
+    - name: Build documentation
+      run: make
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: zsh-lovers-docs-${{ github.run_number }}
+        path: |
+          zsh-lovers.html
+          zsh-lovers.1
+          zsh-lovers.pdf
+        retention-days: ${{ github.event_name == 'pull_request' && 14 || 90 }}
+
+  comment-pr:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Comment on PR
+      uses: actions/github-script@v7.0.1
+      with:
+        script: |
+          const runNumber = context.runNumber;
+          const artifactName = `zsh-lovers-docs-${runNumber}`;
+          const comment = `📦 Build artifacts are ready!
+
+          Download the generated documentation from: [${artifactName}](${context.payload.repository.html_url}/actions/runs/${context.runId})
+
+          Artifacts include:
+          - \`zsh-lovers.html\` - HTML documentation
+          - \`zsh-lovers.1\` - Man page
+          - \`zsh-lovers.pdf\` - PDF documentation
+
+          ⏰ Artifacts will expire in 14 days.`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  release:
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: zsh-lovers-docs-${{ github.run_number }}
+        path: ./artifacts
+
+    - name: Create timestamped release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+        TAG_NAME="build-${TIMESTAMP}"
+        RELEASE_NAME="Documentation Build ${TIMESTAMP}"
+
+        gh release create "${TAG_NAME}" \
+          --title "${RELEASE_NAME}" \
+          --notes "Automated documentation build from commit ${GITHUB_SHA:0:7}" \
+          ./artifacts/zsh-lovers.html \
+          ./artifacts/zsh-lovers.1 \
+          ./artifacts/zsh-lovers.pdf
