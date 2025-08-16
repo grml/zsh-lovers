@@ -87,11 +87,11 @@ jobs:
       run: |
         TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
         TAG_NAME="build-${TIMESTAMP}"
-        RELEASE_NAME="Documentation Build ${TIMESTAMP}"
+        RELEASE_NAME="Build ${TIMESTAMP}"
 
         gh release create "${TAG_NAME}" \
           --title "${RELEASE_NAME}" \
-          --notes "Automated documentation build from commit ${GITHUB_SHA:0:7}" \
+          --notes "Automated build from commit ${GITHUB_SHA:0:7}" \
           ./artifacts/zsh-lovers.html \
           ./artifacts/zsh-lovers.1 \
           ./artifacts/zsh-lovers.pdf
