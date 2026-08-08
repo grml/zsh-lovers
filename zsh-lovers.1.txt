@@ -1466,7 +1466,7 @@ Zsh Webpage by Christian Schneider::
 The zsh-lovers webpage::
     *http://grml.org/zsh/[]*
 IRC channel::
-    *#zsh at irc.freenode.org*
+    *#zsh at irc.libera.chat*
 The Z shell reference-card (included in the zsh-lovers debian-package)::
     *http://www.bash2zsh.com/zsh_refcard/refcard.pdf[]*
 
@@ -1532,4 +1532,4 @@ COPYRIGHT
 Copyright  \(C) Michael Prokop, Christian Schneider and Matthias
 Kopfermann.
 
-// vim:tw=80 ai
+// vim:tw=80 ai ft=rst
